@@ -24,41 +24,32 @@
             </a>
         </li>
 
-        <!-- Apps & Pages -->
+        <!-- Manage Agen-->
         <li class="menu-header small">
-            <span class="menu-header-text" data-i18n="Apps & Pages">Apps &amp; Pages</span>
+            <span class="menu-header-text" data-i18n="Manage Agen">Manage Agen</span>
         </li>
         <li class="menu-item">
-            <a href="app-email.html" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-mail"></i>
-                <div data-i18n="Email">Email</div>
+            <a href="" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-user-pentagon"></i>
+                <div data-i18n="Agen">Agen</div>
             </a>
+
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="" class="menu-link">
+                        <div data-i18n="Agen List">Agen List</div>
+                    </a>
+                </li>
+            </ul>
         </li>
-        <li class="menu-item">
-            <a href="app-chat.html" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-messages"></i>
-                <div data-i18n="Chat">Chat</div>
-            </a>
-        </li>
-        <li class="menu-item">
-            <a href="app-calendar.html" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-calendar"></i>
-                <div data-i18n="Calendar">Calendar</div>
-            </a>
-        </li>
-        <li class="menu-item">
-            <a href="app-kanban.html" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-layout-kanban"></i>
-                <div data-i18n="Kanban">Kanban</div>
-            </a>
-        </li>
+        <!-- End Manage Agen-->
 
         <!-- Misc -->
         <li class="menu-header small">
             <span class="menu-header-text" data-i18n="Misc">Misc</span>
         </li>
         <li class="menu-item">
-            <a href="https://pixinvent.ticksy.com/" target="_blank" class="menu-link">
+            <a href="" target="_blank" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-lifebuoy"></i>
                 <div data-i18n="Support">Support</div>
             </a>

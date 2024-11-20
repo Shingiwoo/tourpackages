@@ -275,7 +275,7 @@
             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                 <a class="nav-link dropdown-toggle hide-arrow p-0" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                        <img src="{{ asset('') }}assets/img/avatars/1.png" alt class="rounded-circle" />
+                        <img src="{{ asset('assets/img/avatars/1.png') }}" alt class="rounded-circle" />
                     </div>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
@@ -284,7 +284,7 @@
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0 me-2">
                                     <div class="avatar avatar-online">
-                                        <img src="{{ asset('') }}assets/img/avatars/1.png" alt class="rounded-circle" />
+                                        <img src="{{ asset('assets/img/avatars/1.png') }}" alt class="rounded-circle" />
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
@@ -312,27 +312,14 @@
                             <span class="d-flex align-items-center align-middle">
                                 <i class="flex-shrink-0 ti ti-file-dollar me-3 ti-md"></i><span
                                     class="flex-grow-1 align-middle">Billing</span>
-                                <span
-                                    class="flex-shrink-0 badge bg-danger d-flex align-items-center justify-content-center">4</span>
-                            </span>
                         </a>
                     </li>
                     <li>
                         <div class="dropdown-divider my-1 mx-n2"></div>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="pages-pricing.html">
-                            <i class="ti ti-currency-dollar me-3 ti-md"></i><span class="align-middle">Pricing</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" href="pages-faq.html">
-                            <i class="ti ti-question-mark me-3 ti-md"></i><span class="align-middle">FAQ</span>
-                        </a>
-                    </li>
-                    <li>
                         <div class="d-grid px-2 pt-2 pb-1">
-                            <a class="btn btn-sm btn-danger d-flex" href="auth-login-cover.html" target="_blank">
+                            <a class="btn btn-sm btn-danger d-flex" href="{{ route('admin.logout') }}">
                                 <small class="align-middle">Logout</small>
                                 <i class="ti ti-logout ms-2 ti-14px"></i>
                             </a>
