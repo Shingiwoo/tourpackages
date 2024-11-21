@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
@@ -40,31 +41,37 @@ class AdminController extends Controller
         return view('admin.admin_profile_view', compact('profileData'));
     }
 
-    public function AdminProfileStore(Request $request){
+    public function AdminProfileStore(Request $request)
+    {
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'username' => 'required|string',
+            'email' => 'required|string|email|unique:users,email,' . Auth::id(),
+            'phone' => 'required|string',
+            'address' => 'required|string',
+            'bank' => 'required|string',
+            'norek' => 'required|string',
+            'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // Validation for image upload
+        ]);
 
         $id = Auth::user()->id;
         $data = User::find($id);
-        $data->name = $request->name;
-        $data->email = $request->email;
-        $data->phone = $request->phone;
-        $data->address = $request->address;
 
-        if ($request->file('photo')) {
-            // Hapus file lama jika ada
-            $oldImagePath = public_path('upload/admin_images/' . $data->photo);
-            if (file_exists($oldImagePath)) {
-                unlink($oldImagePath);
-            }
+        $data->update($validatedData); // Update all validated fields
 
-            // Simpan file baru
+        // Handle Photo Upload
+        if ($request->hasFile('photo')) {
             $file = $request->file('photo');
             $filename = date('YmdHi') . '.' . $file->getClientOriginalName();
-            $file->move(public_path('upload/admin_images'), $filename);
 
-            // Update nama file dalam database
+            // Use Laravel's storage facade for disk manipulation
+            $storage = Storage::disk('public');  // Choose appropriate disk based on your configuration
+            $storage->put('profile/' . $filename, file_get_contents($file)); // Store image using put method
+
+            // Update photo field in database with the stored filename
             $data->photo = $filename;
-
-        }$data->save();
+            $data->save();
+        }
 
         $notification = array(
             'message' => 'Admin Profile Update Successfully',
