@@ -60,21 +60,13 @@ class AdminController extends Controller
         $id = Auth::user()->id;
         $data = User::find($id);
 
-         //Log::info('Photo field from database before update: ' . ($data->photo ?? 'NULL'));
-
         // Hapus gambar lama jika ada
         if (!empty($data->photo)) {
             $oldPhotoPath = public_path('storage/profile/' . $data->photo); // Pastikan path sesuai folder penyimpanan
-            // Log::info('Constructed path for old photo: ' . $oldPhotoPath);
 
             if (file_exists($oldPhotoPath)) {
                 unlink($oldPhotoPath); // Hapus file jika ditemukan
-                //Log::info('Deleted old photo: ' . $oldPhotoPath);
-            } else {
-                //Log::warning('Old photo not found at path: ' . $oldPhotoPath);
             }
-        } else {
-            //Log::warning('No valid photo found in database for deletion.');
         }
 
         // Simpan data baru ke database
@@ -91,11 +83,7 @@ class AdminController extends Controller
             // Perbarui nama file di database
             $data->photo = $filename;
             $data->save();
-
-            ///Log::info('New photo saved to database: ' . $filename);
         }
-
-        //Log::info('Photo field from database after update: ' . ($data->photo ?? 'NULL'));
 
         $notification = [
             'message' => 'Admin Profile Update Successfully',
