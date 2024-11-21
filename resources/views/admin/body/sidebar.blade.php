@@ -18,7 +18,7 @@
     <ul class="menu-inner py-1">
         <!-- Dashboards -->
         <li class="menu-item">
-            <a class="menu-link">
+            <a href="{{ route('admin.dashboard') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-layout-dashboard"></i>
                 <div data-i18n="Dashboards">Dashboards</div>
             </a>

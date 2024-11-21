@@ -41,11 +41,11 @@
             <div class="nav-align-top">
                 <ul class="nav nav-pills flex-column flex-sm-row mb-6 gap-2 gap-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" href="{{ route('admin.profile') }}"><i
+                        <a class="nav-link" href="{{ route('admin.profile') }}"><i
                                 class="ti-sm ti ti-user-check me-1_5"></i> Profile</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('admin.change.password') }}"><i class="ti-sm ti ti-lock me-1_5"></i>
+                        <a class="nav-link active" href="{{ route('admin.change.password') }}"><i class="ti-sm ti ti-lock me-1_5"></i>
                             Security</a>
                     </li>
                 </ul>
@@ -116,96 +116,66 @@
             <!--/ Profile Overview -->
         </div>
         <div class="col-xl-8 col-lg-7 col-md-7">
-            <form action="{{ route('admin.profile.store') }}" id="formAccountSettings" method="post"
-                enctype="multipart/form-data">
-                @csrf
-
-                <div class="card mb-6">
-                    <!-- Account -->
-                    <div class="card-body">
-                        <div class="d-flex align-items-start align-items-sm-center gap-6">
-                            <img id="showImage" style="width: 100px; height: 100px"
-                                src="{{ asset('assets/img/avatars/no_image.jpg') }}" alt="user-avatar"
-                                class="d-block w-px-100 h-px-100 rounded" id="uploadedAvatar" />
-                            <div class="button-wrapper">
-                                <label for="upload" class="btn btn-primary me-3 mb-4" tabindex="0">
-                                    <span class="d-none d-sm-block">Upload new photo</span>
-                                    <i class="ti ti-upload d-block d-sm-none"></i>
-                                    <input type="file" id="upload" name="photo" class="account-file-input" hidden
-                                        accept="image/png, image/jpeg, image/gif, image/jpg" />
-                                </label>
-                                <div>Allowed JPG, GIF or PNG. Max size of 800K</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body pt-4">
+            <!-- Change Password -->
+            <div class="card mb-6">
+                <h5 class="card-header">Change Password</h5>
+                <div class="card-body pt-1">
+                    <form action="{{ route('admin.password.update') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
                         <div class="row">
-                            <div class="mb-4 col-md-6">
-                                <label for="name" class="form-label">Full Name</label>
-                                <input class="form-control" type="text" id="name" name="name"
-                                    value="{{ $profileData->name }}" autofocus />
-                            </div>
-                            <div class="mb-4 col-md-6">
-                                <label for="username" class="form-label">Username</label>
-                                <input class="form-control" type="text" name="username" id="username"
-                                    value="{{ $profileData->username }}" />
-                            </div>
-                            <div class="mb-4 col-md-6">
-                                <label for="email" class="form-label">E-mail</label>
-                                <input class="form-control" type="email" id="email" name="email"
-                                    placeholder="john.doe@example.com" value="{{ $profileData->email }}" />
-                            </div>
-                            <div class="mb-4 col-md-6">
-                                <label class="form-label" for="phone">Phone Number</label>
+                            <div class="mb-6 col-md-6 form-password-toggle">
+                                <label class="form-label" for="old_password">Current Password</label>
                                 <div class="input-group input-group-merge">
-                                    <span class="input-group-text">ID (+62)</span>
-                                    <input type="text" id="phone" name="phone" class="form-control"
-                                        placeholder="851 0000 0000" value="{{ $profileData->phone }}" />
-                                </div>
-                            </div>
-                            <div class="mb-4 col-md-6">
-                                <label for="bank" class="form-label">Bank Name</label>
-                                <input type="text" class="form-control" id="bank" name="bank" placeholder="BCA"
-                                    value="{{ $profileData->bank }}" />
-                            </div>
-                            <div class="mb-4 col-md-6">
-                                <label for="norek" class="form-label">No Rekening</label>
-                                <input class="form-control" type="text" id="norek" name="norek" placeholder="1111111111"
-                                    value="{{ $profileData->norek }}" />
-                            </div>
-                            <div class="mb-4 col-md-12">
-                                <div class="input-group input-group-merge">
-                                    <span class="input-group-text">Address</span>
-                                    <textarea class="form-control" id="address" name="address"
-                                        aria-label="With textarea">{{ $profileData->address }}</textarea>
+                                    <input class="form-control" type="password" name="old_password"
+                                        id="old_password"
+                                        placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" />
+                                    <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
                                 </div>
                             </div>
                         </div>
-                        <div class="mt-2">
-                            <button type="submit" class="btn btn-primary me-3">Save changes</button>
-                            <button type="reset" class="btn btn-label-secondary">Cancel</button>
-                        </div>
+                        <div class="row">
+                            <div class="mb-6 col-md-6 form-password-toggle">
+                                <label class="form-label" for="new_password">New Password</label>
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control @error('old_password') is-invalid @enderror" type="password" id="new_password" name="new_password"
+                                        placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" />
+                                    <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
 
-                    </div>
-                    <!-- /Account -->
+                                    @error('old_password')
+                                        <span class="text-danger"> {{ $message }} </span>
+                                    @enderror
+
+                                </div>
+                            </div>
+
+                            <div class="mb-6 col-md-6 form-password-toggle">
+                                <label class="form-label" for="new_password_confirmation">Confirm New Password</label>
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control " type="password" name="new_password_confirmation"
+                                        id="new_password_confirmation"
+                                        placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" />
+                                    <span class="input-group-text cursor-pointer"><i class="ti ti-eye-off"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <h6 class="text-body">Password Requirements:</h6>
+                        <ul class="ps-4 mb-0">
+                            <li class="mb-4">Minimum 8 characters long - the more, the better</li>
+                            <li class="mb-4">At least one lowercase character</li>
+                            <li>At least one number, symbol, or whitespace character</li>
+                        </ul>
+                        <div class="mt-6">
+                            <button type="submit" class="btn btn-primary me-3">Save changes</button>
+                            <button type="reset" class="btn btn-label-secondary">Reset</button>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
+            <!--/ Change Password -->
         </div>
     </div>
     <!--/ User Profile Content -->
 </div>
 
 </div>
-
-<script type="text/javascript">
-    $(document).ready(function(){
-        $('#upload').change(function(e){
-            var reader = new FileReader();
-            reader.onload = function(e){
-                $('#showImage').attr('src',e.target.result);
-            }
-            reader.readAsDataURL(e.target.files['0'])
-        });
-    });
-</script>
 @endsection

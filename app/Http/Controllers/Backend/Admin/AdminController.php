@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Admin;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -11,7 +12,8 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
-    public function AdminDashboard(){
+    public function AdminDashboard()
+    {
         return view('admin.index');
     }
 
@@ -29,11 +31,13 @@ class AdminController extends Controller
         return redirect('/admin/login');
     }
 
-    public function AdminLogin(){
+    public function AdminLogin()
+    {
         return view('admin.admin_login');
     }
 
-    public function AdminProfile(){
+    public function AdminProfile()
+    {
 
         $id = Auth::user()->id;
         $profileData = User::find($id);
@@ -41,8 +45,7 @@ class AdminController extends Controller
         return view('admin.admin_profile_view', compact('profileData'));
     }
 
-    public function AdminProfileStore(Request $request)
-    {
+    public function AdminProfileStore(Request $request) {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string',
@@ -57,31 +60,56 @@ class AdminController extends Controller
         $id = Auth::user()->id;
         $data = User::find($id);
 
-        $data->update($validatedData); // Update all validated fields
+         //Log::info('Photo field from database before update: ' . ($data->photo ?? 'NULL'));
+
+        // Hapus gambar lama jika ada
+        if (!empty($data->photo)) {
+            $oldPhotoPath = public_path('storage/profile/' . $data->photo); // Pastikan path sesuai folder penyimpanan
+            // Log::info('Constructed path for old photo: ' . $oldPhotoPath);
+
+            if (file_exists($oldPhotoPath)) {
+                unlink($oldPhotoPath); // Hapus file jika ditemukan
+                //Log::info('Deleted old photo: ' . $oldPhotoPath);
+            } else {
+                //Log::warning('Old photo not found at path: ' . $oldPhotoPath);
+            }
+        } else {
+            //Log::warning('No valid photo found in database for deletion.');
+        }
+
+        // Simpan data baru ke database
+        $data->update($validatedData); // Update semua field yang divalidasi
 
         // Handle Photo Upload
         if ($request->hasFile('photo')) {
             $file = $request->file('photo');
-            $filename = date('YmdHi') . '.' . $file->getClientOriginalName();
+            $filename = date('YmdHi') . '_' . $file->getClientOriginalName();
 
-            // Use Laravel's storage facade for disk manipulation
-            $storage = Storage::disk('public');  // Choose appropriate disk based on your configuration
-            $storage->put('profile/' . $filename, file_get_contents($file)); // Store image using put method
+            // Simpan file baru ke storage
+            $file->storeAs('profile', $filename, 'public');
 
-            // Update photo field in database with the stored filename
+            // Perbarui nama file di database
             $data->photo = $filename;
             $data->save();
+
+            ///Log::info('New photo saved to database: ' . $filename);
         }
 
-        $notification = array(
+        //Log::info('Photo field from database after update: ' . ($data->photo ?? 'NULL'));
+
+        $notification = [
             'message' => 'Admin Profile Update Successfully',
             'alert-type' => 'success'
-        );
+        ];
 
         return redirect()->back()->with($notification);
     }
 
-    public function AdminChangePassword(){
+
+
+
+    public function AdminChangePassword()
+    {
 
         $id = Auth::user()->id;
         $profileData = User::find($id);
@@ -89,7 +117,8 @@ class AdminController extends Controller
         return view('admin.admin_change_password', compact('profileData'));
     }
 
-    public function AdminPasswordUpdate(Request $request){
+    public function AdminPasswordUpdate(Request $request)
+    {
 
         //Valiadtion
         $request->validate([
@@ -119,5 +148,4 @@ class AdminController extends Controller
 
         return back()->with($notification);
     }
-
 }
