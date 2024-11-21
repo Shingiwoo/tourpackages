@@ -96,8 +96,7 @@ class AdminController extends Controller
 
 
 
-    public function AdminChangePassword()
-    {
+    public function AdminChangePassword(){
 
         $id = Auth::user()->id;
         $profileData = User::find($id);
@@ -105,8 +104,7 @@ class AdminController extends Controller
         return view('admin.admin_change_password', compact('profileData'));
     }
 
-    public function AdminPasswordUpdate(Request $request)
-    {
+    public function AdminPasswordUpdate(Request $request){
 
         //Valiadtion
         $request->validate([
