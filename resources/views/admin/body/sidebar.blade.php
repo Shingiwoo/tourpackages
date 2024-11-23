@@ -44,6 +44,33 @@
         </li>
         <!-- End Manage Agen-->
 
+
+
+        <!-- Tour Packages-->
+        <li class="menu-header small">
+            <span class="menu-header-text" data-i18n="Manage Packages">Manage Packages</span>
+        </li>
+        <li class="menu-item">
+            <a href="" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-packages"></i>
+                <div data-i18n="Packages">Packages</div>
+            </a>
+
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="" class="menu-link">
+                        <div data-i18n="Packages List">Packages List</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="" class="menu-link">
+                        <div data-i18n="Add Packages">Add Packages</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!-- End Tour Packages-->
+
         <!-- Misc -->
         <li class="menu-header small">
             <span class="menu-header-text" data-i18n="Misc">Misc</span>
