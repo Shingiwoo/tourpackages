@@ -67,6 +67,11 @@
                         <div data-i18n="Add Destination">Add Destination</div>
                     </a>
                 </li>
+                <li class="menu-item">
+                    <a href="{{ route('import.destinations') }}" class="menu-link">
+                        <div data-i18n="Import Destinations">Import Destinations</div>
+                    </a>
+                </li>
             </ul>
         </li>
         <!-- End Destinations-->

@@ -81,10 +81,8 @@
                     <div class="dt-action-buttons text-end pt-6 pt-md-0">
                         <div class="dt-buttons btn-group flex-wrap">
                             <div class="btn-group">
-                                <a href=""
-                                    class="btn btn-secondary buttons-collection btn-label-primary me-4 waves-effect waves-light border-none"
-                                    tabindex="0" aria-controls="DataTables_Table_0" type="file" aria-haspopup="dialog"
-                                    aria-expanded="false"><span><i class="ti ti-file-import ti-xs me-sm-1"></i>
+                                <a href="{{ route('import.destinations') }}"
+                                    class="btn btn-secondary buttons-collection btn-label-primary me-4 waves-effect waves-light border-none"><span><i class="ti ti-file-import ti-xs me-sm-1"></i>
                                         <span class="d-none d-sm-inline-block">Import</span></span></a>
                             </div>
                             <a href="{{ route('add.destination') }}"

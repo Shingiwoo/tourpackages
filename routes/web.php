@@ -48,6 +48,9 @@ Route::middleware(['auth', 'roles:admin'])->group(function(){
         Route::get('/edit/destination/{id}', 'EditDestination')->name('edit.destination');
         Route::post('/destination/update', 'UpdateDestination')->name('destination.update');
         Route::delete('/delete/destination/{id}', 'DeleteDestination')->name('delete.destination');
+        Route::get('/import/destinations', 'PageImportDestinations')->name('import.destinations');
+        Route::post('/destination/import', 'ImportDestination')->name('destinations.import');
+
     });
 
 });

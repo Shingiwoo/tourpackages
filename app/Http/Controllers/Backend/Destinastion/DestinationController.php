@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Backend\Destinastion;
 
-use App\Http\Controllers\Controller;
-use App\Models\Destination;
 use App\Models\Regency;
+use App\Models\Destination;
 use Illuminate\Http\Request;
+use App\Imports\DestinationsImport;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Validator;
 
 class DestinationController extends Controller
 {
@@ -143,5 +147,123 @@ class DestinationController extends Controller
         // Redirect kembali ke halaman sebelumnya dengan notifikasi
         return redirect()->back()->with($notification);
     }
+
+
+
+    public function PageImportDestinations(){
+
+        return view('admin.destination.import_destinations');
+    }
+
+
+
+    // public function ImportDestination(Request $request){
+    //     try {
+    //         Log::info('Starting import process for file: ' . $request->file('file')->getClientOriginalName());
+
+    //         // Validasi file sebelum diproses
+    //         $validator = Validator::make($request->all(), [
+    //             'file' => 'required|file|mimes:csv,txt',
+    //         ]);
+
+    //         if ($validator->fails()) {
+    //             Log::warning('File validation failed: ' . json_encode($validator->errors()));
+    //             return redirect()->back()->with([
+    //                 'message' => 'Invalid file format. Only CSV or XLSX is allowed.',
+    //                 'alert-type' => 'error',
+    //             ]);
+    //         }
+
+    //         // Proses file menggunakan Laravel Excel
+    //         Excel::import(new DestinationsImport, $request->file('file'));
+    //         Log::info('File imported successfully: ' . $request->file('file')->getClientOriginalName());
+
+    //         // Jika berhasil
+    //         return redirect()->back()->with([
+    //             'message' => 'Data imported successfully.',
+    //             'alert-type' => 'success',
+    //         ]);
+
+    //     } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+    //         Log::error('Validation errors encountered: ' . json_encode($e->failures()));
+    //         $failures = $e->failures();
+    //         $errorMessages = '';
+    //         foreach ($failures as $failure) {
+    //             $errorMessages .= "Row {$failure->row()}: " . implode(', ', $failure->errors()) . "\n";
+    //         }
+
+    //         return redirect()->back()->with([
+    //             'message' => "Import failed:\n$errorMessages",
+    //             'alert-type' => 'error',
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         Log::error('Unexpected error during import: ' . $e->getMessage());
+    //         return redirect()->back()->with([
+    //             'message' => 'An error occurred during import: ' . $e->getMessage(),
+    //             'alert-type' => 'error',
+    //         ]);
+    //     }
+    // }
+
+    public function ImportDestination(Request $request){
+        try {
+            if (!$request->hasFile('file')) {
+                return redirect()->back()->with([
+                    'message' => 'No file uploaded. Please upload a valid CSV or Excel file.',
+                    'alert-type' => 'error',
+                ]);
+            }
+
+            $file = $request->file('file');
+
+            Log::info('File uploaded successfully: ' . $file->getClientOriginalName());
+
+            // Validasi tipe file
+            $validator = Validator::make($request->all(), [
+                'file' => 'required|file|mimes:csv,xlsx',
+            ]);
+
+            if ($validator->fails()) {
+                Log::warning('File validation failed.');
+                return redirect()->back()->with([
+                    'message' => 'Invalid file format. Only CSV or Excel files are allowed.',
+                    'alert-type' => 'error',
+                ]);
+            }
+
+            Log::info('File validation passed. Starting Excel import.');
+
+            // Proses file
+            Excel::import(new DestinationsImport, $file);
+
+            Log::info('Excel import process completed.');
+
+            return redirect()->back()->with([
+                'message' => 'Data imported successfully.',
+                'alert-type' => 'success',
+            ]);
+
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            Log::error('Validation errors in Excel file: ' . json_encode($e->failures()));
+            $failures = $e->failures();
+            $errorMessages = '';
+            foreach ($failures as $failure) {
+                $errorMessages .= "Row {$failure->row()}: " . implode(', ', $failure->errors()) . "\n";
+            }
+
+            return redirect()->back()->with([
+                'message' => "Import failed:\n$errorMessages",
+                'alert-type' => 'error',
+            ]);
+        } catch (\Exception $e) {
+            Log::error('An unexpected error occurred: ' . $e->getMessage());
+            return redirect()->back()->with([
+                'message' => 'An error occurred during import: ' . $e->getMessage(),
+                'alert-type' => 'error',
+            ]);
+        }
+    }
+
+
 
 }
