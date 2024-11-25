@@ -46,30 +46,30 @@
 
 
 
-        <!-- Tour Packages-->
+        <!-- Destinations -->
         <li class="menu-header small">
-            <span class="menu-header-text" data-i18n="Manage Packages">Manage Packages</span>
+            <span class="menu-header-text" data-i18n="Manage Destinations">Manage Destinations</span>
         </li>
         <li class="menu-item">
             <a href="" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-packages"></i>
-                <div data-i18n="Packages">Packages</div>
+                <div data-i18n="Destinations">Destinations</div>
             </a>
 
             <ul class="menu-sub">
                 <li class="menu-item">
-                    <a href="" class="menu-link">
-                        <div data-i18n="Packages List">Packages List</div>
+                    <a href="{{ route('all.destinations') }}" class="menu-link">
+                        <div data-i18n="Destinations List">Destinations List</div>
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="" class="menu-link">
-                        <div data-i18n="Add Packages">Add Packages</div>
+                    <a href="{{ route('add.destination') }}" class="menu-link">
+                        <div data-i18n="Add Destination">Add Destination</div>
                     </a>
                 </li>
             </ul>
         </li>
-        <!-- End Tour Packages-->
+        <!-- End Destinations-->
 
         <!-- Misc -->
         <li class="menu-header small">

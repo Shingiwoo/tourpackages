@@ -19,6 +19,8 @@ class Destination extends Model
         'parking_city_car',
         'parking_mini_bus',
         'parking_bus',
+        'ket',
+        'status',
     ];
 
     /**

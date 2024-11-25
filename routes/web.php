@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Backend\Admin\AdminController;
+use App\Http\Controllers\Backend\Destinastion\DestinationController;
 
 Route::get('/', function () {
     return view('frontend/index');
@@ -31,5 +32,22 @@ Route::middleware(['auth','roles:admin'])->group(function () {
 
     Route::get('/admin/change/password', [AdminController::class, 'AdminChangePassword'])->name('admin.change.password');
     Route::post('/admin/password/update', [AdminController::class, 'AdminPasswordUpdate'])->name('admin.password.update');
+
+});
+
+
+// Admin Group Middlware
+Route::middleware(['auth', 'roles:admin'])->group(function(){
+
+    // Team all Route
+    Route::controller(DestinationController::class)->group(function(){
+
+        Route::get('/all/destinations', 'AllDestinations')->name('all.destinations');
+        Route::get('/add/destination', 'AddDestination')->name('add.destination');
+        Route::post('/destination/store', 'StoreDestination')->name('destination.store');
+        Route::get('/edit/destination/{id}', 'EditDestination')->name('edit.destination');
+        // Route::post('/team/update', 'UpdateTeam')->name('team.update');
+        // Route::get('/delete/team/{id}', 'DeleteTeam')->name('delete.team');
+    });
 
 });

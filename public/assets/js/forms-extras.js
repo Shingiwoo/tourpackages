@@ -11,6 +11,10 @@
     dateMask = document.querySelector('.date-mask'),
     timeMask = document.querySelector('.time-mask'),
     numeralMask = document.querySelector('.numeral-mask'),
+    numeralMask2 = document.querySelector('.numeral-mask2'),
+    numeralMask3 = document.querySelector('.numeral-mask3'),
+    numeralMask4 = document.querySelector('.numeral-mask4'),
+    numeralMask5 = document.querySelector('.numeral-mask5'),
     blockMask = document.querySelector('.block-mask'),
     delimiterMask = document.querySelector('.delimiter-mask'),
     customDelimiter = document.querySelector('.custom-delimiter-mask'),
@@ -72,6 +76,40 @@
       numeralThousandsGroupStyle: 'thousand'
     });
   }
+
+  //Numeral2
+  if (numeralMask2) {
+    new Cleave(numeralMask2, {
+      numeral: true,
+      numeralThousandsGroupStyle: 'thousand'
+    });
+  }
+
+  //Numeral3
+  if (numeralMask3) {
+    new Cleave(numeralMask3, {
+      numeral: true,
+      numeralThousandsGroupStyle: 'thousand'
+    });
+  }
+
+  //Numeral4
+  if (numeralMask4) {
+    new Cleave(numeralMask4, {
+      numeral: true,
+      numeralThousandsGroupStyle: 'thousand'
+    });
+  }
+
+  //Numeral5
+  if (numeralMask5) {
+    new Cleave(numeralMask5, {
+      numeral: true,
+      numeralThousandsGroupStyle: 'thousand'
+    });
+  }
+
+
 
   //Block
   if (blockMask) {
