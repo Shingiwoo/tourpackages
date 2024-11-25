@@ -138,7 +138,8 @@
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             <li><a class="dropdown-item text-warning" href="{{ route('edit.destination', $dts->id) }}"><i class="ti ti-edit"></i> Edit</a></li>
-                                            <li><a class="dropdown-item text-danger" href="javascript:void(0);"><i class="ti ti-trash"></i> Delete</a></li>
+                                            <li><a href="javascript:void(0)" class="dropdown-item text-danger delete-confirm" data-id="{{ $dts->id }}" data-url="{{ route('delete.destination', $dts->id) }}"> <i class="ti ti-trash"></i> Delete
+                                             </a></li>
                                         </ul>
                                     </div>
                                 </div>

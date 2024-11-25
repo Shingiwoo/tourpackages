@@ -10,6 +10,7 @@
 
     <title>Tour Packages - Dashboard</title>
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="" />
 
     <!-- Favicon -->
@@ -41,6 +42,7 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/typeahead-js/typeahead.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/toastr/toastr.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/animate-css/animate.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }} "/>
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
@@ -119,6 +121,7 @@
     <script src="{{ asset('assets/vendor/libs/moment/moment.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/cleavejs/cleave.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
 
 
@@ -128,6 +131,7 @@
     <!-- Page JS -->
     <script src="{{ asset('assets/js/app-academy-dashboard.js') }}"></script>
     <script src="{{ asset('assets/js/forms-extras.js') }}"> </script>
+    <script src="{{ asset('assets/js/extended-ui-sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/js/forms-selects.js') }}"></script>
     <script>
         $(document).ready(function() {

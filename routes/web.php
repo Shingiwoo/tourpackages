@@ -47,7 +47,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function(){
         Route::post('/destination/store', 'StoreDestination')->name('destination.store');
         Route::get('/edit/destination/{id}', 'EditDestination')->name('edit.destination');
         Route::post('/destination/update', 'UpdateDestination')->name('destination.update');
-        // Route::get('/delete/team/{id}', 'DeleteTeam')->name('delete.team');
+        Route::delete('/delete/destination/{id}', 'DeleteDestination')->name('delete.destination');
     });
 
 });

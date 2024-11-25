@@ -124,4 +124,24 @@ class DestinationController extends Controller
         // Redirect ke halaman destinasi dengan notifikasi
         return redirect()->route('all.destinations')->with($notification);
     }
+
+
+    public function DeleteDestination($id)
+    {
+        // Temukan data destination berdasarkan ID
+        $destination = Destination::findOrFail($id);
+
+        // Hapus data
+        $destination->delete();
+
+        // Notifikasi keberhasilan menggunakan Toastr
+        $notification = [
+            'message' => 'Data has been successfully deleted',
+            'alert-type' => 'success'
+        ];
+
+        // Redirect kembali ke halaman sebelumnya dengan notifikasi
+        return redirect()->back()->with($notification);
+    }
+
 }
