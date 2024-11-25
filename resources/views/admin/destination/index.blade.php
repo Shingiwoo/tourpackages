@@ -12,7 +12,7 @@
                             class="d-flex justify-content-between align-items-start card-widget-1 border-end pb-4 pb-sm-0">
                             <div>
                                 <p class="mb-1"><b>Total Destination</b></p>
-                                <h4 class="mb-1">0</h4>
+                                <h4 class="mb-1">{{ $active }}</h4>
                                 <p class="mb-0 text-success">Active</p>
                             </div>
                             <span class="avatar me-sm-6">
@@ -27,7 +27,7 @@
                             class="d-flex justify-content-between align-items-start card-widget-2 border-end pb-4 pb-sm-0">
                             <div>
                                 <p class="mb-1"><b>Total Destination</b></p>
-                                <h4 class="mb-1">0</h4>
+                                <h4 class="mb-1">{{ $inactive }}</h4>
                                 <p class="mb-0 text-warning">Inactive</p>
                             </div>
                             <span class="avatar p-2 me-lg-6">
@@ -42,7 +42,7 @@
                             class="d-flex justify-content-between align-items-start border-end pb-4 pb-sm-0 card-widget-3">
                             <div>
                                 <p class="mb-1"><b>Destination Type</b></p>
-                                <h4 class="mb-1">0</h4>
+                                <h4 class="mb-1">{{ $person }}</h4>
                                 <p class="mb-0 text-info">Per Person</p>
                             </div>
                             <span class="avatar p-2 me-sm-6">
@@ -55,7 +55,7 @@
                         <div class="d-flex justify-content-between align-items-start">
                             <div>
                                 <p class="mb-1"><b>Destination Type</b></p>
-                                <h4 class="mb-1">0</h4>
+                                <h4 class="mb-1">{{ $flat }}</h4>
                                 <p class="mb-0 text-primary">Flat</p>
                             </div>
                             <span class="avatar p-2">

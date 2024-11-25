@@ -52,7 +52,7 @@
         </li>
         <li class="menu-item">
             <a href="" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons ti ti-packages"></i>
+                <i class="menu-icon tf-icons ti ti-building-pavilion"></i>
                 <div data-i18n="Destinations">Destinations</div>
             </a>
 

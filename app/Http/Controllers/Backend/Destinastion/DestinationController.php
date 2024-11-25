@@ -17,7 +17,11 @@ class DestinationController extends Controller
     {
 
         $destins = Destination::latest()->get();
-        return view('admin.destination.index', compact('destins'));
+        $active = Destination::where('status', 1)->count();
+        $inactive = Destination::where('status', 0)->count();
+        $person = Destination::where('price_type', 'per_person')->count();
+        $flat = Destination::where('price_type', 'flat')->count();
+        return view('admin.destination.index', compact('destins', 'active', 'inactive', 'person', 'flat'));
     }
 
     public function AddDestination()
