@@ -16,7 +16,7 @@
                     <p class="mb-0">Place name, to create a tour package</p>
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-4">
-                    <button type="submit" class="btn btn-primary">Publish Destination</button>
+                    <button type="submit" class="btn btn-primary">Publish</button>
                 </div>
             </div>
 

@@ -123,7 +123,7 @@
                                 @if($dts->status)
                                     <i class="ti ti-rosette-discount-check text-success"></i>
                                 @else
-                                    <i class="ti ti-rosette-discount-check-off text-warning"></i>
+                                    <i class="ti ti-playstation-x text-danger"></i>
                                 @endif
                             </td>
                             <td class="align-content-center text-center">{{ $dts->ket}}</td>

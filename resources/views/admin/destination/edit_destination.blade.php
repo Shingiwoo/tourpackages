@@ -5,7 +5,7 @@
 <!-- Content -->
 
 <div class="container-xxl flex-grow-1 container-p-y">
-    <form action="{{ route('destination.store') }}" method="POST">
+    <form action="{{ route('destination.update') }}" method="POST">
         @csrf
 
         <input type="hidden" name="id"  value="{{ $dest->id }}"/>
@@ -15,11 +15,11 @@
             <div
                 class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
                 <div class="d-flex flex-column justify-content-center">
-                    <h4 class="mb-1">Add a new Destination</h4>
+                    <h4 class="mb-1">Update Destination</h4>
                     <p class="mb-0">Place name, to create a tour package</p>
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-4">
-                    <button type="submit" class="btn btn-primary">Publish Destination</button>
+                    <button type="submit" class="btn btn-info">Update</button>
                 </div>
             </div>
 
