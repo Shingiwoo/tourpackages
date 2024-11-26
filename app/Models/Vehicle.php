@@ -9,7 +9,7 @@ class Vehicle extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'capacity', 'price', 'regency_id'];
+    protected $fillable = ['name', 'type', 'capacity_min', 'capacity_max','price', 'regency_id', 'status'];
 
     /**
      * Relasi dengan regency (kabupaten/kota)

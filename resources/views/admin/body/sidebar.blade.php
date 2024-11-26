@@ -1,6 +1,6 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand demo">
-        <a href="index.html" class="app-brand-link">
+        <a href="#" class="app-brand-link">
             <span class="app-brand-logo demo">
 
             </span>
@@ -75,6 +75,37 @@
             </ul>
         </li>
         <!-- End Destinations-->
+
+        <!-- Vehicle -->
+        <li class="menu-header small">
+            <span class="menu-header-text" data-i18n="Manage Vehicles">Manage Vehicles</span>
+        </li>
+        <li class="menu-item">
+            <a href="" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-car-garage"></i>
+                <div data-i18n="Vehicles">Vehicles</div>
+            </a>
+
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="{{ route('all.vehicles') }}" class="menu-link">
+                        <div data-i18n="Vehicles List">Vehicles List</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('add.destination') }}" class="menu-link">
+                        <div data-i18n="Add Vehicle">Add Vehicle</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('import.destinations') }}" class="menu-link">
+                        <div data-i18n="Import Vehicle">Import Vehicle</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <!-- End Vehicle-->
+
 
         <!-- Misc -->
         <li class="menu-header small">
