@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Backend\Crew\CrewController;
 use App\Http\Controllers\Backend\Admin\AdminController;
+use App\Http\Controllers\Backend\AgenFee\AgenFeeController;
 use App\Http\Controllers\Backend\Vehicle\VehicleController;
 use App\Http\Controllers\Backend\ServiceFee\ServiceFeeController;
 use App\Http\Controllers\Backend\Destinastion\DestinationController;
@@ -83,5 +84,12 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::post('/add/crew', 'StoreCrew')->name('crew.store');
         Route::put('/update/crew/{id}', 'UpdateCrew')->name('update.crew');
         Route::delete('/delete/crew/{id}', 'DeleteCrew')->name('delete.crew');
+    });
+
+    // Crew All Route
+    Route::controller(AgenFeeController::class)->group(function () {
+
+        Route::get('/all/agen-fee', 'AllAgenFee')->name('all.agen.fee');
+        Route::post('/update/agen-fee', 'UpdateAgenFee')->name('update.agen.fee');
     });
 });
