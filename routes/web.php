@@ -2,10 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Backend\Crew\CrewController;
 use App\Http\Controllers\Backend\Admin\AdminController;
 use App\Http\Controllers\Backend\Vehicle\VehicleController;
-use App\Http\Controllers\Backend\Destinastion\DestinationController;
 use App\Http\Controllers\Backend\ServiceFee\ServiceFeeController;
+use App\Http\Controllers\Backend\Destinastion\DestinationController;
 
 Route::get('/', function () {
     return view('frontend/index');
@@ -73,5 +74,14 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::post('/add/service', 'StoreServiceFee')->name('servicefee.store');
         Route::put('/update/service-fee/{id}', 'UpdateServiceFee')->name('update.service.fee');
         Route::delete('/delete/service-fee/{id}', 'DeleteServiceFee')->name('delete.service.fee');
+    });
+
+    // Crew All Route
+    Route::controller(CrewController::class)->group(function () {
+
+        Route::get('/all/crew', 'AllCrew')->name('all.crew');
+        Route::post('/add/crew', 'StoreCrew')->name('crew.store');
+        Route::put('/update/crew/{id}', 'UpdateCrew')->name('update.crew');
+        Route::delete('/delete/crew/{id}', 'DeleteCrew')->name('delete.crew');
     });
 });

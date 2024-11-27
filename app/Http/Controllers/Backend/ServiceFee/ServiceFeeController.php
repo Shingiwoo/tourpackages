@@ -69,8 +69,8 @@ class ServiceFeeController extends Controller
 
     public function DeleteServiceFee($id){
         try {
-            $destination = ServiceFee::findOrFail($id);
-            $destination->delete();
+            $service = ServiceFee::findOrFail($id);
+            $service->delete();
 
             return response()->json([
                 'success' => true,
