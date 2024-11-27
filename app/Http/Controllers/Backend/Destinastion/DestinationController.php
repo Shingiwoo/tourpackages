@@ -46,6 +46,13 @@ class DestinationController extends Controller
             'maxUser' => 'nullable|integer|min:1',
         ]);
 
+        $validatedData['priceWni'] = str_replace(',', '', $validatedData['priceWni']);
+        $validatedData['priceWna'] = str_replace(',', '', $validatedData['priceWna']);
+
+        $validatedData['carParkingFees'] = str_replace(',', '', $validatedData['carParkingFees']);
+        $validatedData['minibusParkingFees'] = str_replace(',', '', $validatedData['minibusParkingFees']);
+        $validatedData['busParkingFees'] = str_replace(',', '', $validatedData['busParkingFees']);
+
         // Mapping nama input form ke nama kolom database
         $destinationData = [
             'regency_id' => $validatedData['cityOrDistrict_id'],
@@ -105,6 +112,14 @@ class DestinationController extends Controller
             'maxUser' => 'nullable|integer|min:1',
         ]);
 
+
+
+        $validatedData['priceWni'] = str_replace(',', '', $validatedData['priceWni']);
+        $validatedData['priceWna'] = str_replace(',', '', $validatedData['priceWna']);
+        $validatedData['carParkingFees'] = str_replace(',', '', $validatedData['carParkingFees']);
+        $validatedData['minibusParkingFees'] = str_replace(',', '', $validatedData['minibusParkingFees']);
+        $validatedData['busParkingFees'] = str_replace(',', '', $validatedData['busParkingFees']);
+
         // Mapping nama input form ke nama kolom database
         $destinationData = [
             'regency_id' => $validatedData['cityOrDistrict_id'],
@@ -134,22 +149,21 @@ class DestinationController extends Controller
     }
 
 
-    public function DeleteDestination($id)
-    {
-        // Temukan data destination berdasarkan ID
-        $destination = Destination::findOrFail($id);
+    public function DeleteDestination($id){
+        try {
+            $destination = Destination::findOrFail($id);
+            $destination->delete();
 
-        // Hapus data
-        $destination->delete();
-
-        // Notifikasi keberhasilan menggunakan Toastr
-        $notification = [
-            'message' => 'Data has been successfully deleted',
-            'alert-type' => 'success'
-        ];
-
-        // Redirect kembali ke halaman sebelumnya dengan notifikasi
-        return redirect()->back()->with($notification);
+            return response()->json([
+                'success' => true,
+                'message' => 'Data has been successfully deleted',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete data',
+            ], 500);
+        }
     }
 
 
@@ -158,56 +172,6 @@ class DestinationController extends Controller
 
         return view('admin.destination.import_destinations');
     }
-
-
-
-    // public function ImportDestination(Request $request){
-    //     try {
-    //         Log::info('Starting import process for file: ' . $request->file('file')->getClientOriginalName());
-
-    //         // Validasi file sebelum diproses
-    //         $validator = Validator::make($request->all(), [
-    //             'file' => 'required|file|mimes:csv,txt',
-    //         ]);
-
-    //         if ($validator->fails()) {
-    //             Log::warning('File validation failed: ' . json_encode($validator->errors()));
-    //             return redirect()->back()->with([
-    //                 'message' => 'Invalid file format. Only CSV or XLSX is allowed.',
-    //                 'alert-type' => 'error',
-    //             ]);
-    //         }
-
-    //         // Proses file menggunakan Laravel Excel
-    //         Excel::import(new DestinationsImport, $request->file('file'));
-    //         Log::info('File imported successfully: ' . $request->file('file')->getClientOriginalName());
-
-    //         // Jika berhasil
-    //         return redirect()->back()->with([
-    //             'message' => 'Data imported successfully.',
-    //             'alert-type' => 'success',
-    //         ]);
-
-    //     } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-    //         Log::error('Validation errors encountered: ' . json_encode($e->failures()));
-    //         $failures = $e->failures();
-    //         $errorMessages = '';
-    //         foreach ($failures as $failure) {
-    //             $errorMessages .= "Row {$failure->row()}: " . implode(', ', $failure->errors()) . "\n";
-    //         }
-
-    //         return redirect()->back()->with([
-    //             'message' => "Import failed:\n$errorMessages",
-    //             'alert-type' => 'error',
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         Log::error('Unexpected error during import: ' . $e->getMessage());
-    //         return redirect()->back()->with([
-    //             'message' => 'An error occurred during import: ' . $e->getMessage(),
-    //             'alert-type' => 'error',
-    //         ]);
-    //     }
-    // }
 
     public function ImportDestination(Request $request){
         try {

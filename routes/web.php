@@ -52,16 +52,16 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::post('/destination/import', 'ImportDestination')->name('destinations.import');
     });
 
-    // Destinations all Route
+    // Vehicles all Route
     Route::controller(VehicleController::class)->group(function () {
 
         Route::get('/all/vehicles', 'AllVehicles')->name('all.vehicles');
-        // Route::get('/add/destination', 'AddDestination')->name('add.destination');
-        // Route::post('/destination/store', 'StoreDestination')->name('destination.store');
-        // Route::get('/edit/destination/{id}', 'EditDestination')->name('edit.destination');
-        // Route::post('/destination/update', 'UpdateDestination')->name('destination.update');
-        // Route::delete('/delete/destination/{id}', 'DeleteDestination')->name('delete.destination');
-        // Route::get('/import/destinations', 'PageImportDestinations')->name('import.destinations');
-        // Route::post('/destination/import', 'ImportDestination')->name('destinations.import');
+        Route::get('/add/vehicle', 'AddVehicle')->name('add.vehicle');
+        Route::post('/vehicle/store', 'StoreVehicle')->name('vehicle.store');
+        Route::get('/edit/vehicle/{id}', 'EditVehicle')->name('edit.vehicle');
+        Route::post('/vehicle/update', 'UpdateVehicle')->name('vehicle.update');
+        Route::delete('/delete/vehicle/{id}', 'DeleteVehicle')->name('delete.vehicle');
+        Route::get('/import/vehicles', 'PageImportVehicles')->name('import.vehicles');
+        Route::post('/vehicle/import', 'ImportVehicles')->name('vehicles.import');
     });
 });

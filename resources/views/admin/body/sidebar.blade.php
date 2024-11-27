@@ -93,13 +93,8 @@
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="{{ route('add.destination') }}" class="menu-link">
+                    <a href="{{ route('add.vehicle') }}" class="menu-link">
                         <div data-i18n="Add Vehicle">Add Vehicle</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="{{ route('import.destinations') }}" class="menu-link">
-                        <div data-i18n="Import Vehicle">Import Vehicle</div>
                     </a>
                 </li>
             </ul>

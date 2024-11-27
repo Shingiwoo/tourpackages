@@ -24,7 +24,7 @@ class Regency extends Model
      */
     public function destinations()
     {
-        return $this->hasMany(Destination::class);
+        return $this->hasMany(Destination::class, 'regency_id', 'id');
     }
 
     /**
@@ -38,7 +38,7 @@ class Regency extends Model
 
     public function vehicles()
     {
-        return $this->hasMany(Vehicle::class);
+        return $this->hasMany(Vehicle::class, 'regency_id', 'id');
     }
 
 

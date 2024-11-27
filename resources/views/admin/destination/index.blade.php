@@ -113,8 +113,8 @@
                         <tr>
                             <td class="align-content-center text-center">{{ $key+1 }}</td>
                             <td class="align-content-center text-center">{{ $dts->name }}</td>
-                            <td class="align-content-center text-center">Rp {{ $dts->price_wni }}</td>
-                            <td class="align-content-center text-center">Rp {{ $dts->price_wna }}</td>
+                            <td class="align-content-center text-center">Rp {{ number_format($dts->price_wni, 0, ',', '.') }}</td>
+                            <td class="align-content-center text-center">Rp {{ number_format($dts->price_wna, 0, ',', '.') }}</td>
                             <td class="align-content-center text-center">{{ $dts->price_type }}</td>
                             <td class="align-content-center text-center">{{ $dts->max_participants }} Person</td>
                             <td class="align-content-center text-center">

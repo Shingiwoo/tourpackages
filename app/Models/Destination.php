@@ -28,7 +28,7 @@ class Destination extends Model
      */
     public function regency()
     {
-        return $this->belongsTo(Regency::class);
+        return $this->belongsTo(Regency::class, 'regency_id', 'id');
     }
 
     public function packages()

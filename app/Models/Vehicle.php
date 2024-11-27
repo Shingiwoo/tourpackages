@@ -9,14 +9,14 @@ class Vehicle extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'type', 'capacity_min', 'capacity_max','price', 'regency_id', 'status'];
+    protected $fillable = ['regency_id', 'name', 'type', 'capacity_min', 'capacity_max','price', 'status'];
 
     /**
      * Relasi dengan regency (kabupaten/kota)
      */
     public function regency()
     {
-        return $this->belongsTo(Regency::class);
+        return $this->belongsTo(Regency::class, 'regency_id', 'id');
     }
 }
 
