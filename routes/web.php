@@ -8,6 +8,7 @@ use App\Http\Controllers\Backend\AgenFee\AgenFeeController;
 use App\Http\Controllers\Backend\Vehicle\VehicleController;
 use App\Http\Controllers\Backend\ServiceFee\ServiceFeeController;
 use App\Http\Controllers\Backend\Destinastion\DestinationController;
+use App\Http\Controllers\Backend\Facility\FacilityController;
 
 Route::get('/', function () {
     return view('frontend/index');
@@ -91,5 +92,15 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
 
         Route::get('/all/agen-fee', 'AllAgenFee')->name('all.agen.fee');
         Route::post('/update/agen-fee', 'UpdateAgenFee')->name('update.agen.fee');
+    });
+
+    // Facility all Route
+    Route::controller(FacilityController::class)->group(function () {
+
+        Route::get('/all/facility', 'AllFacility')->name('all.facility');
+        Route::post('/add/facility', 'StoreFacility')->name('facility.store');
+        Route::put('/update/facility/{id}', 'UpdateFacility')->name('update.facility');
+        Route::delete('/delete/facility/{id}', 'DeleteFacility')->name('delete.facility');
+
     });
 });

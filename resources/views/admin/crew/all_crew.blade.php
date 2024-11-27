@@ -30,7 +30,7 @@
                         </a>
                     </li>
                     <li class="nav-item mb-1">
-                        <a class="nav-link" href="app-ecommerce-settings-shipping.html">
+                        <a class="nav-link" href="{{ route('all.facility') }}">
                             <i class="ti ti-home-infinity ti-sm me-1_5"></i>
                             <span class="align-middle">Facility</span>
                         </a>
