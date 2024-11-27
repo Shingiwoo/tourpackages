@@ -104,12 +104,12 @@
 
         <!-- Misc -->
         <li class="menu-header small">
-            <span class="menu-header-text" data-i18n="Misc">Misc</span>
+            <span class="menu-header-text" data-i18n="Other Service">Other Service</span>
         </li>
         <li class="menu-item">
-            <a href="" target="_blank" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-lifebuoy"></i>
-                <div data-i18n="Support">Support</div>
+            <a href="{{ route('all.service') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-device-ipad-cog"></i>
+                <div data-i18n="Service">Service</div>
             </a>
         </li>
     </ul>

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('service_fees', function (Blueprint $table) {
             $table->id();
             $table->string('duration');
-            $table->integer('mark');
+            $table->string('mark', 4);
             $table->timestamps();
         });
     }

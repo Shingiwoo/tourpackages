@@ -133,6 +133,7 @@
     <script src="{{ asset('assets/js/forms-extras.js') }}"> </script>
     <script src="{{ asset('assets/js/extended-ui-sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/js/forms-selects.js') }}"></script>
+    <script src="{{ asset('assets/js/modal-service-fee.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('#example').DataTable();

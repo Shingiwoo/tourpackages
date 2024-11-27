@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Backend\Admin\AdminController;
 use App\Http\Controllers\Backend\Vehicle\VehicleController;
 use App\Http\Controllers\Backend\Destinastion\DestinationController;
+use App\Http\Controllers\Backend\OtherService\OtherServiceController;
 
 Route::get('/', function () {
     return view('frontend/index');
@@ -63,5 +64,14 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::delete('/delete/vehicle/{id}', 'DeleteVehicle')->name('delete.vehicle');
         // Route::get('/import/vehicles', 'PageImportVehicles')->name('import.vehicles');
         // Route::post('/vehicle/import', 'ImportVehicles')->name('vehicles.import');
+    });
+
+    // Service all Route
+    Route::controller(OtherServiceController::class)->group(function () {
+
+        Route::get('/all/service', 'AllService')->name('all.service');
+        Route::post('/add/service', 'StoreServiceFee')->name('servicefee.store');
+        Route::put('/update/service-fee/{id}', 'UpdateServiceFee')->name('update.service.fee');
+        Route::delete('/delete/service-fee/{id}', 'DeleteServiceFee')->name('delete.service.fee');
     });
 });
