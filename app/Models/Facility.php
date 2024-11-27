@@ -5,18 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Meal extends Model
+class Facility extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['price','type', 'duration', 'num_meals', 'regency_id'];
+    protected $fillable = ['name', 'regency_id', 'price'];
 
     /**
      * Relasi dengan regencies (kabupaten/kota)
      */
     public function regency()
     {
-        return $this->belongsTo(Regency::class);
+        return $this->belongsTo(Regency::class, 'regency_id', 'id');
     }
-
 }

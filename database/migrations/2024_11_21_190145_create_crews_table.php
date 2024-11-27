@@ -11,8 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('package_destinations', function (Blueprint $table) {
+        Schema::create('crews', function (Blueprint $table) {
             $table->id();
+            $table->integer('min_participants');
+            $table->integer('max_participants');
+            $table->integer('num_crew');
             $table->timestamps();
         });
     }
@@ -22,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('package_destinations');
+        Schema::dropIfExists('crews');
     }
 };

@@ -46,5 +46,16 @@ class Regency extends Model
     {
         return $this->hasMany(Hotel::class);
     }
+
+
+    public function fasilities()
+    {
+        return $this->hasMany(Facility::class, 'regency_id', 'id');
+    }
+
+    public function meals()
+    {
+        return $this->hasMany(Meal::class, 'regency_id', 'id');
+    }
 }
 

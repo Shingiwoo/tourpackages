@@ -9,7 +9,7 @@ class Package extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'regency_id'];
+    protected $fillable = ['name', 'regency_id', 'duration', 'base_price'];
 
     /**
      * Relasi dengan regency (kabupaten/kota)

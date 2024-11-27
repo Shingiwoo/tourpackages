@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class Crew extends Model
+class AgenFee extends Model
 {
+
     use HasFactory;
 
-    protected $fillable = ['min_participants', 'max_participants', 'num_crew'];
+    protected $fillable = ['price'];
 
 }
