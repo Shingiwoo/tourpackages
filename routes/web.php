@@ -5,7 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Backend\Admin\AdminController;
 use App\Http\Controllers\Backend\Vehicle\VehicleController;
 use App\Http\Controllers\Backend\Destinastion\DestinationController;
-use App\Http\Controllers\Backend\OtherService\OtherServiceController;
+use App\Http\Controllers\Backend\ServiceFee\ServiceFeeController;
 
 Route::get('/', function () {
     return view('frontend/index');
@@ -67,7 +67,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     });
 
     // Service all Route
-    Route::controller(OtherServiceController::class)->group(function () {
+    Route::controller(ServiceFeeController::class)->group(function () {
 
         Route::get('/all/service', 'AllService')->name('all.service');
         Route::post('/add/service', 'StoreServiceFee')->name('servicefee.store');

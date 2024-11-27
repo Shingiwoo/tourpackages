@@ -1,28 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\Backend\OtherService;
+namespace App\Http\Controllers\Backend\ServiceFee;
 
 use App\Http\Controllers\Controller;
-use App\Models\AgenFee;
-use App\Models\Crew;
-use App\Models\Facility;
-use App\Models\Meal;
 use App\Models\ServiceFee;
 use Illuminate\Http\Request;
-use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\SeriesSum;
 
-class OtherServiceController extends Controller
+class ServiceFeeController extends Controller
 {
     public function AllService()
     {
 
-        $agenFee = AgenFee::find(1);
-        $crew = Crew::latest()->get();
-        $facility = Facility::latest()->get();
-        $meal = Meal::latest()->get();
         $sFee = ServiceFee::first()->get();
 
-        return view('admin.service.service_fee', compact('agenFee', 'crew', 'facility', 'meal', 'sFee'));
+        return view('admin.service.service_fee', compact('sFee'));
     }
 
     public function StoreServiceFee(Request $request){
