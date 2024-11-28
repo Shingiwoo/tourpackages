@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('meals', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
+            $table->string('price');
             $table->enum('type',['1D', '2D', '3D', '4D', '5D'])->default('1D');
             $table->enum('duration',['1', '2', '3', '4', '5'])->default('1');
             $table->string('num_meals');

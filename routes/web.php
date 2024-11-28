@@ -9,6 +9,7 @@ use App\Http\Controllers\Backend\Vehicle\VehicleController;
 use App\Http\Controllers\Backend\ServiceFee\ServiceFeeController;
 use App\Http\Controllers\Backend\Destinastion\DestinationController;
 use App\Http\Controllers\Backend\Facility\FacilityController;
+use App\Http\Controllers\Backend\Meal\MealController;
 
 Route::get('/', function () {
     return view('frontend/index');
@@ -101,6 +102,16 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::post('/add/facility', 'StoreFacility')->name('facility.store');
         Route::put('/update/facility/{id}', 'UpdateFacility')->name('update.facility');
         Route::delete('/delete/facility/{id}', 'DeleteFacility')->name('delete.facility');
+
+    });
+
+    // Meal all Route
+    Route::controller(MealController::class)->group(function () {
+
+        Route::get('/all/meal', 'AllMeal')->name('all.meals');
+        Route::post('/add/meal', 'StoreMeal')->name('meal.store');
+        Route::put('/update/meal/{id}', 'UpdateMeal')->name('update.meal');
+        Route::delete('/delete/meal/{id}', 'DeleteMeal')->name('delete.meal');
 
     });
 });

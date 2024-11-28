@@ -36,7 +36,7 @@
                         </a>
                     </li>
                     <li class="nav-item mb-1">
-                        <a class="nav-link" href="app-ecommerce-settings-locations.html">
+                        <a class="nav-link" href="{{ route('all.meals') }}">
                             <i class="ti ti-soup ti-sm me-1_5"></i>
                             <span class="align-middle">Meal</span>
                         </a>
