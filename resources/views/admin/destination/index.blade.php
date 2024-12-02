@@ -104,7 +104,7 @@
                             <th class="align-content-center text-center">Price Type</th>
                             <th class="align-content-center text-center">Max User</th>
                             <th class="align-content-center text-center">Status</th>
-                            <th class="align-content-center text-center">Informations</th>
+                            <th class="align-content-center text-center">Location</th>
                             <th class="align-content-center text-center">Action</th>
                         </tr>
                     </thead>
@@ -124,7 +124,7 @@
                                     <i class="ti ti-playstation-x text-danger"></i>
                                 @endif
                             </td>
-                            <td class="align-content-center text-center">{{ $dts->ket}}</td>
+                            <td class="align-content-center text-center">{{ $dts->regency->name}}</td>
                             <td class="align-content-center text-center">
                                 <!-- Icon Dropdown -->
                                 <div class="col-lg-3 col-sm-6 col-12">

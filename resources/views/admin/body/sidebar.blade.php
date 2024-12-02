@@ -44,73 +44,111 @@
         </li>
         <!-- End Manage Agen-->
 
-
-
-        <!-- Destinations -->
+        <!-- Packages -->
         <li class="menu-header small">
-            <span class="menu-header-text" data-i18n="Manage Destinations">Manage Destinations</span>
+            <span class="menu-header-text" data-i18n="Packages">Packages</span>
         </li>
-        <li class="menu-item">
-            <a href="" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons ti ti-building-pavilion"></i>
-                <div data-i18n="Destinations">Destinations</div>
-            </a>
 
+        <li  class="menu-item">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-torii"></i>
+                <div data-i18n="Tour">Tour</div>
+            </a>
             <ul class="menu-sub">
+                <!-- One Day -->
                 <li class="menu-item">
-                    <a href="{{ route('all.destinations') }}" class="menu-link">
-                        <div data-i18n="Destinations List">Destinations List</div>
+                    <a class="menu-link menu-toggle">
+                        <div data-i18n="Oneday">One Day</div>
                     </a>
+                    <ul class="menu-sub">
+                        <li class="menu-item">
+                            <a href="" class="menu-link">
+                                <div data-i18n="Generate Tour">Generate Tour</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="" class="menu-link">
+                                <div data-i18n="Tour List">Tour List</div>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
-                <li class="menu-item">
-                    <a href="{{ route('add.destination') }}" class="menu-link">
-                        <div data-i18n="Add Destination">Add Destination</div>
-                    </a>
-                </li>
-                <li class="menu-item">
-                    <a href="{{ route('import.destinations') }}" class="menu-link">
-                        <div data-i18n="Import Destinations">Import Destinations</div>
-                    </a>
-                </li>
+                <!-- One Day End -->
+
             </ul>
         </li>
-        <!-- End Destinations-->
 
-        <!-- Vehicle -->
-        <li class="menu-header small">
-            <span class="menu-header-text" data-i18n="Manage Vehicles">Manage Vehicles</span>
-        </li>
         <li class="menu-item">
-            <a href="" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons ti ti-car-garage"></i>
-                <div data-i18n="Vehicles">Vehicles</div>
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-settings-cog"></i>
+                <div data-i18n="Setting">Setting</div>
             </a>
-
             <ul class="menu-sub">
+                <!-- Destinations -->
                 <li class="menu-item">
-                    <a href="{{ route('all.vehicles') }}" class="menu-link">
-                        <div data-i18n="Vehicles List">Vehicles List</div>
+                    <a class="menu-link menu-toggle">
+                        <div data-i18n="Destinations">Destinations</div>
+                    </a>
+
+                    <ul class="menu-sub">
+                        <li class="menu-item">
+                            <a href="{{ route('all.destinations') }}" class="menu-link">
+                                <div data-i18n="Destinations List">Destinations List</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{{ route('add.destination') }}" class="menu-link">
+                                <div data-i18n="Add Destination">Add Destination</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{{ route('import.destinations') }}" class="menu-link">
+                                <div data-i18n="Import Destinations">Import Destinations</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- End Destinations-->
+
+                <!-- Vehicle -->
+                <li class="menu-item">
+                    <a href="" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons ti ti-car-garage"></i>
+                        <div data-i18n="Vehicles">Vehicles</div>
+                    </a>
+
+                    <ul class="menu-sub">
+                        <li class="menu-item">
+                            <a href="{{ route('all.vehicles') }}" class="menu-link">
+                                <div data-i18n="Vehicles List">Vehicles List</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{{ route('add.vehicle') }}" class="menu-link">
+                                <div data-i18n="Add Vehicle">Add Vehicle</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- End Vehicle-->
+
+                <!-- Other -->
+                <li class="menu-item">
+                    <a href="{{ route('all.service') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-device-ipad-cog"></i>
+                        <div data-i18n="Service">Service</div>
                     </a>
                 </li>
-                <li class="menu-item">
-                    <a href="{{ route('add.vehicle') }}" class="menu-link">
-                        <div data-i18n="Add Vehicle">Add Vehicle</div>
-                    </a>
-                </li>
+                <!-- End Other -->
             </ul>
         </li>
-        <!-- End Vehicle-->
+        <!-- Packages end -->
 
 
-        <!-- Misc -->
-        <li class="menu-header small">
-            <span class="menu-header-text" data-i18n="Other Service">Other Service</span>
-        </li>
-        <li class="menu-item">
-            <a href="{{ route('all.service') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-device-ipad-cog"></i>
-                <div data-i18n="Service">Service</div>
-            </a>
-        </li>
+
+
+
+
+
     </ul>
 </aside>
