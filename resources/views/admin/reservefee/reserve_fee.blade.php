@@ -57,7 +57,7 @@
             <div class="tab-content p-0">
 
                 <div class="tab-pane fade show active" role="tabpanel">
-                    <!-- reservefee Tab -->
+                    <!-- Reserve Fee Input -->
                     <form id="mydata" action="{{ route('reservefee.store') }}" method="POST">
                         @csrf
                         <div class="card mb-6">
@@ -67,13 +67,23 @@
                             <div class="card-body">
                                 <div class="row mb-6 g-4">
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label mb-1" for="mealPrice">Price</label>
-                                        <input type="text" id="mealPrice" class="form-control numeral-mask"
-                                            placeholder="50000" name="priceMeal" aria-label="Price" />
+                                        <label class="form-label mb-1" for="reservefeePrice">Price</label>
+                                        <input type="text" id="reservefeePrice" class="form-control numeral-mask"
+                                            placeholder="50000" name="priceReserveFee" aria-label="Price" />
                                     </div>
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label" for="meal_duration">Duration</label>
-                                        <select required id="meal_duration" name="mealDuration"
+                                        <label class="form-label mb-1" for="MinUser-reservefee">Min Participant</label>
+                                        <input type="number" id="MinUser-reservefee" class="form-control"
+                                            placeholder="3" name="ReserveFeeMinUser" aria-label="Minimal Participant" />
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label mb-1" for="MaxUser-reservefee">Max Participant</label>
+                                        <input type="number" id="MaxUser-reservefee" class="form-control"
+                                            placeholder="3" name="ReserveFeeMaxUser" aria-label="Maximal Participant" />
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label" for="reservefee_duration">Duration</label>
+                                        <select required id="reservefee_duration" name="ReserveFeeDuration"
                                             class="select2 form-select" data-allow-clear="true">
                                             <option value="">Select Duration</option>
                                             <option value="1">1</option>
@@ -91,7 +101,7 @@
                             </div>
                         </div>
                     </form>
-                    <!-- Index Meals Tab -->
+                    <!-- Index Reserve Fee Tab -->
                     <div class="card mb-6">
                         <div class="card-header">
                             <h5 class="card-title m-0">Index Meals</h5>
@@ -106,21 +116,21 @@
                                                     <th class="align-content-center text-center">SL</th>
                                                     <th class="align-content-center text-center">Price</th>
                                                     <th class="align-content-center text-center">Day</th>
+                                                    <th class="align-content-center text-center">User</th>
                                                     <th class="align-content-center text-center">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="table-border-bottom-0">
-                                                {{-- @foreach ($meals as $key=> $mkn )
+                                                @foreach ($reservefees as $key=> $fee )
                                                 <tr>
                                                     <td class="align-content-center text-center">#{{ $key+1 }}</td>
-                                                    <td class="align-content-center text-center">{{ $mkn->price }}
+                                                    <td class="align-content-center text-center">{{ $fee->price }}
                                                     </td>
                                                     </td>
-                                                    <td class="align-content-center text-center">{{ $mkn->duration }}
+                                                    <td class="align-content-center text-center">{{ $fee->duration }}
                                                     </td>
-                                                    <td class="align-content-center text-center">{{ $mkn->num_meals }}</td>
-                                                    <td class="align-content-center text-center">{{ $mkn->regency->name
-                                                        }}
+                                                    <td class="align-content-center text-center">
+                                                    Min : {{ $fee->min_user }}<br>Max : {{ $fee->max_user }}
                                                     </td>
                                                     <td class="align-content-center text-center">
                                                         <div class="dropdown">
@@ -131,24 +141,23 @@
                                                             </button>
                                                             <div class="dropdown-menu">
                                                                 <a class="dropdown-item button" data-bs-toggle="modal"
-                                                                    data-bs-target="#enableMeal"
-                                                                    data-id="{{ $mkn->id }}"
-                                                                    data-mealPrice="{{ $mkn->price }}"
-                                                                    data-mealType="{{ $mkn->type }}"
-                                                                    data-mealDuration="{{ $mkn->duration }}"
-                                                                    data-mealTotal="{{ $mkn->num_meals }}"
-                                                                    data-city="{{ $mkn->regency_id }}">
+                                                                    data-bs-target="#enableReserveFee"
+                                                                    data-id="{{ $fee->id }}"
+                                                                    data-reservefeePrice="{{ $fee->price }}"
+                                                                    data-ReserveFeeDuration="{{ $fee->duration }}"
+                                                                    data-ReserveFeeMinUser="{{ $fee->min_user }}"
+                                                                    data-ReserveFeeMaxUser="{{ $fee->max_user }}">
                                                                     <i class="ti ti-pencil me-1"></i> Edit
                                                                 </a>
                                                                 <a class="dropdown-item button text-danger delete-confirm"
-                                                                    data-id="{{ $mkn->id }}"
-                                                                    data-url="{{ route('delete.meal', $mkn->id) }}"><i
+                                                                    data-id="{{ $fee->id }}"
+                                                                    data-url="{{ route('delete.reservefee', $fee->id) }}"><i
                                                                         class="ti ti-trash me-1"></i> Delete</a>
                                                             </div>
                                                         </div>
                                                     </td>
                                                 </tr>
-                                                @endforeach --}}
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>
@@ -164,38 +173,47 @@
 </div>
 <!-- / Content -->
 
-{{-- <!-- Meals Modal -->
-<div class="modal fade" id="enableMeal" tabindex="-1" aria-hidden="true">
+<!-- Reserve Fee Modal -->
+<div class="modal fade" id="enableReserveFee" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 <div class="text-center mb-6">
-                    <h4 class="mb-2">Edit Meal</h4>
+                    <h4 class="mb-2">Edit Reserve Fee</h4>
                 </div>
-                <form id="enableMealForm" method="POST" action="">
+                <form id="enableReserveFeeForm" method="POST" action="">
                     @csrf
                     @method('PUT')
                     <div class="card-body">
                         <div class="row mb-6 g-4">
                             <div class="col-12 col-md-6">
-                                <label class="form-label mb-1" for="meal-Price">Price</label>
-                                <input type="text" id="meal-Price" class="form-control numeral-mask"
-                                    placeholder="50000" name="priceMeal" aria-label="Price" />
+                                <label class="form-label mb-1" for="reservefee-Price">Price</label>
+                                <input type="text" id="reservefee-Price" class="form-control numeral-mask"
+                                    placeholder="50000" name="priceReserveFee" aria-label="Price" />
                             </div>
                             <div class="col-12 col-md-6">
-                                <label class="form-label" for="meal-duration">Duration</label>
-                                <select required id="meal-duration" name="mealDuration"
+                                <label class="form-label mb-1" for="reservefee-MinUser">Min Participant</label>
+                                <input type="number" id="reservefee-MinUser" class="form-control"
+                                    placeholder="3" name="ReserveFeeMinUser" aria-label="Minimal Participant" />
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label mb-1" for="reservefee-MaxUser">Min Participant</label>
+                                <input type="number" id="reservefee-MaxUser" class="form-control"
+                                    placeholder="3" name="ReserveFeeMaxUser" aria-label="Maximal Participant" />
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="reservefee-duration">Duration</label>
+                                <select required id="reservefee-duration" name="ReserveFeeDuration"
                                     class="select2 form-select" data-allow-clear="true">
                                     <option value="">Select duration</option>
-                                    <option value="1" {{ isset($meal) && $meals->duration == '1' ? 'selected' : '' }}>1</option>
-                                    <option value="2" {{ isset($meal) && $meals->duration == '2' ? 'selected' : '' }}>2</option>
-                                    <option value="3" {{ isset($meal) && $meals->duration == '3' ? 'selected' : '' }}>3</option>
-                                    <option value="4" {{ isset($meal) && $meals->duration == '4' ? 'selected' : '' }}>4</option>
-                                    <option value="5" {{ isset($meal) && $meals->duration == '5'? 'selected' : '' }}>5</option>
-                                    <option value="6" {{ isset($meal) && $meals->duration == '6'? 'selected' : '' }}>6</option>
+                                    <option value="1" {{ isset($reservefee) && $reservefees->duration == '1' ? 'selected' : '' }}>1</option>
+                                    <option value="2" {{ isset($reservefee) && $reservefees->duration == '2' ? 'selected' : '' }}>2</option>
+                                    <option value="3" {{ isset($reservefee) && $reservefees->duration == '3' ? 'selected' : '' }}>3</option>
+                                    <option value="4" {{ isset($reservefee) && $reservefees->duration == '4' ? 'selected' : '' }}>4</option>
+                                    <option value="5" {{ isset($reservefee) && $reservefees->duration == '5'? 'selected' : '' }}>5</option>
+                                    <option value="6" {{ isset($reservefee) && $reservefees->duration == '6'? 'selected' : '' }}>6</option>
                                 </select>
-
                             </div class="col-12 col-md-6">
                         </div>
                         <div class="d-flex justify-content-end gap-4">
@@ -208,6 +226,6 @@
         </div>
     </div>
 </div>
-<!--/ Meals Modal --> --}}
+<!--/ Reserve Fee Modal -->
 
 @endsection

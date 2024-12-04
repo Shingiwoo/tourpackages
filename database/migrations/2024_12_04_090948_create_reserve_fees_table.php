@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('reserve_fees', function (Blueprint $table) {
             $table->id();
-            $table->string('duration')->nullable();
-            $table->string('price')->nullable();
+            $table->integer('duration')->nullable();
+            $table->string('price', 12)->nullable();
+            $table->integer('min_user')->nullable();
+            $table->integer('max_user')->nullable();
             $table->timestamps();
         });
     }

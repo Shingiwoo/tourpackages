@@ -101,3 +101,29 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+    // Pilih semua tombol dengan atribut data-bs-toggle dan target modal
+    const editButtons = document.querySelectorAll('[data-bs-target="#enableReserveFee"]');
+
+    editButtons.forEach(button => {
+        button.addEventListener('click', function () {
+            // Ambil data dari atribut data-*
+            const id = this.getAttribute('data-id');
+            const priceReserveFee = this.getAttribute('data-reservefeePrice');
+            const ReserveFeeDuration = this.getAttribute('data-ReserveFeeDuration');
+            const ReserveFeeMinUser = this.getAttribute('data-ReserveFeeMinUser');
+            const ReserveFeeMaxUser = this.getAttribute('data-ReserveFeeMaxUser');
+
+            // Set nilai pada form modal
+            document.getElementById('reservefee-Price').value = priceReserveFee;
+            document.getElementById('reservefee-duration').value = ReserveFeeDuration;
+            document.getElementById('reservefee-MinUser').value = ReserveFeeMinUser;
+            document.getElementById('reservefee-MaxUser').value = ReserveFeeMaxUser;
+
+            // Set action URL dengan ID yang diambil
+            const modalForm = document.getElementById('enableReserveFeeForm');
+            modalForm.setAttribute('action', `/update/reservefee/${id}`);
+        });
+    });
+});

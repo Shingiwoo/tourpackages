@@ -12,5 +12,7 @@ class ReserveFee extends Model
     protected $fillable = [
         'price',
         'duration',
+        'min_user',
+        'max_user',
     ];
 }

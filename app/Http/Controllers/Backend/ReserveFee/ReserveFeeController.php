@@ -11,9 +11,9 @@ class ReserveFeeController extends Controller
     public function AllReserveFee()
     {
 
-        $reservefee = ReserveFee::all();
+        $reservefees = ReserveFee::all();
 
-        return view('admin.reservefee.reserve_fee', compact('reservefee'));
+        return view('admin.reservefee.reserve_fee', compact('reservefees'));
     }
 
     public function StoreReserveFee(Request $request){
@@ -21,6 +21,8 @@ class ReserveFeeController extends Controller
         $validatedData = $request->validate([
             'priceReserveFee' => 'required',
             'ReserveFeeDuration' => 'required|in:1,2,3,4,5,6',
+            'ReserveFeeMinUser' => 'required',
+            'ReserveFeeMaxUser' => 'required',
         ]);
 
         $validatedData['priceReserveFee'] = str_replace(',', '', $validatedData['priceReserveFee']);
@@ -29,6 +31,8 @@ class ReserveFeeController extends Controller
         $reserveFeeData = [
             'price' => $validatedData['priceReserveFee'],
             'duration' => $validatedData['ReserveFeeDuration'],
+            'min_user' => $validatedData['ReserveFeeMinUser'],
+            'max_user' => $validatedData['ReserveFeeMaxUser'],
         ];
 
         // Buat data baru di database
@@ -47,8 +51,10 @@ class ReserveFeeController extends Controller
     public function UpdateReserveFee(Request $request, $id){
         // Validasi data input
         $validatedData = $request->validate([
-            'priceMeal' => 'required',
-            'mealDuration' => 'required|in:1,2,3,4,5',
+            'priceReserveFee' => 'required',
+            'ReserveFeeDuration' => 'required|in:1,2,3,4,5,6',
+            'ReserveFeeMinUser' => 'required',
+            'ReserveFeeMaxUser' => 'required',
         ]);
 
         // Temukan data berdasarkan ID
@@ -59,6 +65,8 @@ class ReserveFeeController extends Controller
         $reserveFeeData->update([
             'price' => $validatedData['priceReserveFee'],
             'duration' => $validatedData['ReserveFeeDuration'],
+            'min_user' => $validatedData['ReserveFeeMinUser'],
+            'max_user' => $validatedData['ReserveFeeMaxUser'],
         ]);
 
         // Kirim notifikasi berhasil
