@@ -131,6 +131,8 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::controller(GeneratePackageController::class)->group(function () {
 
         Route::get('/all/packages', 'AllPackage')->name('all.packages');
+        Route::get('/generate/package', 'GeneratePackage')->name('generate.package');
+        Route::post('/package/generate', 'generateCodeOneday')->name('generatecode.package');
 
     });
 });

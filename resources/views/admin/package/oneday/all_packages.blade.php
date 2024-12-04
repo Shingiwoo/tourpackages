@@ -27,11 +27,11 @@
                             <div>
                                 <p class="mb-1"><b>Total Packages</b></p>
                                 <h4 class="mb-1"></h4>
-                                <p class="mb-0 text-success">Active</p>
+                                <p class="mb-0 text-danger">Inactive</p>
                             </div>
                             <span class="avatar me-sm-6">
                                 <span class="avatar-initial rounded"><i
-                                        class="ti-28px ti ti-bulb text-success"></i></span>
+                                        class="ti-28px ti ti-bulb-off text-danger"></i></span>
                             </span>
                         </div>
                         <hr class="d-none d-sm-block d-lg-none me-6" />

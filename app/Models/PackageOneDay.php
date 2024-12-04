@@ -11,27 +11,19 @@ class PackageOneDay extends Model
 
     protected $fillable = [
         'agen_id',
-        'name',
+        'name_package',
+        'status',
         'regency_id',
-        'participants',
-        'vehicle',
-        'price_per_person',
-        'total_price',
+        'information'
     ];
 
-    /**
-     * Relasi dengan regency (kabupaten/kota)
-     */
-    public function regency()
-    {
-        return $this->belongsTo(Regency::class);
-    }
-
-    /**
-     * Relasi dengan destinations (melalui pivot)
-     */
     public function destinations()
     {
         return $this->belongsToMany(Destination::class, 'package_destinations');
+    }
+
+    public function prices()
+    {
+        return $this->hasOne(PackagePrice::class);
     }
 }

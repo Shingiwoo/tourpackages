@@ -33,7 +33,7 @@ class Destination extends Model
 
     public function packages()
     {
-        return $this->belongsToMany(Package::class, 'package_destinations');
+        return $this->belongsToMany(PackageOneDay::class, 'package_destinations');
     }
 }
 

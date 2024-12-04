@@ -62,7 +62,7 @@
                     </a>
                     <ul class="menu-sub">
                         <li class="menu-item">
-                            <a href="" class="menu-link">
+                            <a href="{{ route('generate.package') }}" class="menu-link">
                                 <div data-i18n="Generate Tour">Generate Tour</div>
                             </a>
                         </li>

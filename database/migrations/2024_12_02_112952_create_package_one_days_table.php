@@ -13,14 +13,11 @@ return new class extends Migration
     {
         Schema::create('package_one_days', function (Blueprint $table) {
             $table->id();
-            $table->json('destinations')->nullable();
-            $table->integer('agen_id');
-            $table->string('name')->nullable();
+            $table->string('name_package')->nullable();
             $table->integer('regency_id')->nullable();
-            $table->string('participants')->nullable();
-            $table->string('vehicle')->nullable();
-            $table->string('price_per_person')->nullable();
-            $table->string('total_price')->nullable();
+            $table->integer('agen_id');
+            $table->boolean('status')->default(true);
+            $table->string('information')->nullable();
             $table->timestamps();
         });
     }
