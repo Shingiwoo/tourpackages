@@ -10,10 +10,5 @@ class PackageDestination extends Model
     use HasFactory;
 
     protected $fillable = ['package_id', 'destination_id'];
-
-
-    public function destinations()
-    {
-        return $this->belongsToMany(Destination::class, 'package_destinations');
-    }
 }
+

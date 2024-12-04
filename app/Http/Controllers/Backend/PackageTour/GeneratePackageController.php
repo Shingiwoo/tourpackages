@@ -27,19 +27,19 @@ class GeneratePackageController extends Controller
     public function GeneratePackage(Request $request){
 
         $destinations = Destination::all();
-        $agens = User::where('role','agen')->where('status', 'active')->get();
+        $agens = User::agen()->get();
         $regencies = Regency::all();
 
         return view('admin.package.oneday.generate_package_oneday', compact('destinations', 'agens', 'regencies'));
     }
 
 
-    public function generateCode(Request $request){
+    public function generateCodeOneday(Request $request){
         $request->validate([
             'NamePackage' => 'required|string|max:255',
             'cityOrDistrict_id' => 'required|exists:regencies,id',
             'statusPackage' => 'required|boolean',
-            'NameAgen' => 'required|exists:agens,id',
+            'NameAgen' => 'required|exists:users,id',
             'destinations' => 'required|array',
             'destinations.*' => 'exists:destinations,id',
         ]);

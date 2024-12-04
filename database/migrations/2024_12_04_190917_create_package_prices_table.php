@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('package_prices', function (Blueprint $table) {
             $table->id();
-            $table->integer('package_id');
+            $table->integer('package_one_day_id');
             $table->json('price_data')->nullable();
             $table->timestamps();
         });

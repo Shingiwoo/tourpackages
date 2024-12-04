@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PackagePrice extends Model
 {
-    protected $fillable = ['package_id', 'price_data'];
+    protected $fillable = ['package_one_day_id', 'price_data'];
 
     public function package()
     {

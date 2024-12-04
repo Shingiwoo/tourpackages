@@ -53,4 +53,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    // Relasi untuk mendapatkan agen
+    public function scopeAgen($query)
+    {
+        return $query->where('role', 'agen')->where('status', 'active');
+    }
 }
