@@ -18,7 +18,7 @@
                         </a>
                     </li>
                     <li class="nav-item mb-1">
-                        <a class="nav-link active" href="{{ route('all.crew') }}">
+                        <a class="nav-link" href="{{ route('all.crew') }}">
                             <i class="ti ti-brand-teams ti-sm me-1_5"></i>
                             <span class="align-middle">Crew</span>
                         </a>
@@ -42,7 +42,7 @@
                         </a>
                     </li>
                     <li class="nav-item mb-1">
-                        <a class="nav-link" href="{{ route('all.reservefee') }}">
+                        <a class="nav-link active" href="{{ route('all.reservefee') }}">
                             <i class="ti ti-creative-commons-nc ti-sm me-1_5"></i>
                             <span class="align-middle">Reserve Fee</span>
                         </a>
@@ -57,30 +57,32 @@
             <div class="tab-content p-0">
 
                 <div class="tab-pane fade show active" role="tabpanel">
-                    <!-- Crew Tab -->
-                    <form id="mydata" action="{{ route('crew.store') }}" method="POST">
+                    <!-- reservefee Tab -->
+                    <form id="mydata" action="{{ route('reservefee.store') }}" method="POST">
                         @csrf
                         <div class="card mb-6">
                             <div class="card-header">
-                                <h5 class="card-title m-0">Data Crew</h5>
+                                <h5 class="card-title m-0">Reserve Fee</h5>
                             </div>
                             <div class="card-body">
-                                <div class="row mb-6 g-6">
-                                    <div class="col-12 col-md-4">
-                                        <label class="form-label mb-1" for="min_user">Min User</label>
-                                        <input type="number" class="form-control" placeholder="1"
-                                            name="minUser" aria-label="Min User" />
+                                <div class="row mb-6 g-4">
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label mb-1" for="mealPrice">Price</label>
+                                        <input type="text" id="mealPrice" class="form-control numeral-mask"
+                                            placeholder="50000" name="priceMeal" aria-label="Price" />
                                     </div>
-
-                                    <div class="col-12 col-md-4">
-                                        <label class="form-label mb-1" for="max_user">Max User</label>
-                                        <input type="number" class="form-control" placeholder="5" name="maxUser" aria-label="Max User" />
-                                    </div>
-
-                                    <div class="col-12 col-md-4">
-                                        <label class="form-label mb-1" for="total_crew">Total Crew</label>
-                                        <input type="number" class="form-control" placeholder="2"
-                                            name="totalCrew" aria-label="Total Crew" />
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label" for="meal_duration">Duration</label>
+                                        <select required id="meal_duration" name="mealDuration"
+                                            class="select2 form-select" data-allow-clear="true">
+                                            <option value="">Select Duration</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                            <option value="6">6</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-end gap-4">
@@ -89,10 +91,10 @@
                             </div>
                         </div>
                     </form>
-                    <!-- Index Crew Tab -->
+                    <!-- Index Meals Tab -->
                     <div class="card mb-6">
                         <div class="card-header">
-                            <h5 class="card-title m-0">Index Crew</h5>
+                            <h5 class="card-title m-0">Index Meals</h5>
                         </div>
                         <div class="card-body">
                             <div class="row g-6">
@@ -102,21 +104,24 @@
                                             <thead>
                                                 <tr>
                                                     <th class="align-content-center text-center">SL</th>
-                                                    <th class="align-content-center text-center">Min User</th>
-                                                    <th class="align-content-center text-center">Max User</th>
-                                                    <th class="align-content-center text-center">Total Crew</th>
+                                                    <th class="align-content-center text-center">Price</th>
+                                                    <th class="align-content-center text-center">Day</th>
                                                     <th class="align-content-center text-center">Actions</th>
                                                 </tr>
                                             </thead>
                                             <tbody class="table-border-bottom-0">
-                                                @foreach ($Crew as $key=> $cr )
+                                                {{-- @foreach ($meals as $key=> $mkn )
                                                 <tr>
                                                     <td class="align-content-center text-center">#{{ $key+1 }}</td>
-                                                    <td class="align-content-center text-center">{{ $cr->min_participants }}
+                                                    <td class="align-content-center text-center">{{ $mkn->price }}
                                                     </td>
-                                                    <td class="align-content-center text-center">{{ $cr->max_participants }}
                                                     </td>
-                                                    <td class="align-content-center text-center">{{ $cr->num_crew }}</td>
+                                                    <td class="align-content-center text-center">{{ $mkn->duration }}
+                                                    </td>
+                                                    <td class="align-content-center text-center">{{ $mkn->num_meals }}</td>
+                                                    <td class="align-content-center text-center">{{ $mkn->regency->name
+                                                        }}
+                                                    </td>
                                                     <td class="align-content-center text-center">
                                                         <div class="dropdown">
                                                             <button type="button"
@@ -126,18 +131,24 @@
                                                             </button>
                                                             <div class="dropdown-menu">
                                                                 <a class="dropdown-item button" data-bs-toggle="modal"
-                                                                    data-bs-target="#enableCrew" data-id="{{ $cr->id }}"
-                                                                    data-minUser="{{ $cr->min_participants }}"
-                                                                    data-maxUser="{{ $cr->max_participants }}"
-                                                                    data-totalCrew="{{ $cr->num_crew }}">
+                                                                    data-bs-target="#enableMeal"
+                                                                    data-id="{{ $mkn->id }}"
+                                                                    data-mealPrice="{{ $mkn->price }}"
+                                                                    data-mealType="{{ $mkn->type }}"
+                                                                    data-mealDuration="{{ $mkn->duration }}"
+                                                                    data-mealTotal="{{ $mkn->num_meals }}"
+                                                                    data-city="{{ $mkn->regency_id }}">
                                                                     <i class="ti ti-pencil me-1"></i> Edit
                                                                 </a>
-                                                                <a class="dropdown-item button text-danger delete-confirm" data-id="{{ $cr->id }}" data-url="{{ route('delete.crew', $cr->id) }}"><i class="ti ti-trash me-1"></i> Delete</a>
+                                                                <a class="dropdown-item button text-danger delete-confirm"
+                                                                    data-id="{{ $mkn->id }}"
+                                                                    data-url="{{ route('delete.meal', $mkn->id) }}"><i
+                                                                        class="ti ti-trash me-1"></i> Delete</a>
                                                             </div>
                                                         </div>
                                                     </td>
                                                 </tr>
-                                                @endforeach
+                                                @endforeach --}}
                                             </tbody>
                                         </table>
                                     </div>
@@ -153,38 +164,43 @@
 </div>
 <!-- / Content -->
 
-<!-- Crew Modal -->
-<div class="modal fade" id="enableCrew" tabindex="-1" aria-hidden="true">
+{{-- <!-- Meals Modal -->
+<div class="modal fade" id="enableMeal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 <div class="text-center mb-6">
-                    <h4 class="mb-2">Edit Crew</h4>
+                    <h4 class="mb-2">Edit Meal</h4>
                 </div>
-                <form id="enableCrewForm" method="POST" action="">
+                <form id="enableMealForm" method="POST" action="">
                     @csrf
                     @method('PUT')
-                    <div class="row mb-6 g-6">
-                        <div class="col-12 col-md-4">
-                            <label class="form-label mb-1" for="min_user">Min User</label>
-                            <input type="number" id="min_user" class="form-control" placeholder="1"
-                                name="minUser" aria-label="Min User" value=""/>
-                        </div>
+                    <div class="card-body">
+                        <div class="row mb-6 g-4">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label mb-1" for="meal-Price">Price</label>
+                                <input type="text" id="meal-Price" class="form-control numeral-mask"
+                                    placeholder="50000" name="priceMeal" aria-label="Price" />
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="meal-duration">Duration</label>
+                                <select required id="meal-duration" name="mealDuration"
+                                    class="select2 form-select" data-allow-clear="true">
+                                    <option value="">Select duration</option>
+                                    <option value="1" {{ isset($meal) && $meals->duration == '1' ? 'selected' : '' }}>1</option>
+                                    <option value="2" {{ isset($meal) && $meals->duration == '2' ? 'selected' : '' }}>2</option>
+                                    <option value="3" {{ isset($meal) && $meals->duration == '3' ? 'selected' : '' }}>3</option>
+                                    <option value="4" {{ isset($meal) && $meals->duration == '4' ? 'selected' : '' }}>4</option>
+                                    <option value="5" {{ isset($meal) && $meals->duration == '5'? 'selected' : '' }}>5</option>
+                                    <option value="6" {{ isset($meal) && $meals->duration == '6'? 'selected' : '' }}>6</option>
+                                </select>
 
-                        <div class="col-12 col-md-4">
-                            <label class="form-label mb-1" for="max_user">Max User</label>
-                            <input type="number" id="max_user" class="form-control" placeholder="6" name="maxUser" aria-label="Max User" value=""/>
+                            </div class="col-12 col-md-6">
                         </div>
-
-                        <div class="col-12 col-md-4">
-                            <label class="form-label mb-1" for="total_crew">Total Crew</label>
-                            <input type="number" id="total_crew" class="form-control" placeholder="5"
-                                name="totalCrew" aria-label="Total Crew" value=""/>
+                        <div class="d-flex justify-content-end gap-4">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
                         </div>
-                    </div>
-                    <div class="d-flex justify-content-end gap-4">
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
                     </div>
                 </form>
 
@@ -192,6 +208,6 @@
         </div>
     </div>
 </div>
-<!--/ Crew Modal -->
+<!--/ Meals Modal --> --}}
 
 @endsection

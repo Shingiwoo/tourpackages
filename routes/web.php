@@ -3,13 +3,15 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Backend\Crew\CrewController;
+use App\Http\Controllers\Backend\Meal\MealController;
 use App\Http\Controllers\Backend\Admin\AdminController;
 use App\Http\Controllers\Backend\AgenFee\AgenFeeController;
 use App\Http\Controllers\Backend\Vehicle\VehicleController;
+use App\Http\Controllers\Backend\Facility\FacilityController;
+use App\Http\Controllers\Backend\ReserveFee\ReserveFeeController;
 use App\Http\Controllers\Backend\ServiceFee\ServiceFeeController;
 use App\Http\Controllers\Backend\Destinastion\DestinationController;
-use App\Http\Controllers\Backend\Facility\FacilityController;
-use App\Http\Controllers\Backend\Meal\MealController;
+use App\Http\Controllers\Backend\PackageTour\GeneratePackageController;
 
 Route::get('/', function () {
     return view('frontend/index');
@@ -112,6 +114,23 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::post('/add/meal', 'StoreMeal')->name('meal.store');
         Route::put('/update/meal/{id}', 'UpdateMeal')->name('update.meal');
         Route::delete('/delete/meal/{id}', 'DeleteMeal')->name('delete.meal');
+
+    });
+
+    // ReserveFee all Route
+    Route::controller(ReserveFeeController::class)->group(function () {
+
+        Route::get('/all/reservefee', 'AllReserveFee')->name('all.reservefee');
+        Route::post('/add/reservefee', 'StoreReserveFee')->name('reservefee.store');
+        Route::put('/update/reservefee/{id}', 'UpdateReserveFee')->name('update.reservefee');
+        Route::delete('/delete/reservefee/{id}', 'DeleteReserveFee')->name('delete.reservefee');
+
+    });
+
+    // Packege all Route
+    Route::controller(GeneratePackageController::class)->group(function () {
+
+        Route::get('/all/packages', 'AllPackage')->name('all.packages');
 
     });
 });

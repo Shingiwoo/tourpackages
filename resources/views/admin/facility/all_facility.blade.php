@@ -41,6 +41,12 @@
                             <span class="align-middle">Meal</span>
                         </a>
                     </li>
+                    <li class="nav-item mb-1">
+                        <a class="nav-link" href="{{ route('all.reservefee') }}">
+                            <i class="ti ti-creative-commons-nc ti-sm me-1_5"></i>
+                            <span class="align-middle">Reserve Fee</span>
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>

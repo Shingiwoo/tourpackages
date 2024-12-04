@@ -67,7 +67,7 @@
                             </a>
                         </li>
                         <li class="menu-item">
-                            <a href="" class="menu-link">
+                            <a href="{{ route('all.packages') }}" class="menu-link">
                                 <div data-i18n="Tour List">Tour List</div>
                             </a>
                         </li>

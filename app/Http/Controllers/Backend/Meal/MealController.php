@@ -64,6 +64,7 @@ class MealController extends Controller
 
         // Temukan data berdasarkan ID
         $serviceMeal = Meal::findOrFail($id);
+        $validatedData['priceMeal'] = str_replace(',', '', $validatedData['priceMeal']);
 
         // Update data
         $serviceMeal->update([
