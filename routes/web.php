@@ -133,6 +133,9 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/all/packages', 'AllPackage')->name('all.packages');
         Route::get('/generate/package', 'GeneratePackage')->name('generate.package');
         Route::post('/package/generate', 'generateCodeOneday')->name('generatecode.package');
+        Route::get('/edit/package/{id}', 'EditGeneratePackage')->name('edit.package');
+        Route::delete('/delete/package/{id}', 'DeletePackage')->name('delete.package');
+        Route::get('/packages/agen/{id}', 'AllPackagesAgen')->name('all.packages.agen');
 
     });
 });

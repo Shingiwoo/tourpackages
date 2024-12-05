@@ -16,13 +16,16 @@
                     <p class="mb-0">To Generate a tour package Price</p>
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-4">
+                    <a href="{{ route('all.packages') }}">
+                        <button type="button" class="btn btn-primary ml-2">Back</button>
+                    </a>
                     <button type="submit" class="btn btn-primary">Generate</button>
                 </div>
             </div>
 
             <div class="row">
                 <!-- First column-->
-                <div class="col-12 col-lg-8">
+                <div class="col-12 col-lg-6">
                     <!-- Product Information -->
                     <div class="card mb-6">
                         <div class="card-header">
@@ -35,8 +38,6 @@
                                     <input type="text" class="form-control" id="name_package" placeholder="Name Package"
                                         name="NamePackage" aria-label="Name Package" required />
                                 </div>
-                            </div>
-                            <div class="row mb-6">
                                 <div class="col">
                                     <label class="form-label" for="city_district">City / District</label>
                                     <select required id="city_district" name="cityOrDistrict_id"
@@ -47,6 +48,8 @@
                                         @endforeach
                                     </select>
                                 </div>
+                            </div>
+                            <div class="row mb-6">
                                 <div class="col">
                                     <label class="form-label" for="status_package">Status</label>
                                     <select required id="status_package" name="statusPackage"
@@ -71,11 +74,11 @@
                     </div>
                     <!-- /Product Information -->
                 </div>
-                <div class="col-12 col-lg-4">
+                <div class="col-12 col-lg-6">
                     <!-- Destination Card -->
                     <div class="card mb-6">
                         <div class="card-header">
-                            <h5 class="card-title mb-0">Destination</h5>
+                            <h5 class="card-title mb-0">Destination & Infomation</h5>
                         </div>
                         <div class="card-body">
                             <div class="mb-6">
@@ -87,10 +90,13 @@
                             </div>
 
                             <!-- Description -->
-                            <div>
-                                <label class="mb-1">Information (Optional)</label>
-                                <textarea class="form-control" name="information" id="information" rows="3"></textarea>
+                            <!-- Full Editor -->
+                            <div class="col-12">
+                                <h5 class="card-title mb-1">Information</h5>
+                                <div id="quill-editor" class="mb-3" style="height: 80px;"> </div>
+                                <textarea rows="3" class="mb-3 d-none" name="information" id="quill-editor-area"></textarea>
                             </div>
+                            <!-- /Full Editor -->
                         </div>
                     </div>
                     <!-- /Destination Card -->

@@ -26,4 +26,14 @@ class PackageOneDay extends Model
     {
         return $this->hasOne(PackagePrice::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'agen_id', 'id');
+    }
+
+    public function regency()
+    {
+        return $this->belongsTo(Regency::class, 'regency_id', 'id');
+    }
 }
