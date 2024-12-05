@@ -119,7 +119,7 @@
                                                     <td class="align-content-center text-center">#{{ $key+1 }}</td>
                                                     <td class="align-content-center text-center">{{ $fct->name }}
                                                     </td>
-                                                    <td class="align-content-center text-center">{{ $fct->price }}</td>
+                                                    <td class="align-content-center text-center">Rp {{ number_format($fct->price, 0, ',', '.')  }}</td>
                                                     <td class="align-content-center text-center">{{ $fct->regency->name }}
                                                     </td>
                                                     <td class="align-content-center text-center">

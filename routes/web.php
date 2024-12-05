@@ -134,8 +134,10 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/generate/package', 'GeneratePackage')->name('generate.package');
         Route::post('/package/generate', 'generateCodeOneday')->name('generatecode.package');
         Route::get('/edit/package/{id}', 'EditGeneratePackage')->name('edit.package');
+        Route::put('/update/package/{id}', 'UpdateGenerateCodeOneday')->name('update.package');
         Route::delete('/delete/package/{id}', 'DeletePackage')->name('delete.package');
         Route::get('/packages/agen/{id}', 'AllPackagesAgen')->name('all.packages.agen');
+        Route::get('/show/package/{id}', 'PackageShow')->name('show.package');
 
     });
 });

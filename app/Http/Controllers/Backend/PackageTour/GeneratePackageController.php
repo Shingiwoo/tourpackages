@@ -122,7 +122,24 @@ class GeneratePackageController extends Controller
         return redirect()->route('all.packages')->with('message', 'Package generated successfully!');
     }
 
-    public function UpdateGenerateCodeOneday(Request $request){
+    public function EditGeneratePackage($id){
+
+        $package = PackageOneDay::with('destinations')->find($id);
+
+        if (!$package) {
+            return redirect()->route('all.packages')->with('error', 'Package not found!');
+        }
+
+        $destinations = Destination::all();
+        $selectedDestinations = $package->destinations->pluck('id')->toArray();
+        $agens = User::agen()->get();
+        $regencies = Regency::all();
+
+        return view('admin.package.oneday.edit_package', compact('destinations', 'agens', 'regencies','package', 'selectedDestinations'));
+    }
+
+    public function UpdateGenerateCodeOneday(Request $request, $id){
+
         $request->validate([
             'NamePackage' => 'required|string|max:255',
             'cityOrDistrict_id' => 'required|exists:regencies,id',
@@ -131,6 +148,13 @@ class GeneratePackageController extends Controller
             'destinations' => 'required|array',
             'destinations.*' => 'exists:destinations,id',
         ]);
+
+        // Cari data package berdasarkan ID
+        $package = PackageOneDay::find($id);
+
+        if (!$package) {
+            return redirect()->route('all.packages')->with('error', 'Package not found!');
+        }
 
         // Ambil data dari request
         $namePackage = $request->input('NamePackage');
@@ -148,8 +172,8 @@ class GeneratePackageController extends Controller
         $reserveFees = ReserveFee::all();
         $selectedDestinations = Destination::whereIn('id', $destinationIds)->get();
 
-        // Simpan paket wisata ke database
-        $package = PackageOneDay::create([
+        // Update paket wisata di database
+        $package->update([
             'name_package' => $namePackage,
             'regency_id' => $regencyId,
             'agen_id' => $agenId,
@@ -157,10 +181,10 @@ class GeneratePackageController extends Controller
             'information' => $information,
         ]);
 
-        // Simpan destinasi untuk paket
+        // Update relasi destinasi untuk paket
         $package->destinations()->sync($destinationIds);
 
-        // Hitung harga per armada dan jumlah peserta
+        // Hitung ulang harga per armada dan jumlah peserta
         $prices = [];
         for ($participants = 1; $participants <= 45; $participants++) {
             $vehicle = $vehicles->firstWhere(fn($v) => $participants >= $v->capacity_min && $participants <= $v->capacity_max);
@@ -193,27 +217,18 @@ class GeneratePackageController extends Controller
 
             // Simpan harga ke array
             $prices[] = [
-                'armada' => $vehicle->name,
+                'vehicle' => $vehicle->name,
                 'user' => $participants,
                 'price' => round($finalPrice, 2),
             ];
         }
 
-        // Simpan harga ke database (dalam format JSON)
-        $package->prices()->create([
+        // Update harga di database (dalam format JSON)
+        $package->prices()->update([
             'price_data' => json_encode($prices),
         ]);
 
-        return redirect()->route('all.packages')->with('message', 'Package generated successfully!');
-    }
-
-    public function EditGeneratePackage(){
-
-        $destinations = Destination::all();
-        $agens = User::agen()->get();
-        $regencies = Regency::all();
-
-        return view('admin.package.oneday.generate_package_oneday', compact('destinations', 'agens', 'regencies'));
+        return redirect()->route('all.packages')->with('message', 'Package updated successfully!');
     }
 
     public function AllPackagesAgen($id)
@@ -234,6 +249,19 @@ class GeneratePackageController extends Controller
 
         return view('admin.package.oneday.data_package', compact('destinations', 'regencies', 'packages', 'agen'));
     }
+
+    public function PackageShow($id)
+    {
+        // Ambil data paket berdasarkan ID, termasuk relasi
+        $package = PackageOneDay::with(['destinations', 'prices', 'regency'])->findOrFail($id);
+
+        // Ambil data destinasi dan kabupaten untuk dropdown (opsional)
+        $destinations = Destination::all();
+        $regencies = Regency::all();
+
+        return view('admin.package.oneday.show_package', compact('destinations', 'regencies', 'package'));
+    }
+
 
     public function DeletePackage($id)
     {

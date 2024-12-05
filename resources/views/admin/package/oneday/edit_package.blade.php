@@ -5,8 +5,9 @@
 <!-- Content -->
 
 <div class="container-xxl flex-grow-1 container-p-y">
-    <form id="mydata" action="{{ route('generatecode.package') }}" method="POST">
+    <form id="mydata" action="{{ route('update.package', $package->id) }}" method="POST">
         @csrf
+        @method('PUT')
         <div class="app-ecommerce">
             <!-- Add Product -->
             <div
@@ -36,7 +37,8 @@
                                 <div class="col">
                                     <label class="form-label" for="name_package">Name Package</label>
                                     <input type="text" class="form-control" id="name_package" placeholder="Name Package"
-                                        name="NamePackage" aria-label="Name Package" required />
+                                        value="{{$package->name_package}}" name="NamePackage" aria-label="Name Package"
+                                        required />
                                 </div>
                                 <div class="col">
                                     <label class="form-label" for="city_district">City / District</label>
@@ -44,7 +46,8 @@
                                         class="select2 form-select" data-allow-clear="true">
                                         <option value="">Select City / District</option>
                                         @foreach($regencies as $regency)
-                                        <option value="{{ $regency->id }}">{{ $regency->name }}</option>
+                                        <option value="{{ $regency->id }}" {{ $package->regency_id == $regency->id ?
+                                            'selected' : '' }}>{{ $regency->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -55,8 +58,9 @@
                                     <select required id="status_package" name="statusPackage"
                                         class="select2 form-select" data-allow-clear="true">
                                         <option value="">Select Status</option>
-                                        <option value="1">ACTIVE</option>
-                                        <option value="0">INACTIVE</option>
+                                        <option value="1" {{ $package->status == 1 ? 'selected' : '' }}>ACTIVE</option>
+                                        <option value="0" {{ $package->status == 0 ? 'selected' : '' }}>INACTIVE
+                                        </option>
                                     </select>
                                 </div>
                                 <div class="col">
@@ -65,7 +69,8 @@
                                         data-allow-clear="true">
                                         <option value="">Select Agen</option>
                                         @foreach($agens as $agen)
-                                        <option value="{{ $agen->id }}">{{ $agen->username }}</option>
+                                        <option value="{{ $agen->id }}" {{ $package->agen_id == $agen->id ? 'selected' :
+                                            '' }}>{{ $agen->username }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -84,7 +89,10 @@
                             <div class="mb-6">
                                 <select id="destinations" name="destinations[]" class="select2 form-select" multiple>
                                     @foreach ($destinations as $destination)
-                                    <option value="{{ $destination->id }}">{{ $destination->name }}</option>
+                                    <option value="{{ $destination->id }}" {{ in_array($destination->id,
+                                        $selectedDestinations) ? 'selected' : '' }}>
+                                        {{ $destination->name }}
+                                    </option>
                                     @endforeach
                                 </select>
                             </div>
@@ -94,7 +102,8 @@
                             <div class="col-12">
                                 <h5 class="card-title mb-1">Information</h5>
                                 <div id="quill-editor" class="mb-3" style="height: 80px;"> </div>
-                                <textarea rows="3" class="mb-3 d-none" name="information" id="quill-editor-area"></textarea>
+                                <textarea rows="3" class="mb-3 d-none" name="information"
+                                    id="quill-editor-area">{{ $package->information }}</textarea>
                             </div>
                             <!-- /Full Editor -->
                         </div>

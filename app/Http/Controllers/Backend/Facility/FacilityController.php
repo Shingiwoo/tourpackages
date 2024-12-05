@@ -24,6 +24,8 @@ class FacilityController extends Controller
             'priceFacility' => 'required',
         ]);
 
+        $validatedData['priceFacility'] = str_replace(',', '', $validatedData['priceFacility']);
+
         // Mapping nama input form ke nama kolom database
         $facilityData = [
             'name' => $validatedData['nameFacility'],

@@ -146,7 +146,7 @@
                                                 @foreach ($meals as $key=> $mkn )
                                                 <tr>
                                                     <td class="align-content-center text-center">#{{ $key+1 }}</td>
-                                                    <td class="align-content-center text-center">{{ $mkn->price }}
+                                                    <td class="align-content-center text-center">Rp {{ number_format($mkn->price, 0, ',', '.')  }}
                                                     </td>
                                                     <td class="align-content-center text-center">{{ $mkn->type }}
                                                     </td>
@@ -214,7 +214,7 @@
                         <div class="row mb-6 g-4">
                             <div class="col-12 col-md-6">
                                 <label class="form-label mb-1" for="meal-Price">Price</label>
-                                <input type="text" id="meal-Price" class="form-control numeral-mask"
+                                <input type="text" id="meal-Price" class="form-control numeral-mask2"
                                     placeholder="50000" name="priceMeal" aria-label="Price" />
                             </div>
                             <div class="col-12 col-md-6">

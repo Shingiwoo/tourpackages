@@ -104,7 +104,7 @@
                     <!-- Index Reserve Fee Tab -->
                     <div class="card mb-6">
                         <div class="card-header">
-                            <h5 class="card-title m-0">Index Meals</h5>
+                            <h5 class="card-title m-0">Index Reserve Fee</h5>
                         </div>
                         <div class="card-body">
                             <div class="row g-6">
@@ -124,7 +124,7 @@
                                                 @foreach ($reservefees as $key=> $fee )
                                                 <tr>
                                                     <td class="align-content-center text-center">#{{ $key+1 }}</td>
-                                                    <td class="align-content-center text-center">{{ $fee->price }}
+                                                    <td class="align-content-center text-center">Rp {{ number_format($fee->price, 0, ',', '.')  }}
                                                     </td>
                                                     </td>
                                                     <td class="align-content-center text-center">{{ $fee->duration }}
@@ -189,7 +189,7 @@
                         <div class="row mb-6 g-4">
                             <div class="col-12 col-md-6">
                                 <label class="form-label mb-1" for="reservefee-Price">Price</label>
-                                <input type="text" id="reservefee-Price" class="form-control numeral-mask"
+                                <input type="text" id="reservefee-Price" class="form-control numeral-mask2"
                                     placeholder="50000" name="priceReserveFee" aria-label="Price" />
                             </div>
                             <div class="col-12 col-md-6">
