@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('hotels', function (Blueprint $table) {
             $table->id();
+            $table->integer('regency_id')->nullable();
+            $table->string('name')->nullable();
+            $table->enum('type',['Two Star','Three Star', 'Four Star', 'Five Star', 'Villa', 'Homestay', 'Cottage', 'Cabin','Guesthouse', 'Without Accomodation'])->default('Three Star');
+            $table->string('price')->nullable();
+            $table->string('extrabed_price')->nullable();
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

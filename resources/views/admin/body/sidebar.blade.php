@@ -132,6 +132,28 @@
                 </li>
                 <!-- End Vehicle-->
 
+                <!-- Hotel -->
+                <li class="menu-item">
+                    <a href="" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons ti ti-building-skyscraper"></i>
+                        <div data-i18n="Hotels">Hotels</div>
+                    </a>
+
+                    <ul class="menu-sub">
+                        <li class="menu-item">
+                            <a href="{{ route('all.hotels') }}" class="menu-link">
+                                <div data-i18n="Hotels List">Hotels List</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{{ route('add.hotel') }}" class="menu-link">
+                                <div data-i18n="Add hotel">Add Hotel</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- End Hotel-->
+
                 <!-- Other -->
                 <li class="menu-item">
                     <a href="{{ route('all.service') }}" class="menu-link">

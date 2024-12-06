@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Backend\Crew\CrewController;
 use App\Http\Controllers\Backend\Meal\MealController;
 use App\Http\Controllers\Backend\Admin\AdminController;
+use App\Http\Controllers\Backend\Hotel\HotelController;
 use App\Http\Controllers\Backend\AgenFee\AgenFeeController;
 use App\Http\Controllers\Backend\Vehicle\VehicleController;
 use App\Http\Controllers\Backend\Facility\FacilityController;
@@ -139,5 +140,16 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/packages/agen/{id}', 'AllPackagesAgen')->name('all.packages.agen');
         Route::get('/show/package/{id}', 'PackageShow')->name('show.package');
 
+    });
+
+    // Hotels all Route
+    Route::controller(HotelController::class)->group(function () {
+
+        Route::get('/all/hotels', 'AllHotels')->name('all.hotels');
+        Route::get('/add/hotel', 'AddHotel')->name('add.hotel');
+        Route::post('/hotel/store', 'StoreHotel')->name('hotel.store');
+        Route::get('/edit/hotel/{id}', 'EditHotel')->name('edit.hotel');
+        Route::put('/hotel/update', 'UpdateHotel')->name('hotel.update');
+        Route::delete('/delete/hotel/{id}', 'DeleteHotel')->name('delete.hotel');
     });
 });

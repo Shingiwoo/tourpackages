@@ -119,7 +119,13 @@ class GeneratePackageController extends Controller
             'price_data' => json_encode($prices),
         ]);
 
-        return redirect()->route('all.packages')->with('message', 'Package generated successfully!');
+        // Kirim notifikasi berhasil
+        $notification = [
+            'message' => 'Package generated successfully!',
+            'alert-type' => 'success',
+        ];
+
+        return redirect()->route('all.packages')->with($notification);
     }
 
     public function EditGeneratePackage($id){
@@ -228,11 +234,17 @@ class GeneratePackageController extends Controller
             'price_data' => json_encode($prices),
         ]);
 
-        return redirect()->route('all.packages')->with('message', 'Package updated successfully!');
+
+        // Kirim notifikasi berhasil
+        $notification = [
+            'message' => 'Package updated successfully!',
+            'alert-type' => 'success',
+        ];
+
+        return redirect()->route('all.packages')->with($notification);
     }
 
-    public function AllPackagesAgen($id)
-    {
+    public function AllPackagesAgen($id){
         // Ambil data agen berdasarkan ID
         $agen = User::where('role', 'agen')->where('id', $id)->first();
 
@@ -250,8 +262,7 @@ class GeneratePackageController extends Controller
         return view('admin.package.oneday.data_package', compact('destinations', 'regencies', 'packages', 'agen'));
     }
 
-    public function PackageShow($id)
-    {
+    public function PackageShow($id){
         // Ambil data paket berdasarkan ID, termasuk relasi
         $package = PackageOneDay::with(['destinations', 'prices', 'regency'])->findOrFail($id);
 
@@ -263,8 +274,7 @@ class GeneratePackageController extends Controller
     }
 
 
-    public function DeletePackage($id)
-    {
+    public function DeletePackage($id){
         try {
             // Cari paket berdasarkan ID
             $package = PackageOneDay::find($id);
