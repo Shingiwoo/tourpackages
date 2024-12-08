@@ -18,8 +18,7 @@ use App\Http\Controllers\Controller;
 
 class GeneratePackageController extends Controller
 {
-    public function AllPackage(Request $request)
-    {
+    public function AllPackage(Request $request){
 
         $packages = PackageOneDay::all();
         $destinations = Destination::all(); // Untuk form generate
@@ -29,8 +28,7 @@ class GeneratePackageController extends Controller
         return view('admin.package.oneday.all_packages', compact('packages', 'destinations', 'active', 'inactive', 'agens'));
     }
 
-    public function GeneratePackage(Request $request)
-    {
+    public function GeneratePackage(Request $request){
 
         $destinations = Destination::all();
         $agens = User::agen()->get();
@@ -39,8 +37,7 @@ class GeneratePackageController extends Controller
         return view('admin.package.oneday.generate_package_oneday', compact('destinations', 'agens', 'regencies'));
     }
 
-    public function generateCodeOneday(Request $request)
-    {
+    public function generateCodeOneday(Request $request){
         try {
             Log::info('generateCodeOneday method initiated.');
 
@@ -207,8 +204,7 @@ class GeneratePackageController extends Controller
     }
 
 
-    public function EditGeneratePackage($id)
-    {
+    public function EditGeneratePackage($id){
 
         $package = PackageOneDay::with('destinations')->find($id);
 
@@ -224,8 +220,7 @@ class GeneratePackageController extends Controller
         return view('admin.package.oneday.edit_package', compact('destinations', 'agens', 'regencies', 'package', 'selectedDestinations'));
     }
 
-    public function UpdateGenerateCodeOneday(Request $request, $id)
-    {
+    public function UpdateGenerateCodeOneday(Request $request, $id){
         try {
 
             Log::info('UpdateGenerateCodeOneday method initiated.');
