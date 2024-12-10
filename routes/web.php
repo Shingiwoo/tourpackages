@@ -13,6 +13,7 @@ use App\Http\Controllers\Backend\ReserveFee\ReserveFeeController;
 use App\Http\Controllers\Backend\ServiceFee\ServiceFeeController;
 use App\Http\Controllers\Backend\Destinastion\DestinationController;
 use App\Http\Controllers\Backend\PackageTour\GeneratePackageController;
+use App\Http\Controllers\Backend\PackageTour\GenerateTwodayPackageController;
 
 Route::get('/', function () {
     return view('frontend/index');
@@ -128,20 +129,6 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
 
     });
 
-    // Packege all Route
-    Route::controller(GeneratePackageController::class)->group(function () {
-
-        Route::get('/all/packages', 'AllPackage')->name('all.packages');
-        Route::get('/generate/package', 'GeneratePackage')->name('generate.package');
-        Route::post('/package/generate', 'generateCodeOneday')->name('generatecode.package');
-        Route::get('/edit/package/{id}', 'EditGeneratePackage')->name('edit.package');
-        Route::put('/update/package/{id}', 'UpdateGenerateCodeOneday')->name('update.package');
-        Route::delete('/delete/package/{id}', 'DeletePackage')->name('delete.package');
-        Route::get('/packages/agen/{id}', 'AllPackagesAgen')->name('all.packages.agen');
-        Route::get('/show/package/{id}', 'PackageShow')->name('show.package');
-
-    });
-
     // Hotels all Route
     Route::controller(HotelController::class)->group(function () {
 
@@ -151,5 +138,33 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/edit/hotel/{id}', 'EditHotel')->name('edit.hotel');
         Route::put('/hotel/update', 'UpdateHotel')->name('hotel.update');
         Route::delete('/delete/hotel/{id}', 'DeleteHotel')->name('delete.hotel');
+    });
+
+    // Package Oneday all Route
+    Route::controller(GeneratePackageController::class)->group(function () {
+
+        // Oneday
+        Route::get('/all/oneday/packages', 'AllPackage')->name('all.packages');
+        Route::get('/generate/oneday/package', 'GeneratePackage')->name('generate.package');
+        Route::post('/package/oneday/generate', 'generateCodeOneday')->name('generatecode.package');
+        Route::get('/edit/oneday/package/{id}', 'EditGeneratePackage')->name('edit.package');
+        Route::put('/update/oneday/package/{id}', 'UpdateGenerateCodeOneday')->name('update.package');
+        Route::delete('/delete/oneday/package/{id}', 'DeletePackage')->name('delete.package');
+        Route::get('/packages/agen/{id}', 'AllPackagesAgen')->name('all.packages.agen');
+        Route::get('/show/oneday/package/{id}', 'PackageShow')->name('show.package');
+    });
+
+    // Package Twoday all Route
+    Route::controller(GenerateTwodayPackageController::class)->group(function () {
+
+        // Oneday
+        Route::get('/all/twoday/packages', 'AllTwodayPackage')->name('all.twoday.packages');
+        Route::get('/generate/twoday/package', 'GenerateTwodayPackage')->name('generate.twoday.package');
+        Route::post('/package/twoday/generate', 'generateCodeTwoday')->name('generatecode.twoday.package');
+        Route::get('/edit/twoday/package/{id}', 'EditGenerateTwodayPackage')->name('edit.twoday.package');
+        Route::put('/update/twoday/package/{id}', 'UpdateGenerateCodeTwoday')->name('update.twoday.package');
+        Route::delete('/delete/twoday/package/{id}', 'DeleteTwodayPackage')->name('delete.twoday.package');
+        Route::get('/packages/agen/{id}', 'AllPackagesAgen')->name('all.packages.agen');
+        Route::get('/show/twoday/package/{id}', 'PackageTwodayShow')->name('show.twoday.package');
     });
 });

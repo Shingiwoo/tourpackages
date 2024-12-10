@@ -76,6 +76,28 @@
                 <!-- One Day End -->
 
             </ul>
+            <ul class="menu-sub">
+                <!-- Two Day -->
+                <li class="menu-item">
+                    <a class="menu-link menu-toggle">
+                        <div data-i18n="Twoday">Two Day</div>
+                    </a>
+                    <ul class="menu-sub">
+                        <li class="menu-item">
+                            <a href="{{ route('generate.twoday.package') }}" class="menu-link">
+                                <div data-i18n="Generate Tour">Generate Tour</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{{ route('all.twoday.packages') }}" class="menu-link">
+                                <div data-i18n="Tour List">Tour List</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- Two Day End -->
+
+            </ul>
         </li>
 
         <li class="menu-item">

@@ -11,12 +11,22 @@ class Hotel extends Model
 
     protected $fillable = [ 'regency_id', 'name', 'type', 'price', 'extrabed_price', 'status'];
 
+
+    public static function getByRegency($regencyId)
+    {
+        return self::where('regency_id', $regencyId)->get();
+    }
     /**
      * Relasi dengan regency (kabupaten/kota)
      */
     public function regency()
     {
         return $this->belongsTo(Regency::class);
+    }
+
+    public function packages()
+    {
+        return $this->belongsToMany(PackageTwoDay::class, 'package_hotels', 'hotel_id', 'package_id');
     }
 }
 

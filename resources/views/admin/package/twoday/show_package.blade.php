@@ -79,27 +79,36 @@
                                                     <tr>
                                                         <th class="align-content-center text-center">Vehicle</th>
                                                         <th class="align-content-center text-center">User</th>
-                                                        <th class="align-content-center text-center">Price</th>
+                                                        <th class="align-content-center text-center">No Accomodation</th>
+                                                        <th class="align-content-center text-center">Guesthouse</th>
+                                                        <th class="align-content-center text-center">Homestay</th>
+                                                        <th class="align-content-center text-center">TwoStar</th>
+                                                        <th class="align-content-center text-center">ThreeStar</th>
+                                                        <th class="align-content-center text-center">FourStar</th>
+                                                        <th class="align-content-center text-center">FiveStar</th>
+                                                        <th class="align-content-center text-center">priceDifference</th>
                                                     </tr>
                                                 </thead>
-                                                @php
-                                                    // Asumsikan $package->prices->price_data sudah berisi JSON yang valid
-                                                    $prices = json_decode($package->prices->price_data, true);
-                                                @endphp
-
                                                 <tbody>
-                                                    @if (count($prices) > 0)
-                                                        @foreach ($prices as $price)
-                                                            <tr>
-                                                                <td class="align-content-center text-center">{{ $price['vehicle'] }}</td>
-                                                                <td class="align-content-center text-center">{{ $price['user'] }}</td>
-                                                                <td class="align-content-center text-center">Rp {{ number_format($price['price'], 0, ',', '.') }}</td>
-                                                            </tr>
-                                                        @endforeach
-                                                    @else
+                                                    @if ($package->prices)
+                                                    @foreach (json_decode($package->prices, true)['prices'] as $priceRow)
                                                         <tr>
-                                                            <td colspan="3" class="text-center">No price data available</td>
+                                                            <td>{{ $priceRow['vehicle'] }}</td>
+                                                            <td>{{ $priceRow['user'] }}</td>
+                                                            <td>{{ number_format($priceRow['WithoutAccomodation'], 2, ',', '.') }} /orang</td>
+                                                            <td>{{ number_format($priceRow['Guesthouse'], 2, ',', '.') }} /orang</td>
+                                                            <td>{{ number_format($priceRow['Homestay'], 2, ',', '.') }} /orang</td>
+                                                            <td>{{ number_format($priceRow['TwoStar'], 2, ',', '.') }} /orang</td>
+                                                            <td>{{ number_format($priceRow['ThreeStar'], 2, ',', '.') }} /orang</td>
+                                                            <td>{{ number_format($priceRow['FourStar'], 2, ',', '.') }} /orang</td>
+                                                            <td>{{ number_format($priceRow['FiveStar'], 2, ',', '.') }} /orang</td>
+                                                            <td>{{ number_format($priceRow['priceDifference'], 2, ',', '.') }} /orang</td>
                                                         </tr>
+                                                    @endforeach
+                                                    @else
+                                                    <tr>
+                                                        <td colspan="3" class="text-center">No price data available</td>
+                                                    </tr>
                                                     @endif
                                                 </tbody>
                                             </table>
