@@ -77,7 +77,7 @@ class GenerateTwodayPackageController extends Controller
             $crewData = Crew::all();
             $serviceFee = ServiceFee::where('duration', '2')->first()->mark ?? 0.14;
             $feeAgen = AgenFee::find(1)->price ?? 50000;
-            $reserveFees = ReserveFee::all();
+            $reserveFees = ReserveFee::where('duration', '2')->get();
             $selectedDestinations = Destination::whereIn('id', $destinationIds)->get();
 
             // Log::info('Supporting data fetched.', [
@@ -119,7 +119,8 @@ class GenerateTwodayPackageController extends Controller
             $package->prices()->create([
                 'price_data' => json_encode($prices),
             ]);
-            Log::info('Prices saved to database.', ['prices' => $prices]);
+            // Log::info('Prices saved to database.', ['prices' => $prices]);
+            Log::info('Prices saved to database successfully!');
 
             // Kirim notifikasi berhasil
             $notification = [
@@ -178,7 +179,7 @@ class GenerateTwodayPackageController extends Controller
             $package = PackageTwoDay::find($id);
 
             if (!$package) {
-                return redirect()->route('all.packages')->with('error', 'Package not found!');
+                return redirect()->route('all.twoday.packages')->with('error', 'Package not found!');
             }
 
             // Ambil data dari request
@@ -195,7 +196,7 @@ class GenerateTwodayPackageController extends Controller
             $crewData = Crew::all();
             $serviceFee = ServiceFee::where('duration', '2')->first()->mark ?? 0.14;
             $feeAgen = AgenFee::find(1)->price ?? 50000;
-            $reserveFees = ReserveFee::all();
+            $reserveFees = ReserveFee::where('duration', '2')->get();
             $selectedDestinations = Destination::whereIn('id', $destinationIds)->get();
 
             // Update paket wisata di database
@@ -227,7 +228,8 @@ class GenerateTwodayPackageController extends Controller
             $package->prices()->update([
                 'price_data' => json_encode($prices),
             ]);
-            Log::info('Prices update to database.', ['prices' => $prices]);
+            //Log::info('Prices update to database.', ['prices' => $prices]);
+            Log::info('Prices update to database successfully!');
 
             // Kirim notifikasi berhasil
             $notification = [
@@ -259,7 +261,7 @@ class GenerateTwodayPackageController extends Controller
                 continue;
             }
 
-            $transportCost = $vehicle->price;
+            $transportCost = $vehicle->price * 2;
             $crew = $crewData->firstWhere(fn($c) => $participants >= $c->min_participants && $participants <= $c->max_participants);
 
             // Biaya destinasi dan parkir
@@ -287,12 +289,18 @@ class GenerateTwodayPackageController extends Controller
             }
 
             // Biaya tambahan lainnya
-            $mealCost = $meals ? $meals->price * ($participants + $crew->num_crew) : 0;
+            $mealCost = $meals ? $meals->price * $meals->num_meals * ($participants + $crew->num_crew) : 0;
             $reserveFee = $reserveFees->firstWhere(fn($r) => $participants >= $r->min_user && $participants <= $r->max_user);
             $reserveFeeCost = $reserveFee ? $reserveFee->price * $participants * 2 : 0;
 
             // Biaya tambahan untuk WNA
             $priceDifference = ($totalCostWNA - $totalCostWNI) / $participants;
+
+            // // Logging
+            // Log::info('Calculated mealCost', [
+            //     'mealCost' => $mealCost,
+            //     'reserveFeeCost' => $reserveFeeCost,
+            // ]);
 
             // Hitung harga untuk setiap jenis akomodasi
             $priceRow = [
@@ -305,10 +313,10 @@ class GenerateTwodayPackageController extends Controller
                 $numRooms = intdiv($participants, 2); // Bagi dua peserta untuk menghitung kamar
                 $extraBedCost = 0;
 
-                // Jika jumlah peserta ganjil, tambahkan 1 kamar dan hitung biaya extrabed
+                // Jika jumlah peserta ganjil, hitung biaya extrabed
                 if ($participants % 2 !== 0) {
                     $numRooms += 1;
-                    $extraBedCost = $hotel->extrabed_price; // Ambil harga extrabed dari database
+                    $extraBedCost = $hotel->extrabed_price * 2; // Ambil harga extrabed dari database
                 }
 
                 $hotelCost = ($hotel->price * $numRooms) + $extraBedCost;
@@ -322,12 +330,12 @@ class GenerateTwodayPackageController extends Controller
                 $priceRow[$hotel->type] = round($finalPrice, 2);
 
                 // // Logging harga setiap hotel
-                    // Log::info('Calculated price for hotel', [
-                    //     'hotel' => $hotel->name,
-                    //     'type' => $hotel->type,
-                    //     'participants' => $participants,
-                    //     'finalPrice' => $finalPrice,
-                    //     'pricePerPerson' => $pricePerPerson,
+                //     Log::info('Calculated price for hotel', [
+                //         'hotel' => $hotel->name,
+                //         'type' => $hotel->type,
+                //         'participants' => $participants,
+                //         'finalPrice' => $finalPrice,
+                //         'pricePerPerson' => $pricePerPerson,
                 // ]);
             }
 

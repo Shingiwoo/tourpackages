@@ -226,7 +226,8 @@ class GeneratePackageController extends Controller
             $package->prices()->update([
                 'price_data' => json_encode($prices),
             ]);
-            Log::info('Prices update to database.', ['prices' => $prices]);
+            //Log::info('Prices update to database.', ['prices' => $prices]);
+            Log::info('Prices update to database successfully!');
 
             // Kirim notifikasi berhasil
             $notification = [
