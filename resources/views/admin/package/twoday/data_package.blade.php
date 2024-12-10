@@ -22,7 +22,7 @@
             <div class="card h-100">
                 <div class="card-header pb-0 d-flex justify-content-between">
                     <div class="card-title mb-0">
-                        <h5 class="mb-1">{{ $pack->name_package }}</h5>
+                        <h5 class="mb-1 text-uppercase">{{ $pack->name_package }}</h5>
                     </div>
                 </div>
                 <div class="card-body">

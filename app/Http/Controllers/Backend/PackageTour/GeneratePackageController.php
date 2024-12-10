@@ -18,7 +18,8 @@ use App\Http\Controllers\Controller;
 
 class GeneratePackageController extends Controller
 {
-    public function AllPackage(Request $request){
+    public function AllPackage(Request $request)
+    {
 
         $packages = PackageOneDay::all();
         $destinations = Destination::all(); // Untuk form generate
@@ -28,7 +29,8 @@ class GeneratePackageController extends Controller
         return view('admin.package.oneday.all_packages', compact('packages', 'destinations', 'active', 'inactive', 'agens'));
     }
 
-    public function GeneratePackage(Request $request){
+    public function GeneratePackage(Request $request)
+    {
 
         $destinations = Destination::all();
         $agens = User::agen()->get();
@@ -37,7 +39,8 @@ class GeneratePackageController extends Controller
         return view('admin.package.oneday.generate_package_oneday', compact('destinations', 'agens', 'regencies'));
     }
 
-    public function generateCodeOneday(Request $request){
+    public function generateCodeOneday(Request $request)
+    {
         try {
             Log::info('generateCodeOneday method initiated.');
 
@@ -99,83 +102,17 @@ class GeneratePackageController extends Controller
 
             // Simpan destinasi untuk paket
             $package->destinations()->sync($destinationIds);
-            // Log::info('Destinations associated with package.', ['destinationIds' => $destinationIds]);
 
-            // Hitung harga per armada dan jumlah peserta
-            $prices = [];
-            for ($participants = 1; $participants <= 45; $participants++) {
-                // Log::info("Processing participants count: {$participants}");
-
-                $vehicle = $vehicles->firstWhere(fn($v) => $participants >= $v->capacity_min && $participants <= $v->capacity_max);
-                if (!$vehicle) {
-                    Log::info('No vehicle found for participants.', ['participants' => $participants]);
-                    continue;
-                }
-
-                $transportCost = $vehicle->price;
-                $crew = $crewData->firstWhere(fn($c) => $participants >= $c->min_participants && $participants <= $c->max_participants);
-
-                $totalCostWNI = 0;
-                $totalCostWNA = 0;
-                $parkingCost = 0;
-                foreach ($selectedDestinations as $destination) {
-                    if ($destination->price_type === 'per_person') {
-                        $totalCostWNI += $destination->price_wni * $participants;
-                        $totalCostWNA += $destination->price_wna * $participants;
-                    } elseif ($destination->price_type === 'flat') {
-                        $groupCount = ceil($participants / $destination->max_participants);
-                        $totalCostWNI += $groupCount * $destination->price_wni;
-                        $totalCostWNA += $groupCount * $destination->price_wna;
-                    }
-                    $parkingCosts = [
-                        'City Car' => $destination->parking_city_car,
-                        'Mini Bus' => $destination->parking_mini_bus,
-                        'Bus' => $destination->parking_bus
-                    ];
-
-                    $parkingCost += $parkingCosts[$vehicle->type];
-                }
-
-                // Log::info('Cost calculated for destinations.', [
-                //     'participants' => $participants,
-                //     'groupCount' => $groupCount,
-                //     'totalCostWNI' => $totalCostWNI,
-                //     'totalCostWNA' => $totalCostWNA,
-                //     'parkingCost' => $parkingCost,
-                // ]);
-
-                $priceDifference = ($totalCostWNA - $totalCostWNI) / $participants;
-
-                $mealCost = $meals ? $meals->price * ($participants + $crew->num_crew) : 0;
-
-                $reserveFee = $reserveFees->firstWhere(fn($r) => $participants >= $r->min_user && $participants <= $r->max_user);
-                $reserveFeeCost = $reserveFee ? $reserveFee->price * $participants : 0;
-
-                $totalCost = $totalCostWNI + $transportCost + ($feeAgen * $participants) +
-                    $mealCost + $reserveFeeCost + $parkingCost;
-
-                $pricePerPerson = $totalCost / $participants;
-                $serviceFeeCost = $pricePerPerson * $serviceFee;
-                $finalPrice = $pricePerPerson + $serviceFeeCost;
-
-                // Log::info('Final price calculated.', [
-                //     'participants' => $participants,
-                //     'mealCost' => $mealCost,
-                //     'reserveFeeCost' => $reserveFeeCost,
-                //     'totalCost' => $totalCost,
-                //     'pricePerPerson' => $pricePerPerson,
-                //     'serviceFeeCost' => $serviceFeeCost,
-                //     'finalPrice' => $finalPrice,
-                // ]);
-
-                // Simpan harga ke array
-                $prices[] = [
-                    'vehicle' => $vehicle->name,
-                    'user' => $participants,
-                    'price' => round($finalPrice, 2),
-                    'wnaCost' => $priceDifference,
-                ];
-            }
+            // Hitung harga per jenis hotel dan jumlah peserta
+            $prices = $this->calculatePrices(
+                $vehicles,
+                $meals,
+                $crewData,
+                $serviceFee,
+                $feeAgen,
+                $reserveFees,
+                $selectedDestinations
+            );
 
             // Simpan harga ke database (dalam format JSON)
             $package->prices()->create([
@@ -204,7 +141,8 @@ class GeneratePackageController extends Controller
     }
 
 
-    public function EditGeneratePackage($id){
+    public function EditGeneratePackage($id)
+    {
 
         $package = PackageOneDay::with('destinations')->find($id);
 
@@ -220,7 +158,8 @@ class GeneratePackageController extends Controller
         return view('admin.package.oneday.edit_package', compact('destinations', 'agens', 'regencies', 'package', 'selectedDestinations'));
     }
 
-    public function UpdateGenerateCodeOneday(Request $request, $id){
+    public function UpdateGenerateCodeOneday(Request $request, $id)
+    {
         try {
 
             Log::info('UpdateGenerateCodeOneday method initiated.');
@@ -269,61 +208,19 @@ class GeneratePackageController extends Controller
             ]);
             Log::info('Package update to database.', ['package' => $package]);
 
-
-            // Update relasi destinasi untuk paket
+            // Simpan destinasi untuk paket
             $package->destinations()->sync($destinationIds);
 
-            // Hitung ulang harga per armada dan jumlah peserta
-            $prices = [];
-            for ($participants = 1; $participants <= 45; $participants++) {
-                $vehicle = $vehicles->firstWhere(fn($v) => $participants >= $v->capacity_min && $participants <= $v->capacity_max);
-                if (!$vehicle) continue;
-
-                $transportCost = $vehicle->price;
-                $crew = $crewData->firstWhere(fn($c) => $participants >= $c->min_participants && $participants <= $c->max_participants);
-
-                $totalCostWNI = 0;
-                $totalCostWNA = 0;
-                $parkingCost = 0;
-                foreach ($selectedDestinations as $destination) {
-                    if ($destination->price_type === 'per_person') {
-                        $totalCostWNI += $destination->price_wni * $participants;
-                        $totalCostWNA += $destination->price_wna * $participants;
-                    } elseif ($destination->price_type === 'flat') {
-                        $groupCount = ceil($participants / $destination->max_participants);
-                        $totalCostWNI += $groupCount * $destination->price_wni;
-                        $totalCostWNA += $groupCount * $destination->price_wna;
-                    }
-                    $parkingCosts = [
-                        'City Car' => $destination->parking_city_car,
-                        'Mini Bus' => $destination->parking_mini_bus,
-                        'Bus' => $destination->parking_bus
-                    ];
-
-                    $parkingCost += $parkingCosts[$vehicle->type];
-                }
-
-                $priceDifference = ($totalCostWNA - $totalCostWNI) / $participants;
-
-                $mealCost = $meals ? $meals->price * $participants * $crew->num_crew : 0;
-
-                $reserveFee = $reserveFees->firstWhere(fn($r) => $participants >= $r->min_user && $participants <= $r->max_user);
-                $reserveFeeCost = $reserveFee ? $reserveFee->price * $participants : 0;
-
-                $totalCost = $totalCostWNI + $transportCost + ($feeAgen * $participants) +
-                    $mealCost + $reserveFeeCost + $parkingCost;
-
-                $pricePerPerson = $totalCost / $participants;
-                $finalPrice = $pricePerPerson + ($pricePerPerson * $serviceFee);
-
-                // Simpan harga ke array
-                $prices[] = [
-                    'vehicle' => $vehicle->name,
-                    'user' => $participants,
-                    'price' => round($finalPrice, 2),
-                    'wnaCost' => $priceDifference
-                ];
-            }
+            // Hitung harga per jenis hotel dan jumlah peserta
+            $prices = $this->calculatePrices(
+                $vehicles,
+                $meals,
+                $crewData,
+                $serviceFee,
+                $feeAgen,
+                $reserveFees,
+                $selectedDestinations
+            );
 
             // Update harga di database (dalam format JSON)
             $package->prices()->update([
@@ -349,6 +246,87 @@ class GeneratePackageController extends Controller
                 'alert-type' => 'error'
             ])->withInput();
         }
+    }
+
+    private function calculatePrices($vehicles, $meals, $crewData, $serviceFee, $feeAgen, $reserveFees, $selectedDestinations){
+
+        // Hitung harga per armada dan jumlah peserta
+        $prices = [];
+        for ($participants = 1; $participants <= 45; $participants++) {
+            // Log::info("Processing participants count: {$participants}");
+
+            $vehicle = $vehicles->firstWhere(fn($v) => $participants >= $v->capacity_min && $participants <= $v->capacity_max);
+            if (!$vehicle) {
+                Log::info('No vehicle found for participants.', ['participants' => $participants]);
+                continue;
+            }
+
+            $transportCost = $vehicle->price;
+            $crew = $crewData->firstWhere(fn($c) => $participants >= $c->min_participants && $participants <= $c->max_participants);
+
+            $totalCostWNI = 0;
+            $totalCostWNA = 0;
+            $parkingCost = 0;
+            foreach ($selectedDestinations as $destination) {
+                if ($destination->price_type === 'per_person') {
+                    $totalCostWNI += $destination->price_wni * $participants;
+                    $totalCostWNA += $destination->price_wna * $participants;
+                } elseif ($destination->price_type === 'flat') {
+                    $groupCount = ceil($participants / $destination->max_participants);
+                    $totalCostWNI += $groupCount * $destination->price_wni;
+                    $totalCostWNA += $groupCount * $destination->price_wna;
+                }
+                $parkingCosts = [
+                    'City Car' => $destination->parking_city_car,
+                    'Mini Bus' => $destination->parking_mini_bus,
+                    'Bus' => $destination->parking_bus
+                ];
+
+                $parkingCost += $parkingCosts[$vehicle->type];
+            }
+
+            // Log::info('Cost calculated for destinations.', [
+            //     'participants' => $participants,
+            //     'groupCount' => $groupCount,
+            //     'totalCostWNI' => $totalCostWNI,
+            //     'totalCostWNA' => $totalCostWNA,
+            //     'parkingCost' => $parkingCost,
+            // ]);
+
+            $priceDifference = ($totalCostWNA - $totalCostWNI) / $participants;
+
+            $mealCost = $meals ? $meals->price * ($participants + $crew->num_crew) : 0;
+
+            $reserveFee = $reserveFees->firstWhere(fn($r) => $participants >= $r->min_user && $participants <= $r->max_user);
+            $reserveFeeCost = $reserveFee ? $reserveFee->price * $participants : 0;
+
+            $totalCost = $totalCostWNI + $transportCost + ($feeAgen * $participants) +
+                $mealCost + $reserveFeeCost + $parkingCost;
+
+            $pricePerPerson = $totalCost / $participants;
+            $serviceFeeCost = $pricePerPerson * $serviceFee;
+            $finalPrice = $pricePerPerson + $serviceFeeCost;
+
+            // Log::info('Final price calculated.', [
+            //     'participants' => $participants,
+            //     'mealCost' => $mealCost,
+            //     'reserveFeeCost' => $reserveFeeCost,
+            //     'totalCost' => $totalCost,
+            //     'pricePerPerson' => $pricePerPerson,
+            //     'serviceFeeCost' => $serviceFeeCost,
+            //     'finalPrice' => $finalPrice,
+            // ]);
+
+            // Simpan harga ke array
+            $prices[] = [
+                'vehicle' => $vehicle->name,
+                'user' => $participants,
+                'price' => round($finalPrice, 2),
+                'wnaCost' => $priceDifference,
+            ];
+        }
+
+        return $prices;
     }
 
     public function AllPackagesAgen($id)
