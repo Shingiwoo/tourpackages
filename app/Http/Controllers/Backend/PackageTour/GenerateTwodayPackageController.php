@@ -316,7 +316,7 @@ class GenerateTwodayPackageController extends Controller
                 // Jika jumlah peserta ganjil, hitung biaya extrabed
                 if ($participants % 2 !== 0) {
                     $numRooms += 1;
-                    $extraBedCost = $hotel->extrabed_price * 2; // Ambil harga extrabed dari database
+                    $extraBedCost = $hotel->extrabed_price; // Ambil harga extrabed dari database
                 }
 
                 $hotelCost = ($hotel->price * $numRooms) + $extraBedCost;
