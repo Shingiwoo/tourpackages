@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('package_one_days', function (Blueprint $table) {
+        Schema::create('package_two_days', function (Blueprint $table) {
             $table->id();
             $table->string('name_package')->nullable();
             $table->integer('regency_id')->nullable();
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('package_one_days');
+        Schema::dropIfExists('package_two_days');
     }
 };

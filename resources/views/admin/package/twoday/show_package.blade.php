@@ -86,23 +86,27 @@
                                                         <th class="align-content-center text-center">ThreeStar</th>
                                                         <th class="align-content-center text-center">FourStar</th>
                                                         <th class="align-content-center text-center">FiveStar</th>
-                                                        <th class="align-content-center text-center">priceDifference</th>
+                                                        <th class="align-content-center text-center">Wna Cost</th>
                                                     </tr>
                                                 </thead>
+                                                @php
+                                                    // Asumsikan $package->prices->price_data sudah berisi JSON yang valid
+                                                    $prices = json_decode($package->prices->price_data, true);
+                                                @endphp
                                                 <tbody>
-                                                    @if ($package->prices)
-                                                    @foreach (json_decode($package->prices, true)['prices'] as $priceRow)
+                                                    @if (count($prices) > 0)
+                                                        @foreach ($prices as $priceRow)
                                                         <tr>
-                                                            <td>{{ $priceRow['vehicle'] }}</td>
-                                                            <td>{{ $priceRow['user'] }}</td>
-                                                            <td>{{ number_format($priceRow['WithoutAccomodation'], 2, ',', '.') }} /orang</td>
-                                                            <td>{{ number_format($priceRow['Guesthouse'], 2, ',', '.') }} /orang</td>
-                                                            <td>{{ number_format($priceRow['Homestay'], 2, ',', '.') }} /orang</td>
-                                                            <td>{{ number_format($priceRow['TwoStar'], 2, ',', '.') }} /orang</td>
-                                                            <td>{{ number_format($priceRow['ThreeStar'], 2, ',', '.') }} /orang</td>
-                                                            <td>{{ number_format($priceRow['FourStar'], 2, ',', '.') }} /orang</td>
-                                                            <td>{{ number_format($priceRow['FiveStar'], 2, ',', '.') }} /orang</td>
-                                                            <td>{{ number_format($priceRow['priceDifference'], 2, ',', '.') }} /orang</td>
+                                                            <td class="align-content-center text-center">{{ $priceRow['vehicle'] }}</td>
+                                                            <td class="align-content-center text-center">{{ $priceRow['user'] }}</td>
+                                                            <td class="align-content-center text-center">{{ number_format($priceRow['WithoutAccomodation'], 0, ',', '.') }} /orang</td>
+                                                            <td class="align-content-center text-center">{{ number_format($priceRow['Guesthouse'], 0, ',', '.') }} /orang</td>
+                                                            <td class="align-content-center text-center">{{ number_format($priceRow['Homestay'], 0, ',', '.') }} /orang</td>
+                                                            <td class="align-content-center text-center">{{ number_format($priceRow['TwoStar'], 0, ',', '.') }} /orang</td>
+                                                            <td>{{ number_format($priceRow['ThreeStar'], 0, ',', '.') }} /orang</td>
+                                                            <td class="align-content-center text-center">{{ number_format($priceRow['FourStar'], 0, ',', '.') }} /orang</td>
+                                                            <td class="align-content-center text-center">{{ number_format($priceRow['FiveStar'], 0, ',', '.') }} /orang</td>
+                                                            <td class="align-content-center text-center">{{ number_format($priceRow['wnaCost'], 0, ',', '.') }} /orang</td>
                                                         </tr>
                                                     @endforeach
                                                     @else
@@ -127,7 +131,7 @@
         <div class="col-lg-3 col-12 invoice-actions">
             <div class="card mb-6">
                 <div class="card-body">
-                    <a href="{{ route('all.packages') }}" class="btn btn-label-primary d-grid w-100 mb-4">Back</a>
+                    <a href="{{ route('all.twoday.packages') }}" class="btn btn-label-primary d-grid w-100 mb-4">Back</a>
                 </div>
             </div>
         </div>

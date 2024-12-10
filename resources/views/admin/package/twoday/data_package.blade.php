@@ -4,13 +4,13 @@
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card-header d-flex justify-content-between">
         <div class="card-title mb-4">
-            <h5 class="mb-1">All Data Packages For - <span class="text-uppercase">{{ $agen->username }}</span></h5>
+            <h5 class="mb-1">All Data Twoday Packages For - <span class="text-uppercase">{{ $agen->username }}</span></h5>
             <p class="card-subtitle"></p>
         </div>
         <div class="dt-action-buttons text-end">
             <div class="dt-buttons btn-group flex-wrap">
                 <div class="button-group">
-                    <a class="btn btn-secondary" href="{{ route('all.packages') }}">All Package</a>
+                    <a class="btn btn-secondary" href="{{ route('all.twoday.packages') }}">All Package</a>
                 </div>
             </div>
         </div>
@@ -100,12 +100,12 @@
                                                         <th class="align-content-center text-center">ThreeStar</th>
                                                         <th class="align-content-center text-center">FourStar</th>
                                                         <th class="align-content-center text-center">FiveStar</th>
-                                                        <th class="align-content-center text-center">priceDifference</th>
+                                                        <th class="align-content-center text-center">Wna Cost</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     @if ($pack->prices)
-                                                    @foreach (json_decode($pack->prices->price_data, true)['prices'] as $priceRow)
+                                                    @foreach ($pack->prices->prices as $priceRow)
                                                         <tr>
                                                             <td>{{ $priceRow['vehicle'] }}</td>
                                                             <td>{{ $priceRow['user'] }}</td>
@@ -116,7 +116,7 @@
                                                             <td>{{ number_format($priceRow['ThreeStar'], 2, ',', '.') }} /orang</td>
                                                             <td>{{ number_format($priceRow['FourStar'], 2, ',', '.') }} /orang</td>
                                                             <td>{{ number_format($priceRow['FiveStar'], 2, ',', '.') }} /orang</td>
-                                                            <td>{{ number_format($priceRow['priceDifference'], 2, ',', '.') }} /orang</td>
+                                                            <td>{{ number_format($priceRow['wnaCost'], 2, ',', '.') }} /orang</td>
                                                         </tr>
                                                     @endforeach
                                                     @else

@@ -94,6 +94,7 @@
                                                         <th class="align-content-center text-center">Vehicle</th>
                                                         <th class="align-content-center text-center">User</th>
                                                         <th class="align-content-center text-center">Price</th>
+                                                        <th class="align-content-center text-center">Wna Cost</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -105,7 +106,9 @@
                                                         <td class="align-content-center text-center">{{ $price['user']
                                                             }}</td>
                                                         <td class="align-content-center text-center">Rp {{
-                                                            number_format($price['price'], 0, ',', '.') }}</td>
+                                                            number_format($price['price'], 0, ',', '.') }} /orang</td>
+                                                        <td class="align-content-center text-center">Rp {{
+                                                            number_format($price['wnaCost'], 0, ',', '.') }} /orang</td>
                                                     </tr>
                                                     @endforeach
                                                     @else

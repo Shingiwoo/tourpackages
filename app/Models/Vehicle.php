@@ -18,5 +18,10 @@ class Vehicle extends Model
     {
         return $this->belongsTo(Regency::class, 'regency_id', 'id');
     }
+
+    public static function getByRegency($regencyId)
+    {
+        return self::where('regency_id', $regencyId)->get();
+    }
 }
 

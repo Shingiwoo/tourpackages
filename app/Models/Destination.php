@@ -31,6 +31,11 @@ class Destination extends Model
         return $this->belongsTo(Regency::class, 'regency_id', 'id');
     }
 
+    public static function getByRegency($regencyId)
+    {
+        return self::where('regency_id', $regencyId)->get();
+    }
+
     public function packages()
     {
         return $this->belongsToMany(PackageOneDay::class, 'package_destinations');

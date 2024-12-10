@@ -23,10 +23,5 @@ class Hotel extends Model
     {
         return $this->belongsTo(Regency::class);
     }
-
-    public function packages()
-    {
-        return $this->belongsToMany(PackageTwoDay::class, 'package_hotels', 'hotel_id', 'package_id');
-    }
 }
 

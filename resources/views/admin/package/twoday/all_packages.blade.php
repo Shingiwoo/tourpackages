@@ -139,7 +139,7 @@
         const showAgenPackagesBtn = document.getElementById('showAgenPackagesBtn');
 
         if (agenId) {
-            showAgenPackagesBtn.href = `{{ url('/packages/agen') }}/${agenId}`;
+            showAgenPackagesBtn.href = `{{ url('/packages/twoday/agen') }}/${agenId}`;
             showAgenPackagesBtn.classList.remove('disabled'); // Enable button
         } else {
             showAgenPackagesBtn.href = '#';

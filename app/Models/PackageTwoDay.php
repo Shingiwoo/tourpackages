@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\PackagePrice;
+use App\Models\Destination;
+use Illuminate\Database\Eloquent\Model;
 
-class PackageOneDay extends Model
+class PackageTwoDay extends Model
 {
     use HasFactory;
 
@@ -20,12 +22,12 @@ class PackageOneDay extends Model
 
     public function destinations()
     {
-        return $this->belongsToMany(Destination::class, 'package_destinations', 'package_id', 'destination_id');
+        return $this->belongsToMany(Destination::class, 'package_two_destinations', 'package_id', 'destination_id');
     }
 
     public function prices()
     {
-        return $this->hasOne(PackagePrice::class);
+        return $this->hasOne(PackageTwoPrice::class);
     }
 
     public function user()

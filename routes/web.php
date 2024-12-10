@@ -158,13 +158,13 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::controller(GenerateTwodayPackageController::class)->group(function () {
 
         // Oneday
-        Route::get('/all/twoday/packages', 'AllTwodayPackage')->name('all.twoday.packages');
+        Route::get('/all/twoday/packages', 'AllTwoDayPackage')->name('all.twoday.packages');
         Route::get('/generate/twoday/package', 'GenerateTwodayPackage')->name('generate.twoday.package');
         Route::post('/package/twoday/generate', 'generateCodeTwoday')->name('generatecode.twoday.package');
         Route::get('/edit/twoday/package/{id}', 'EditGenerateTwodayPackage')->name('edit.twoday.package');
         Route::put('/update/twoday/package/{id}', 'UpdateGenerateCodeTwoday')->name('update.twoday.package');
         Route::delete('/delete/twoday/package/{id}', 'DeleteTwodayPackage')->name('delete.twoday.package');
-        Route::get('/packages/agen/{id}', 'AllPackagesAgen')->name('all.packages.agen');
+        Route::get('/packages/twoday/agen/{id}', 'AllTwodayPackagesAgen')->name('all.twoday.packages.agen');
         Route::get('/show/twoday/package/{id}', 'PackageTwodayShow')->name('show.twoday.package');
     });
 });
