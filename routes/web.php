@@ -14,6 +14,7 @@ use App\Http\Controllers\Backend\ServiceFee\ServiceFeeController;
 use App\Http\Controllers\Backend\Destinastion\DestinationController;
 use App\Http\Controllers\Backend\PackageTour\GeneratePackageController;
 use App\Http\Controllers\Backend\PackageTour\GenerateTwodayPackageController;
+use App\Http\Controllers\Backend\PackageTour\GenerateThreedayPackageController;
 
 Route::get('/', function () {
     return view('frontend/index');
@@ -166,5 +167,19 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::delete('/delete/twoday/package/{id}', 'DeleteTwodayPackage')->name('delete.twoday.package');
         Route::get('/packages/twoday/agen/{id}', 'AllTwodayPackagesAgen')->name('all.twoday.packages.agen');
         Route::get('/show/twoday/package/{id}', 'PackageTwodayShow')->name('show.twoday.package');
+    });
+
+    // Package Twoday all Route
+    Route::controller(GenerateThreedayPackageController::class)->group(function () {
+
+        // Oneday
+        Route::get('/all/threeday/packages', 'AllThreeDayPackage')->name('all.threeday.packages');
+        Route::get('/generate/threeday/package', 'GenerateThreeDayPackage')->name('generate.threeday.package');
+        Route::post('/package/threeday/generate', 'generateCodeThreeDay')->name('generatecode.threeday.package');
+        Route::get('/edit/threeday/package/{id}', 'EditGenerateThreeDayPackage')->name('edit.threeday.package');
+        Route::put('/update/threeday/package/{id}', 'UpdateGenerateCodeThreeDay')->name('update.threeday.package');
+        Route::delete('/delete/threeday/package/{id}', 'DeleteThreeDayPackage')->name('delete.threeday.package');
+        Route::get('/packages/threeday/agen/{id}', 'AllThreeDayPackagesAgen')->name('all.threeday.packages.agen');
+        Route::get('/show/threeday/package/{id}', 'PackageThreeDayShow')->name('show.threeday.package');
     });
 });

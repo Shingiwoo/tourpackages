@@ -54,8 +54,8 @@
                 <i class="menu-icon tf-icons ti ti-torii"></i>
                 <div data-i18n="Tour">Tour</div>
             </a>
+            <!-- One Day -->
             <ul class="menu-sub">
-                <!-- One Day -->
                 <li class="menu-item">
                     <a class="menu-link menu-toggle">
                         <div data-i18n="Oneday">One Day</div>
@@ -73,11 +73,11 @@
                         </li>
                     </ul>
                 </li>
-                <!-- One Day End -->
-
             </ul>
+            <!-- One Day End -->
+
+            <!-- Two Day -->
             <ul class="menu-sub">
-                <!-- Two Day -->
                 <li class="menu-item">
                     <a class="menu-link menu-toggle">
                         <div data-i18n="Twoday">Two Day</div>
@@ -95,9 +95,30 @@
                         </li>
                     </ul>
                 </li>
-                <!-- Two Day End -->
-
             </ul>
+            <!-- Two Day End -->
+
+            <!-- Three Day -->
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a class="menu-link menu-toggle">
+                        <div data-i18n="Threeday">Three Day</div>
+                    </a>
+                    <ul class="menu-sub">
+                        <li class="menu-item">
+                            <a href="{{ route('generate.threeday.package') }}" class="menu-link">
+                                <div data-i18n="Generate Tour">Generate Tour</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{{ route('all.threeday.packages') }}" class="menu-link">
+                                <div data-i18n="Tour List">Tour List</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- Three Day End -->
         </li>
 
         <li class="menu-item">

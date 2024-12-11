@@ -5,19 +5,18 @@
 <!-- Content -->
 
 <div class="container-xxl flex-grow-1 container-p-y">
-    <form id="mydata" action="{{ route('update.twoday.package', $package->id) }}" method="POST">
+    <form id="mydata" action="{{ route('generatecode.threeday.package') }}" method="POST">
         @csrf
-        @method('PUT')
         <div class="app-ecommerce">
             <!-- Add Product -->
             <div
                 class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
                 <div class="d-flex flex-column justify-content-center">
-                    <h4 class="mb-1">Generate Package Twoday</h4>
+                    <h4 class="mb-1">Generate Package Threeday</h4>
                     <p class="mb-0">To Generate a tour package Price</p>
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-4">
-                    <a href="{{ route('all.twoday.packages') }}">
+                    <a href="{{ route('all.threeday.packages') }}">
                         <button type="button" class="btn btn-primary ml-2">Back</button>
                     </a>
                     <button type="submit" class="btn btn-primary">Generate</button>
@@ -37,8 +36,7 @@
                                 <div class="col">
                                     <label class="form-label" for="name_package">Name Package</label>
                                     <input type="text" class="form-control" id="name_package" placeholder="Name Package"
-                                        value="{{$package->name_package}}" name="NamePackage" aria-label="Name Package"
-                                        required />
+                                        name="NamePackage" aria-label="Name Package" required />
                                 </div>
                                 <div class="col">
                                     <label class="form-label" for="city_district">City / District</label>
@@ -46,8 +44,7 @@
                                         class="select2 form-select" data-allow-clear="true">
                                         <option value="">Select City / District</option>
                                         @foreach($regencies as $regency)
-                                        <option value="{{ $regency->id }}" {{ $package->regency_id == $regency->id ?
-                                            'selected' : '' }}>{{ $regency->name }}</option>
+                                        <option value="{{ $regency->id }}">{{ $regency->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -58,9 +55,8 @@
                                     <select required id="status_package" name="statusPackage"
                                         class="select2 form-select" data-allow-clear="true">
                                         <option value="">Select Status</option>
-                                        <option value="1" {{ $package->status == 1 ? 'selected' : '' }}>ACTIVE</option>
-                                        <option value="0" {{ $package->status == 0 ? 'selected' : '' }}>INACTIVE
-                                        </option>
+                                        <option value="1">ACTIVE</option>
+                                        <option value="0">INACTIVE</option>
                                     </select>
                                 </div>
                                 <div class="col">
@@ -69,8 +65,7 @@
                                         data-allow-clear="true">
                                         <option value="">Select Agen</option>
                                         @foreach($agens as $agen)
-                                        <option value="{{ $agen->id }}" {{ $package->agen_id == $agen->id ? 'selected' :
-                                            '' }}>{{ $agen->username }}</option>
+                                        <option value="{{ $agen->id }}">{{ $agen->username }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -89,10 +84,7 @@
                             <div class="mb-6">
                                 <select id="destinations" name="destinations[]" class="select2 form-select" multiple>
                                     @foreach ($destinations as $destination)
-                                    <option value="{{ $destination->id }}" {{ in_array($destination->id,
-                                        $selectedDestinations) ? 'selected' : '' }}>
-                                        {{ $destination->name }}
-                                    </option>
+                                    <option value="{{ $destination->id }}">{{ $destination->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -102,8 +94,7 @@
                             <div class="col-12">
                                 <h5 class="card-title mb-1">Information</h5>
                                 <div id="quill-editor" class="mb-3" style="height: 80px;"> </div>
-                                <textarea rows="3" class="mb-3 d-none" name="information"
-                                    id="quill-editor-area">{{ $package->information }}</textarea>
+                                <textarea rows="3" class="mb-3 d-none" name="information" id="quill-editor-area"></textarea>
                             </div>
                             <!-- /Full Editor -->
                         </div>
