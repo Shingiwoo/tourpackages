@@ -8,7 +8,7 @@
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>Tour Packages - Dashboard </title>
+    <title>Tour Packages - Agen Dashboard </title>
 
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="description" content="" />
@@ -70,13 +70,13 @@
     <div class="layout-wrapper layout-content-navbar">
         <div class="layout-container">
             <!-- Menu -->
-            @include('admin.body.sidebar')
+            @include('agen.body.sidebar')
             <!-- / Menu -->
 
             <!-- Layout container -->
             <div class="layout-page">
                 <!-- Header -->
-                @include('admin.body.header')
+                @include('agen.body.header')
                 <!-- / Header -->
 
                 <!-- Content wrapper -->
@@ -86,7 +86,7 @@
                     <!-- / Content -->
 
                     <!-- Footer -->
-                    @include('admin.body.footer')
+                    @include('agen.body.footer')
                     <!-- / Footer -->
 
                     <div class="content-backdrop fade"></div>

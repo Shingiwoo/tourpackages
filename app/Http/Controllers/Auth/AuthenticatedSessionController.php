@@ -25,17 +25,23 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
+        // Autentikasi pengguna
         $request->authenticate();
 
+        // Regenerasi sesi untuk keamanan
         $request->session()->regenerate();
 
+        // Tentukan URL tujuan berdasarkan peran pengguna
         $url = '';
         if ($request->user()->role === 'admin') {
             $url = '/admin/dashboard';
-        }elseif ($request->user()->role === 'agen') {
+        } elseif ($request->user()->role === 'agen') {
             $url = '/dashboard';
+        } else {
+            $url = '/'; // Default jika peran tidak dikenali
         }
 
+        // Redirect ke halaman yang sesuai
         return redirect()->intended($url);
     }
 
