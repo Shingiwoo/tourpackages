@@ -4,13 +4,13 @@
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="card-header d-flex justify-content-between">
         <div class="card-title mb-4">
-            <h5 class="mb-1">All Data Threeday Packages For - <span class="text-uppercase">{{ $agen->username }}</span></h5>
+            <h5 class="mb-1">All Data Fourday Packages For - <span class="text-uppercase">{{ $agen->username }}</span></h5>
             <p class="card-subtitle"></p>
         </div>
         <div class="dt-action-buttons text-end">
             <div class="dt-buttons btn-group flex-wrap">
                 <div class="button-group">
-                    <a class="btn btn-secondary" href="{{ route('all.threeday.packages') }}">All Package</a>
+                    <a class="btn btn-secondary" href="{{ route('all.fourday.packages') }}">All Package</a>
                 </div>
             </div>
         </div>

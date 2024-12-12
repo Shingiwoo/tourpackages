@@ -119,6 +119,28 @@
                 </li>
             </ul>
             <!-- Three Day End -->
+
+            <!-- Four Day -->
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a class="menu-link menu-toggle">
+                        <div data-i18n="Fourday">Four Day</div>
+                    </a>
+                    <ul class="menu-sub">
+                        <li class="menu-item">
+                            <a href="{{ route('generate.fourday.package') }}" class="menu-link">
+                                <div data-i18n="Generate Tour">Generate Tour</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{{ route('all.fourday.packages') }}" class="menu-link">
+                                <div data-i18n="Tour List">Tour List</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- Four Day End -->
         </li>
 
         <li class="menu-item">
