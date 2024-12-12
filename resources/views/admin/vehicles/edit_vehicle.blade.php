@@ -40,6 +40,7 @@
                                         <option value="">Select Type</option>
                                         <option value="City Car" {{ $vehicle->type == 'City Car' ? 'selected' : '' }}>CITY CAR</option>
                                         <option value="Mini Bus" {{ $vehicle->type == 'Mini Bus' ? 'selected' : '' }}>MINI BUS</option>
+                                        <option value="Shuttle Dieng" {{ $vehicle->type == 'Shuttle Dieng' ? 'selected' : '' }}>SHUTTLE DIENG</option>
                                         <option value="Bus" {{ $vehicle->type == 'Bus' ? 'selected' : '' }}>BUS</option>
                                     </select>
                                 </div>

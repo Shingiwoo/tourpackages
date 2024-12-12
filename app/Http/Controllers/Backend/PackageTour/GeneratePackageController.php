@@ -72,13 +72,15 @@ class GeneratePackageController extends Controller
             // ]);
 
             // Ambil data terkait
-            $vehicles = Vehicle::all();
+            $vehicles = Vehicle::getByRegency($regencyId);
             $meals = Meal::where('duration', '1')->first();
             $crewData = Crew::all();
             $serviceFee = ServiceFee::where('duration', '1')->first()->mark ?? 0.14;
             $feeAgen = AgenFee::find(1)->price ?? 50000;
             $reserveFees = ReserveFee::all();
-            $selectedDestinations = Destination::whereIn('id', $destinationIds)->get();
+            $selectedDestinations = Destination::whereIn('id', $destinationIds)
+            ->whereIn('id', Destination::getByRegency($regencyId)->pluck('id'))
+            ->get();
 
             // Log::info('Supporting data fetched.', [
             //     'vehicles' => $vehicles,
@@ -118,7 +120,8 @@ class GeneratePackageController extends Controller
             $package->prices()->create([
                 'price_data' => json_encode($prices),
             ]);
-            Log::info('Prices saved to database.', ['prices' => $prices]);
+            // Log::info('Prices saved to database.', ['prices' => $prices]);
+            Log::info('Prices saved to database successfully!');
 
             // Kirim notifikasi berhasil
             $notification = [
@@ -190,13 +193,17 @@ class GeneratePackageController extends Controller
             $information = $request->input('information', '');
             $destinationIds = $request->input('destinations');
 
-            $vehicles = Vehicle::all();
+
+            // Ambil data terkait
+            $vehicles = Vehicle::getByRegency($regencyId);
             $meals = Meal::where('duration', '1')->first();
             $crewData = Crew::all();
             $serviceFee = ServiceFee::where('duration', '1')->first()->mark ?? 0.14;
             $feeAgen = AgenFee::find(1)->price ?? 50000;
             $reserveFees = ReserveFee::all();
-            $selectedDestinations = Destination::whereIn('id', $destinationIds)->get();
+            $selectedDestinations = Destination::whereIn('id', $destinationIds)
+            ->whereIn('id', Destination::getByRegency($regencyId)->pluck('id'))
+            ->get();
 
             // Update paket wisata di database
             $package->update([
@@ -250,12 +257,8 @@ class GeneratePackageController extends Controller
     }
 
     private function calculatePrices($vehicles, $meals, $crewData, $serviceFee, $feeAgen, $reserveFees, $selectedDestinations){
-
-        // Hitung harga per armada dan jumlah peserta
         $prices = [];
-        for ($participants = 1; $participants <= 45; $participants++) {
-            // Log::info("Processing participants count: {$participants}");
-
+        for ($participants = 1; $participants <= 55; $participants++) {
             $vehicle = $vehicles->firstWhere(fn($v) => $participants >= $v->capacity_min && $participants <= $v->capacity_max);
             if (!$vehicle) {
                 Log::info('No vehicle found for participants.', ['participants' => $participants]);
@@ -268,7 +271,18 @@ class GeneratePackageController extends Controller
             $totalCostWNI = 0;
             $totalCostWNA = 0;
             $parkingCost = 0;
+
+            // Tambahkan logika perhitungan Shuttle Dieng
+            $addShuttleCost = false;
+            $shuttleDiengCost = 0;
+
+
+
             foreach ($selectedDestinations as $destination) {
+                if ($destination->regency_id == 3307 && $participants >= 18 && $participants <= 55) {
+                    $addShuttleCost = true;
+                }
+
                 if ($destination->price_type === 'per_person') {
                     $totalCostWNI += $destination->price_wni * $participants;
                     $totalCostWNA += $destination->price_wna * $participants;
@@ -277,22 +291,23 @@ class GeneratePackageController extends Controller
                     $totalCostWNI += $groupCount * $destination->price_wni;
                     $totalCostWNA += $groupCount * $destination->price_wna;
                 }
+
                 $parkingCosts = [
                     'City Car' => $destination->parking_city_car,
                     'Mini Bus' => $destination->parking_mini_bus,
                     'Bus' => $destination->parking_bus
                 ];
-
                 $parkingCost += $parkingCosts[$vehicle->type];
             }
 
-            // Log::info('Cost calculated for destinations.', [
-            //     'participants' => $participants,
-            //     'groupCount' => $groupCount,
-            //     'totalCostWNI' => $totalCostWNI,
-            //     'totalCostWNA' => $totalCostWNA,
-            //     'parkingCost' => $parkingCost,
-            // ]);
+            if ($addShuttleCost) {
+                $shuttleVehicle = $vehicles->firstWhere('type', 'Shuttle Dieng');
+                if ($shuttleVehicle) {
+                    $shuttleCount = ceil($participants / $shuttleVehicle->capacity_max);
+                    $shuttleDiengCost = $shuttleCount * $shuttleVehicle->price;
+                }
+            }
+
 
             $priceDifference = ($totalCostWNA - $totalCostWNI) / $participants;
 
@@ -302,23 +317,12 @@ class GeneratePackageController extends Controller
             $reserveFeeCost = $reserveFee ? $reserveFee->price * $participants : 0;
 
             $totalCost = $totalCostWNI + $transportCost + ($feeAgen * $participants) +
-                $mealCost + $reserveFeeCost + $parkingCost;
+                $mealCost + $reserveFeeCost + $parkingCost + $shuttleDiengCost;
 
             $pricePerPerson = $totalCost / $participants;
             $serviceFeeCost = $pricePerPerson * $serviceFee;
             $finalPrice = $pricePerPerson + $serviceFeeCost;
 
-            // Log::info('Final price calculated.', [
-            //     'participants' => $participants,
-            //     'mealCost' => $mealCost,
-            //     'reserveFeeCost' => $reserveFeeCost,
-            //     'totalCost' => $totalCost,
-            //     'pricePerPerson' => $pricePerPerson,
-            //     'serviceFeeCost' => $serviceFeeCost,
-            //     'finalPrice' => $finalPrice,
-            // ]);
-
-            // Simpan harga ke array
             $prices[] = [
                 'vehicle' => $vehicle->name,
                 'user' => $participants,
@@ -329,6 +333,7 @@ class GeneratePackageController extends Controller
 
         return $prices;
     }
+
 
     public function AllPackagesAgen($id)
     {

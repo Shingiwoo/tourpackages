@@ -39,6 +39,7 @@
                                         <option value="">Select Type</option>
                                         <option value="City Car">CITY CAR</option>
                                         <option value="Mini Bus">MINI BUS</option>
+                                        <option value="Shuttle Dieng">SHUTTLE DIENG</option>
                                         <option value="Bus">BUS</option>
                                     </select>
                                 </div>

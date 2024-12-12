@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('vehicles', function (Blueprint $table) {
             $table->id();
             $table->string('name')->nullable();
-            $table->enum('type',['City Car', 'Mini Bus', 'Bus'])->default('City Car');
+            $table->enum('type',['City Car', 'Mini Bus', 'Bus', 'Shuttle Dieng'])->default('City Car');
             $table->integer('capacity_min')->nullable();
             $table->integer('capacity_max')->nullable();
             $table->string('price')->nullable();

@@ -37,7 +37,7 @@ class VehicleController extends Controller
             'cityOrDistrict_id' => 'required|exists:regencies,id', // Validasi relasi dengan regencies
             'NameVehicle' => 'required|string|max:255',
             'statusVehicle' => 'required|boolean',
-            'carType' => 'required|in:City Car,Mini Bus,Bus',
+            'carType' => 'required|in:City Car,Mini Bus,Shuttle Dieng,Bus',
             'carPrice' => 'required|string',
             'carCapacity_min' => 'required|string', // Validasi untuk price type
             'carCapacity_max' => 'required|string',
@@ -99,7 +99,7 @@ class VehicleController extends Controller
             'cityOrDistrict_id' => 'required|exists:regencies,id', // Validasi relasi dengan regencies
             'NameVehicle' => 'required|string|max:255',
             'statusVehicle' => 'required|boolean',
-            'carType' => 'required|in:City Car,Mini Bus,Bus', // Validasi tipe mobil
+            'carType' => 'required|in:City Car,Mini Bus,Shuttle Dieng,Bus', // Validasi tipe mobil
             'carPrice' => 'required|string', // Harga wajib diisi
             'carCapacity_min' => 'required|integer|min:1', // Kapasitas minimal harus angka
             'carCapacity_max' => 'required|integer|min:1', // Kapasitas maksimal harus angka
