@@ -9,7 +9,7 @@ class Facility extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'regency_id', 'price'];
+    protected $fillable = ['name', 'regency_id', 'price', 'type', 'max_user'];
 
     /**
      * Relasi dengan regencies (kabupaten/kota)

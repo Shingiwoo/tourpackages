@@ -77,8 +77,6 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/edit/vehicle/{id}', 'EditVehicle')->name('edit.vehicle');
         Route::post('/vehicle/update', 'UpdateVehicle')->name('vehicle.update');
         Route::delete('/delete/vehicle/{id}', 'DeleteVehicle')->name('delete.vehicle');
-        // Route::get('/import/vehicles', 'PageImportVehicles')->name('import.vehicles');
-        // Route::post('/vehicle/import', 'ImportVehicles')->name('vehicles.import');
     });
 
     // Service all Route
@@ -111,7 +109,8 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
 
         Route::get('/all/facility', 'AllFacility')->name('all.facility');
         Route::post('/add/facility', 'StoreFacility')->name('facility.store');
-        Route::put('/update/facility/{id}', 'UpdateFacility')->name('update.facility');
+        Route::get('/edit/facility/{id}', 'EditFacility')->name('edit.facility');
+        Route::post('/facility/update', 'UpdateFacility')->name('facility.update');
         Route::delete('/delete/facility/{id}', 'DeleteFacility')->name('delete.facility');
 
     });

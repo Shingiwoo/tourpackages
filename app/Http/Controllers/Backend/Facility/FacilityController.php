@@ -22,6 +22,8 @@ class FacilityController extends Controller
             'nameFacility' => 'required',
             'cityOrDistrict_id' => 'required|exists:regencies,id',
             'priceFacility' => 'required',
+            'typeFacility' => 'required|in:flat,per_person,per_day,info',
+            'maxuserFacility' => 'required',
         ]);
 
         $validatedData['priceFacility'] = str_replace(',', '', $validatedData['priceFacility']);
@@ -30,6 +32,8 @@ class FacilityController extends Controller
         $facilityData = [
             'name' => $validatedData['nameFacility'],
             'price' => $validatedData['priceFacility'],
+            'type' => $validatedData['typeFacility'],
+            'max_user' => $validatedData['maxuserFacility'],
             'regency_id' => $validatedData['cityOrDistrict_id'],
         ];
 
@@ -46,25 +50,42 @@ class FacilityController extends Controller
         return redirect()->route('all.facility')->with($notification);
     }
 
-    public function UpdateFacility(Request $request, $id){
+    public function EditFacility($id)
+    {
+        $facility = Facility::findOrFail($id);
+        $regencies = Regency::latest()->get();
+        return view('admin.facility.edit_facility', compact('facility', 'regencies'));
+    }
+
+    public function UpdateFacility(Request $request){
+
+        $facilityId = $request->id;
+
+        // Temukan data vehicle berdasarkan ID
+        $facility = Facility::findOrFail($facilityId);
+
         // Validasi data input
         $validatedData = $request->validate([
             'nameFacility' => 'required',
             'cityOrDistrict_id' => 'required|exists:regencies,id',
             'priceFacility' => 'required',
+            'typeFacility' => 'required|in:flat,per_person,per_day,info',
+            'maxuserFacility' => 'required',
         ]);
 
         $validatedData['priceFacility'] = str_replace(',', '', $validatedData['priceFacility']);
 
-        // Temukan data berdasarkan ID
-        $facilityData = Facility::findOrFail($id);
-
         // Update data
-        $facilityData->update([
+        $validatedData = [
             'name' => $validatedData['nameFacility'],
             'price' => $validatedData['priceFacility'],
+            'type' => $validatedData['typeFacility'],
+            'max_user' => $validatedData['maxuserFacility'],
             'regency_id' => $validatedData['cityOrDistrict_id'],
-        ]);
+        ];
+
+        // Update data di database
+        $facility->update($validatedData);
 
         // Kirim notifikasi berhasil
         $notification = [
@@ -77,8 +98,8 @@ class FacilityController extends Controller
 
     public function DeleteFacility($id){
         try {
-            $service = Facility::findOrFail($id);
-            $service->delete();
+            $facilityData = Facility::findOrFail($id);
+            $facilityData->delete();
 
             return response()->json([
                 'success' => true,

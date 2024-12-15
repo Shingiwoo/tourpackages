@@ -7,7 +7,7 @@
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="row g-6">
         <!-- Navigation -->
-        <div class="col-12 col-lg-4">
+        <div class="col-12 col-lg-3">
             <div class="d-flex justify-content-between flex-column mb-4 mb-md-0">
                 <h5 class="mb-4">Other Service</h5>
                 <ul class="nav nav-align-left nav-pills flex-column">
@@ -53,7 +53,7 @@
         <!-- /Navigation -->
 
         <!-- Options -->
-        <div class="col-12 col-lg-8 pt-6 pt-lg-0">
+        <div class="col-12 col-lg-9 pt-6 pt-lg-0">
             <div class="tab-content p-0">
 
                 <div class="tab-pane fade show active" role="tabpanel">
@@ -78,6 +78,24 @@
                                             name="priceFacility" aria-label="Price" />
                                     </div>
                                     <div class="col-12 col-md-4">
+                                        <label class="form-label mb-1" for="maxuser_facility">Max User</label>
+                                        <input type="number" id="maxuser_facility" class="form-control" placeholder="2"
+                                            name="maxuserFacility" aria-label="Max User" />
+                                    </div>
+                                </div>
+                                <div class="row mb-6 g-4">
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label" for="type_facility">Type</label>
+                                        <select required id="type_facility" name="typeFacility"
+                                            class="select2 form-select" data-allow-clear="true">
+                                            <option value="">Select Type</option>
+                                            <option value="flat">Flat</option>
+                                            <option value="per_person">Per Person</option>
+                                            <option value="per_day">Per Day</option>
+                                            <option value="info">Information</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 col-md-6">
                                         <label class="form-label" for="city_district">City / District</label>
                                         <select required id="city_district" name="cityOrDistrict_id"
                                             class="select2 form-select" data-allow-clear="true">
@@ -109,6 +127,8 @@
                                                     <th class="align-content-center text-center">SL</th>
                                                     <th class="align-content-center text-center">Name</th>
                                                     <th class="align-content-center text-center">Price</th>
+                                                    <th class="align-content-center text-center">Type</th>
+                                                    <th class="align-content-center text-center">Capacity</th>
                                                     <th class="align-content-center text-center">City / District</th>
                                                     <th class="align-content-center text-center">Actions</th>
                                                 </tr>
@@ -120,6 +140,10 @@
                                                     <td class="align-content-center text-center">{{ $fct->name }}
                                                     </td>
                                                     <td class="align-content-center text-center">Rp {{ number_format($fct->price, 0, ',', '.')  }}</td>
+                                                    <td class="align-content-center text-center">{{ $fct->type }}
+                                                    </td>
+                                                    <td class="align-content-center text-center">{{ $fct->max_user }}
+                                                    </td>
                                                     <td class="align-content-center text-center">{{ $fct->regency->name }}
                                                     </td>
                                                     <td class="align-content-center text-center">
@@ -130,11 +154,7 @@
                                                                 <i class="ti ti-dots-vertical"></i>
                                                             </button>
                                                             <div class="dropdown-menu">
-                                                                <a class="dropdown-item button" data-bs-toggle="modal"
-                                                                    data-bs-target="#enableFacility" data-id="{{ $fct->id }}"
-                                                                    data-nameFacility="{{ $fct->name }}"
-                                                                    data-priceFacility="{{ $fct->price }}"
-                                                                    data-city="{{ $fct->regency_id }}">
+                                                                <a class="dropdown-item button" href="{{ route('edit.facility', $fct->id) }}">
                                                                     <i class="ti ti-pencil me-1"></i> Edit
                                                                 </a>
                                                                 <a class="dropdown-item button text-danger delete-confirm" data-id="{{ $fct->id }}" data-url="{{ route('delete.facility', $fct->id) }}"><i class="ti ti-trash me-1"></i> Delete</a>
@@ -157,54 +177,5 @@
     </div>
 </div>
 <!-- / Content -->
-
-<!-- Facility Modal -->
-<div class="modal fade" id="enableFacility" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-body">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                <div class="text-center mb-6">
-                    <h4 class="mb-2">Edit Facility</h4>
-                </div>
-                <form id="enableFacilityForm" method="POST" action="">
-                    @csrf
-                    @method('PUT')
-                    <div class="row mb-6 g-4">
-                        <div class="col-12 col-md-6">
-                            <label class="form-label mb-1" for="facilityName">Name Facility</label>
-                            <input type="text" id="facilityName" class="form-control" placeholder="Guide"
-                                name="nameFacility" aria-label="Name Facility" value=""/>
-                        </div>
-
-                        <div class="col-12 col-md-6">
-                            <label class="form-label mb-1" for="facilityPrice">Price</label>
-                            <input type="text" id="facilityPrice" class="form-control numeral-mask" placeholder="600000"
-                                name="priceFacility" aria-label="Price" value=""/>
-                        </div>
-                        <div class="col-12 col-md-12">
-                            <label class="form-label" for="districtCity">City / District</label>
-                            <select required id="districtCity" name="cityOrDistrict_id"
-                                class="select2 form-select" data-allow-clear="true">
-                                <option value="">Select City / District</option>
-                                @foreach($cities as $regency)
-                                    <option value="{{ $regency->id }}"
-                                        {{ isset($facilities->cityOrDistrict_id) && $facilities->cityOrDistrict_id == $regency->id ? 'selected' : '' }}>
-                                        {{ $regency->name }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="d-flex justify-content-end gap-4">
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
-                    </div>
-                </form>
-
-            </div>
-        </div>
-    </div>
-</div>
-<!--/ Facility Modal -->
 
 @endsection

@@ -52,30 +52,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 document.addEventListener('DOMContentLoaded', function () {
     // Pilih semua tombol dengan atribut data-bs-toggle dan target modal
-    const editButtons = document.querySelectorAll('[data-bs-target="#enableFacility"]');
-
-    editButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            // Ambil data dari atribut data-*
-            const id = this.getAttribute('data-id');
-            const nameFacility = this.getAttribute('data-nameFacility');
-            const priceFacility = this.getAttribute('data-priceFacility');
-            const city = this.getAttribute('data-city');
-
-            // Set nilai pada form modal
-            document.getElementById('facilityName').value = nameFacility;
-            document.getElementById('facilityPrice').value = priceFacility;
-            document.getElementById('districtCity').value = city;
-
-            // Set action URL dengan ID yang diambil
-            const modalForm = document.getElementById('enableFacilityForm');
-            modalForm.setAttribute('action', `/update/facility/${id}`);
-        });
-    });
-});
-
-document.addEventListener('DOMContentLoaded', function () {
-    // Pilih semua tombol dengan atribut data-bs-toggle dan target modal
     const editButtons = document.querySelectorAll('[data-bs-target="#enableMeal"]');
 
     editButtons.forEach(button => {

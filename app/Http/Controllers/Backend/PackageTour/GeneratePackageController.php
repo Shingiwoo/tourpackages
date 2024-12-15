@@ -276,8 +276,6 @@ class GeneratePackageController extends Controller
             $addShuttleCost = false;
             $shuttleDiengCost = 0;
 
-
-
             foreach ($selectedDestinations as $destination) {
                 if ($destination->regency_id == 3307 && $participants >= 18 && $participants <= 55) {
                     $addShuttleCost = true;
@@ -307,7 +305,6 @@ class GeneratePackageController extends Controller
                     $shuttleDiengCost = $shuttleCount * $shuttleVehicle->price;
                 }
             }
-
 
             $priceDifference = ($totalCostWNA - $totalCostWNI) / $participants;
 
