@@ -22,7 +22,7 @@ class FacilityController extends Controller
             'nameFacility' => 'required',
             'cityOrDistrict_id' => 'required|exists:regencies,id',
             'priceFacility' => 'required',
-            'typeFacility' => 'required|in:flat,per_person,per_day,info',
+            'typeFacility' => 'required|in:flat,per_person,per_day,info,shuttle',
             'maxuserFacility' => 'required',
         ]);
 
@@ -69,7 +69,7 @@ class FacilityController extends Controller
             'nameFacility' => 'required',
             'cityOrDistrict_id' => 'required|exists:regencies,id',
             'priceFacility' => 'required',
-            'typeFacility' => 'required|in:flat,per_person,per_day,info',
+            'typeFacility' => 'required|in:flat,per_person,per_day,info,shuttle',
             'maxuserFacility' => 'required',
         ]);
 
