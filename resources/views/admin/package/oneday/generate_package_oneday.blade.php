@@ -29,7 +29,7 @@
                     <!-- Product Information -->
                     <div class="card mb-6">
                         <div class="card-header">
-                            <h5 class="card-tile mb-0">Select Destination</h5>
+                            <h5 class="card-tile mb-0">Detail Package</h5>
                         </div>
                         <div class="card-body">
                             <div class="row mb-6">
@@ -70,6 +70,14 @@
                                     </select>
                                 </div>
                             </div>
+                                <!-- Description -->
+                                <!-- Full Editor -->
+                                <div class="col">
+                                    <h5 class="card-title mb-1">Information</h5>
+                                    <div id="quill-editor" class="mb-3" style="height: 80px;"> </div>
+                                    <textarea rows="3" class="mb-3 d-none" name="information" id="quill-editor-area"></textarea>
+                                </div>
+                                <!-- /Full Editor -->
                         </div>
                     </div>
                     <!-- /Product Information -->
@@ -78,25 +86,25 @@
                     <!-- Destination Card -->
                     <div class="card mb-6">
                         <div class="card-header">
-                            <h5 class="card-title mb-0">Destination & Information</h5>
+                            <h5 class="card-title mb-0">Select Destination & Facility</h5>
                         </div>
                         <div class="card-body">
-                            <div class="mb-6">
+                            <div class="col mb-6">
+                                <label class="form-label" for="destinations">Destination</label>
                                 <select id="destinations" name="destinations[]" class="select2 form-select" multiple>
                                     @foreach ($destinations as $destination)
                                     <option value="{{ $destination->id }}">{{ $destination->name }}</option>
                                     @endforeach
                                 </select>
                             </div>
-
-                            <!-- Description -->
-                            <!-- Full Editor -->
-                            <div class="col-12">
-                                <h5 class="card-title mb-1">Information</h5>
-                                <div id="quill-editor" class="mb-3" style="height: 80px;"> </div>
-                                <textarea rows="3" class="mb-3 d-none" name="information" id="quill-editor-area"></textarea>
+                            <div class="col mb-6">
+                                <label class="form-label" for="facility">Facility</label>
+                                <select id="facility" name="facilities[]" class="select2 form-select" multiple>
+                                    @foreach ($facilities as $facility)
+                                    <option value="{{ $facility->id }}">{{ $facility->name }} => {{ $facility->type }}</option>
+                                    @endforeach
+                                </select>
                             </div>
-                            <!-- /Full Editor -->
                         </div>
                     </div>
                     <!-- /Destination Card -->

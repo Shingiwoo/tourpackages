@@ -168,6 +168,28 @@
             }
         @endif
     </script>
+    <script>
+        $(document).ready(function() {
+            $('#type_facility').change(function() {
+                var selectedValue = $(this).val();
+                var priceContainer = $('#price_facility_container');
+                var maxuserContainer = $('#maxuser_facility_container');
+                var priceInput = $('#price_facility');
+                var maxuserInput = $('#maxuser_facility');
+
+                if (selectedValue === 'info') {
+                    priceContainer.hide();
+                    maxuserContainer.hide();
+
+                    priceInput.val(400);
+                    maxuserInput.val(1);
+                } else {
+                    priceContainer.show();
+                    maxuserContainer.show();
+                }
+            }).trigger('change'); // Panggil trigger untuk inisialisasi saat load
+        });
+    </script>
 </body>
 
 </html>

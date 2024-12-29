@@ -13,14 +13,14 @@
             <div
                 class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
                 <div class="d-flex flex-column justify-content-center">
-                    <h4 class="mb-1">Generate Package Oneday</h4>
+                    <h4 class="mb-1">Edit Package Oneday</h4>
                     <p class="mb-0">To Generate a tour package Price</p>
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-4">
                     <a href="{{ route('all.packages') }}">
                         <button type="button" class="btn btn-primary ml-2">Back</button>
                     </a>
-                    <button type="submit" class="btn btn-primary">Generate</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
                 </div>
             </div>
 
@@ -30,7 +30,7 @@
                     <!-- Product Information -->
                     <div class="card mb-6">
                         <div class="card-header">
-                            <h5 class="card-tile mb-0">Select Destination</h5>
+                            <h5 class="card-tile mb-0">Detail Package</h5>
                         </div>
                         <div class="card-body">
                             <div class="row mb-6">
@@ -74,7 +74,14 @@
                                         @endforeach
                                     </select>
                                 </div>
+                            </div>                             <!-- Full Editor -->
+                            <div class="col-12">
+                                <h5 class="card-title mb-1">Information</h5>
+                                <div id="quill-editor" class="mb-3" style="height: 80px;"> </div>
+                                <textarea rows="3" class="mb-3 d-none" name="information"
+                                    id="quill-editor-area">{{ $package->information }}</textarea>
                             </div>
+                            <!-- /Full Editor -->
                         </div>
                     </div>
                     <!-- /Product Information -->
@@ -83,10 +90,11 @@
                     <!-- Destination Card -->
                     <div class="card mb-6">
                         <div class="card-header">
-                            <h5 class="card-title mb-0">Destination & Information</h5>
+                            <h5 class="card-title mb-0">Destination & Facility</h5>
                         </div>
                         <div class="card-body">
                             <div class="mb-6">
+                                <label class="form-label" for="destinations">Destination</label>
                                 <select id="destinations" name="destinations[]" class="select2 form-select" multiple>
                                     @foreach ($destinations as $destination)
                                     <option value="{{ $destination->id }}" {{ in_array($destination->id,
@@ -96,16 +104,18 @@
                                     @endforeach
                                 </select>
                             </div>
-
-                            <!-- Description -->
-                            <!-- Full Editor -->
-                            <div class="col-12">
-                                <h5 class="card-title mb-1">Information</h5>
-                                <div id="quill-editor" class="mb-3" style="height: 80px;"> </div>
-                                <textarea rows="3" class="mb-3 d-none" name="information"
-                                    id="quill-editor-area">{{ $package->information }}</textarea>
+                            <div class="mb-6">
+                                <label class="form-label" for="facility">Facility</label>
+                                <select id="facility" name="facilities[]" class="select2 form-select" multiple>
+                                    @foreach ($facilities as $facility)
+                                    <option value="{{ $facility->id }}" {{ in_array($facility->id,
+                                        $selectedFacilities) ? 'selected' : '' }}>
+                                        {{ $facility->name }} | {{ $facility->type }}
+                                    </option>
+                                    @endforeach
+                                </select>
                             </div>
-                            <!-- /Full Editor -->
+
                         </div>
                     </div>
                     <!-- /Destination Card -->

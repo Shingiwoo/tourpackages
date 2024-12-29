@@ -15,8 +15,13 @@
                     <h4 class="mb-1">Update a old Facility</h4>
                     <p class="mb-0">Place name, to create a tour package</p>
                 </div>
-                <div class="d-flex align-content-center flex-wrap gap-4">
-                    <button type="submit" class="btn btn-primary">Publish</button>
+                <div class="dt-buttons btn-group">
+                    <div class="d-flex align-content-center flex-wrap gap-4">
+                        <button type="submit" class="btn btn-primary">Publish</button>
+                    </div>
+                    <div class="btn-group" style="margin-left: 10px">
+                        <a href="{{ route('all.facility') }}" class="btn btn-primary">Back</a>
+                    </div>
                 </div>
             </div>
 
@@ -35,11 +40,11 @@
                                     <input type="text" class="form-control" id="name_facility" placeholder="Name Facility" name="nameFacility" aria-label="Name Facility" required value="{{ $facility->name }}"/>
                                 </div>
 
-                                <div class="col">
+                                <div class="col" id="price_facility_container">
                                     <label class="form-label" for="price_facility">Price</label>
                                     <input type="text" class="form-control numeral-mask" id="price_facility" placeholder="500000" name="priceFacility" aria-label="Price" required value="{{ $facility->price }}"/>
                                 </div>
-                                <div class="col">
+                                <div class="col" id="maxuser_facility_container">
                                     <label class="form-label mb-1" for="maxuser_facility">Max User</label>
                                     <input type="number" id="maxuser_facility" class="form-control" placeholder="2" value="{{ $facility->max_user }}"
                                         name="maxuserFacility" aria-label="Max User" />
@@ -53,7 +58,9 @@
                                         <option value="flat" {{ $facility->type == 'flat' ? 'selected' : '' }}>Flat</option>
                                         <option value="per_person" {{ $facility->type == 'per_person' ? 'selected' : '' }}>Per Person</option>
                                         <option value="per_day" {{ $facility->type == 'per_day' ? 'selected' : '' }}>Per Day</option>
-                                        <option value="info" {{ $facility->type == 'info' ? 'selected' : '' }}>Information</option>
+                                        <option value="doc" {{ $facility->type == 'doc' ? 'selected' : '' }}>Documentation</option>
+                                        <option value="info" {{ $facility->type == 'info' ? 'selected' : '' }}>Info</option>
+                                        <option value="shuttle" {{ $facility->type == 'shuttle' ? 'selected' : '' }}>Shuttle</option>
                                     </select>
                                 </div>
                                 <div class="col">

@@ -66,18 +66,18 @@
                             </div>
                             <div class="card-body">
                                 <div class="row mb-6 g-4">
-                                    <div class="col-12 col-md-4">
+                                    <div class="col">
                                         <label class="form-label mb-1" for="name_facility">Name Facility</label>
                                         <input type="text" id="name_facility" class="form-control" placeholder="Guide"
                                             name="nameFacility" aria-label="Name Facility" />
                                     </div>
 
-                                    <div class="col-12 col-md-4">
+                                    <div class="col" id="price_facility_container">
                                         <label class="form-label mb-1" for="price_facility">Price</label>
                                         <input type="text" id="price_facility" class="form-control numeral-mask" placeholder="50000"
                                             name="priceFacility" aria-label="Price" />
                                     </div>
-                                    <div class="col-12 col-md-4">
+                                    <div class="col" id="maxuser_facility_container">
                                         <label class="form-label mb-1" for="maxuser_facility">Max User</label>
                                         <input type="number" id="maxuser_facility" class="form-control" placeholder="2"
                                             name="maxuserFacility" aria-label="Max User" />
@@ -92,7 +92,9 @@
                                             <option value="flat">Flat</option>
                                             <option value="per_person">Per Person</option>
                                             <option value="per_day">Per Day</option>
-                                            <option value="info">Information</option>
+                                            <option value="doc">Documentation</option>
+                                            <option value="info">Info</option>
+                                            <option value="shuttle">Shuttle</option>
                                         </select>
                                     </div>
                                     <div class="col-12 col-md-6">

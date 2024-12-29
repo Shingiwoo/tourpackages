@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use App\Models\PackageOneDay;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\Facility;
 
 class GeneratePackageController extends Controller
 {
@@ -35,12 +36,12 @@ class GeneratePackageController extends Controller
         $destinations = Destination::all();
         $agens = User::agen()->get();
         $regencies = Regency::all();
+        $facilities = Facility::all();
 
-        return view('admin.package.oneday.generate_package_oneday', compact('destinations', 'agens', 'regencies'));
+        return view('admin.package.oneday.generate_package_oneday', compact('destinations', 'agens', 'regencies', 'facilities'));
     }
 
-    public function generateCodeOneday(Request $request)
-    {
+    public function generateCodeOneday(Request $request){
         try {
             Log::info('generateCodeOneday method initiated.');
 
@@ -50,6 +51,8 @@ class GeneratePackageController extends Controller
                 'cityOrDistrict_id' => 'required|exists:regencies,id',
                 'statusPackage' => 'required|boolean',
                 'NameAgen' => 'required|exists:users,id',
+                'facilities' => 'required|array',
+                'facilities.*' => 'exists:facilities,id',
                 'destinations' => 'required|array',
                 'destinations.*' => 'exists:destinations,id',
             ]);
@@ -62,6 +65,7 @@ class GeneratePackageController extends Controller
             $statusPackage = $request->input('statusPackage');
             $information = $request->input('information', '');
             $destinationIds = $request->input('destinations');
+            $facilityIds = $request->input('facilities');
 
             // Log::info('Input data processed.', [
             //     'namePackage' => $namePackage,
@@ -80,6 +84,9 @@ class GeneratePackageController extends Controller
             $reserveFees = ReserveFee::all();
             $selectedDestinations = Destination::whereIn('id', $destinationIds)
             ->whereIn('id', Destination::getByRegency($regencyId)->pluck('id'))
+            ->get();
+            $selectedFacilities = Facility::whereIn('id', $facilityIds)
+            ->whereIn('id', Facility::getByRegency($regencyId)->pluck('id'))
             ->get();
 
             // Log::info('Supporting data fetched.', [
@@ -104,8 +111,9 @@ class GeneratePackageController extends Controller
 
             // Simpan destinasi untuk paket
             $package->destinations()->sync($destinationIds);
+            $package->facilities()->sync($facilityIds);
 
-            // Hitung harga per jenis hotel dan jumlah peserta
+            // Hitung harga per orang dan jumlah peserta
             $prices = $this->calculatePrices(
                 $vehicles,
                 $meals,
@@ -113,7 +121,8 @@ class GeneratePackageController extends Controller
                 $serviceFee,
                 $feeAgen,
                 $reserveFees,
-                $selectedDestinations
+                $selectedDestinations,
+                $selectedFacilities
             );
 
             // Simpan harga ke database (dalam format JSON)
@@ -144,8 +153,7 @@ class GeneratePackageController extends Controller
     }
 
 
-    public function EditGeneratePackage($id)
-    {
+    public function EditGeneratePackage($id){
 
         $package = PackageOneDay::with('destinations')->find($id);
 
@@ -155,14 +163,15 @@ class GeneratePackageController extends Controller
 
         $destinations = Destination::all();
         $selectedDestinations = $package->destinations->pluck('id')->toArray();
+        $facilities = Facility::all();
+        $selectedFacilities = $package->facilities->pluck('id')->toArray();
         $agens = User::agen()->get();
         $regencies = Regency::all();
 
-        return view('admin.package.oneday.edit_package', compact('destinations', 'agens', 'regencies', 'package', 'selectedDestinations'));
+        return view('admin.package.oneday.edit_package', compact('destinations', 'agens', 'regencies', 'package', 'selectedDestinations', 'facilities', 'selectedFacilities'));
     }
 
-    public function UpdateGenerateCodeOneday(Request $request, $id)
-    {
+    public function UpdateGenerateCodeOneday(Request $request, $id){
         try {
 
             Log::info('UpdateGenerateCodeOneday method initiated.');
@@ -173,6 +182,8 @@ class GeneratePackageController extends Controller
                 'cityOrDistrict_id' => 'required|exists:regencies,id',
                 'statusPackage' => 'required|boolean',
                 'NameAgen' => 'required|exists:users,id',
+                'facilities' => 'required|array',
+                'facilities.*' => 'exists:facilities,id',
                 'destinations' => 'required|array',
                 'destinations.*' => 'exists:destinations,id',
             ]);
@@ -192,6 +203,7 @@ class GeneratePackageController extends Controller
             $statusPackage = $request->input('statusPackage');
             $information = $request->input('information', '');
             $destinationIds = $request->input('destinations');
+            $facilityIds = $request->input('facilities');
 
 
             // Ambil data terkait
@@ -203,6 +215,9 @@ class GeneratePackageController extends Controller
             $reserveFees = ReserveFee::all();
             $selectedDestinations = Destination::whereIn('id', $destinationIds)
             ->whereIn('id', Destination::getByRegency($regencyId)->pluck('id'))
+            ->get();
+            $selectedFacilities = Facility::whereIn('id', $facilityIds)
+            ->whereIn('id', Facility::getByRegency($regencyId)->pluck('id'))
             ->get();
 
             // Update paket wisata di database
@@ -217,6 +232,7 @@ class GeneratePackageController extends Controller
 
             // Simpan destinasi untuk paket
             $package->destinations()->sync($destinationIds);
+            $package->facilities()->sync($facilityIds);
 
             // Hitung harga per jenis hotel dan jumlah peserta
             $prices = $this->calculatePrices(
@@ -226,7 +242,8 @@ class GeneratePackageController extends Controller
                 $serviceFee,
                 $feeAgen,
                 $reserveFees,
-                $selectedDestinations
+                $selectedDestinations,
+                $selectedFacilities
             );
 
             // Update harga di database (dalam format JSON)
@@ -256,9 +273,11 @@ class GeneratePackageController extends Controller
         }
     }
 
-    private function calculatePrices($vehicles, $meals, $crewData, $serviceFee, $feeAgen, $reserveFees, $selectedDestinations){
+    private function calculatePrices($vehicles, $meals, $crewData, $serviceFee, $feeAgen, $reserveFees, $selectedDestinations, $selectedFacilities) {
+
         $prices = [];
         for ($participants = 1; $participants <= 55; $participants++) {
+            // Cari kendaraan yang cocok
             $vehicle = $vehicles->firstWhere(fn($v) => $participants >= $v->capacity_min && $participants <= $v->capacity_max);
             if (!$vehicle) {
                 Log::info('No vehicle found for participants.', ['participants' => $participants]);
@@ -266,21 +285,15 @@ class GeneratePackageController extends Controller
             }
 
             $transportCost = $vehicle->price;
+
+            // Cari crew yang cocok
             $crew = $crewData->firstWhere(fn($c) => $participants >= $c->min_participants && $participants <= $c->max_participants);
 
             $totalCostWNI = 0;
             $totalCostWNA = 0;
             $parkingCost = 0;
 
-            // Tambahkan logika perhitungan Shuttle Dieng
-            $addShuttleCost = false;
-            $shuttleDiengCost = 0;
-
             foreach ($selectedDestinations as $destination) {
-                if ($destination->regency_id == 3307 && $participants >= 18 && $participants <= 55) {
-                    $addShuttleCost = true;
-                }
-
                 if ($destination->price_type === 'per_person') {
                     $totalCostWNI += $destination->price_wni * $participants;
                     $totalCostWNA += $destination->price_wna * $participants;
@@ -295,30 +308,72 @@ class GeneratePackageController extends Controller
                     'Mini Bus' => $destination->parking_mini_bus,
                     'Bus' => $destination->parking_bus
                 ];
-                $parkingCost += $parkingCosts[$vehicle->type];
+                $parkingCost += $parkingCosts[$vehicle->type] ?? 0; // Cegah undefined index
             }
 
-            if ($addShuttleCost) {
-                $shuttleVehicle = $vehicles->firstWhere('type', 'Shuttle Dieng');
-                if ($shuttleVehicle) {
-                    $shuttleCount = ceil($participants / $shuttleVehicle->capacity_max);
-                    $shuttleDiengCost = $shuttleCount * $shuttleVehicle->price;
+            // Perhitungan biaya fasilitas
+            $ShuttleCost = 0;
+            $flatCost = 0;
+            $facPerdayCost = 0;
+            $facPerpersonCost = 0;
+            $facInfoCost = 0;
+            $facDocCost = 0;
+            $guideCost = 0;
+
+            foreach ($selectedFacilities as $facility) {
+                if ($facility->type === 'shuttle' && $participants >= 18 && $participants <= 55) {
+                    $groupCount = ceil($participants / $facility->max_user);
+                    $ShuttleCost += $groupCount * $facility->price;
+                }
+
+                if ($facility->type === 'flat') {
+                    $groupCount = ceil($participants / $facility->max_user);
+                    $flatCost += $groupCount * $facility->price;
+                }
+
+                if ($facility->type === 'per_day') {
+                    $facPerdayCost += $facility->price;
+                }
+
+                if ($facility->type === 'doc' && $participants >= 20 && $participants <= 55) {
+                    $facDocCost += $facility->price;
+                }
+
+                if ($facility->name === 'Guide' && $participants >= 18 && $participants <= 55) {
+                    $groupCount = ceil($participants / $facility->max_user);
+                    $guideCost += $groupCount * $facility->price;
+                }
+
+                if ($facility->type === 'per_person') {
+                    $facPerpersonCost += $facility->price * $participants;
+                }
+
+                if ($facility->type === 'info') {
+                    $facInfoCost += $facility->price;
                 }
             }
 
+            $totalFacilityCost = $ShuttleCost + $flatCost + $facPerdayCost + $facPerpersonCost + $facDocCost + $facInfoCost + $guideCost;
+
+            // Hitung total biaya
             $priceDifference = ($totalCostWNA - $totalCostWNI) / $participants;
-
-            $mealCost = $meals ? $meals->price * ($participants + $crew->num_crew) : 0;
-
+            $mealCost = $meals ? $meals->price * ($participants + ($crew->num_crew ?? 0)) : 0;
             $reserveFee = $reserveFees->firstWhere(fn($r) => $participants >= $r->min_user && $participants <= $r->max_user);
             $reserveFeeCost = $reserveFee ? $reserveFee->price * $participants : 0;
 
             $totalCost = $totalCostWNI + $transportCost + ($feeAgen * $participants) +
-                $mealCost + $reserveFeeCost + $parkingCost + $shuttleDiengCost;
+                $mealCost + $reserveFeeCost + $parkingCost + $totalFacilityCost;
 
             $pricePerPerson = $totalCost / $participants;
             $serviceFeeCost = $pricePerPerson * $serviceFee;
             $finalPrice = $pricePerPerson + $serviceFeeCost;
+
+            Log::info('Cost data.', [
+                'totalFacilityCost' => $totalFacilityCost,
+                'guideCost' => $guideCost,
+                'facDocCost' => $facDocCost,
+                'ShuttleCost' => $ShuttleCost
+            ]);
 
             $prices[] = [
                 'vehicle' => $vehicle->name,
@@ -330,6 +385,7 @@ class GeneratePackageController extends Controller
 
         return $prices;
     }
+
 
 
     public function AllPackagesAgen($id)
@@ -346,9 +402,10 @@ class GeneratePackageController extends Controller
 
         // Ambil data destinasi dan kabupaten untuk dropdown (opsional)
         $destinations = Destination::all();
+        $facilities = Facility::all();
         $regencies = Regency::all();
 
-        return view('admin.package.oneday.data_package', compact('destinations', 'regencies', 'packages', 'agen'));
+        return view('admin.package.oneday.data_package', compact('destinations', 'regencies', 'packages', 'agen', 'facilities'));
     }
 
     public function PackageShow($id)
@@ -358,9 +415,10 @@ class GeneratePackageController extends Controller
 
         // Ambil data destinasi dan kabupaten untuk dropdown (opsional)
         $destinations = Destination::all();
+        $facilities = Facility::all();
         $regencies = Regency::all();
 
-        return view('admin.package.oneday.show_package', compact('destinations', 'regencies', 'package'));
+        return view('admin.package.oneday.show_package', compact('destinations', 'regencies', 'package', 'facilities'));
     }
 
 

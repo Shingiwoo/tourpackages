@@ -9,7 +9,7 @@
             <div class="card invoice-preview-card p-sm-12 p-6">
                 <div class="card-header pb-0 d-flex justify-content-between">
                     <div class="card-title mb-0">
-                        <h5 class="mb-1">{{ $package->name_package }}</h5>
+                        <h4 class="mb-1">{{ $package->name_package }}</h4>
                     </div>
                 </div>
 
@@ -31,8 +31,20 @@
                                 </div>
                             </div>
                             <div class="mb-2 mt-4">
-                                <h6 class="text-danger">Information :</h6>
-                                <small class="fw-medium">{{ strip_tags($package->information) }}</small>
+                                <h6 class="text-warning">Facility :</h6>
+                                <div class="demo-inline-spacing mt-4">
+                                    <ol class="list-group list-group-numbered">
+                                        @forelse ($package->facilities as $facility)
+                                        <li class="list-group-item">{{ $facility->name }}</li>
+                                        @empty
+                                        <li class="list-group-item">No facilities available</li>
+                                        @endforelse
+                                    </ol>
+                                </div>
+                            </div>
+                            <div class="mb-2 mt-4">
+                                <h6 class="text-warning">Information :</h6>
+                                <p class="fw-medium">{{ strip_tags($package->information) }}</p>
                             </div>
                         </div>
                     </div>

@@ -40,10 +40,5 @@ class Destination extends Model
     {
         return $this->belongsToMany(PackageOneDay::class, 'package_destinations');
     }
-
-    public function packagesTwoday()
-    {
-        return $this->belongsToMany(PackageTwoDay::class, 'package_destinations');
-    }
 }
 

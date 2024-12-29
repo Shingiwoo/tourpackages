@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('facilities_one_days', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('package_id')->nullable()->change();
-            $table->unsignedBigInteger('facility_id')->nullable()->change();
+            $table->unsignedBigInteger('package_id')->nullable();
+            $table->unsignedBigInteger('facility_id')->nullable();
             $table->timestamps();
 
             // Add foreign key constraints
