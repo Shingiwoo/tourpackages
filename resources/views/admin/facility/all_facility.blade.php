@@ -85,7 +85,7 @@
                                 </div>
                                 <div class="row mb-6 g-4">
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label" for="type_facility">Type</label>
+                                        <label class="form-label" for="type_facility">Type <span data-bs-toggle="tooltip" data-bs-placement="top" title="Choose According to the Criteria"><i class="ti ti-info-square-rounded"></i></span></label>
                                         <select required id="type_facility" name="typeFacility"
                                             class="select2 form-select" data-allow-clear="true">
                                             <option value="">Select Type</option>

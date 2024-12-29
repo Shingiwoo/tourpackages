@@ -135,6 +135,7 @@
     <!-- Page JS -->
     <script src="{{ asset('assets/js/app-academy-dashboard.js') }}"></script>
     <script src="{{ asset('assets/js/forms-extras.js') }}"> </script>
+    <script src="{{ asset('assets/js/ui-popover.js') }}"></script>
     <script src="{{ asset('assets/js/extended-ui-sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/js/forms-selects.js') }}"></script>
     <script src="{{ asset('assets/js/ui-carousel.js') }}"></script>

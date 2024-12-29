@@ -407,7 +407,7 @@ class GeneratePackageController extends Controller
         }
 
         // Ambil semua paket yang dimiliki oleh agen ini
-        $packages = PackageOneDay::where('agen_id', $id)->with(['destinations', 'prices'])->paginate(5);
+        $packages = PackageOneDay::where('agen_id', $id)->with(['destinations', 'prices'])->paginate(4);
 
         // Ambil data destinasi dan kabupaten untuk dropdown (opsional)
         $destinations = Destination::all();

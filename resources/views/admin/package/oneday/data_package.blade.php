@@ -120,9 +120,9 @@
                                                         <td class="align-content-center text-center text-white">{{ $price['user']
                                                             }}</td>
                                                         <td class="align-content-center text-center text-white">Rp {{
-                                                            number_format($price['price'], 0, ',', '.') }} /orang</td>
+                                                            number_format($price['price'], 0, ',', '.') }} /org</td>
                                                         <td class="align-content-center text-center text-white">Rp {{
-                                                            number_format($price['wnaCost'], 0, ',', '.') }} /orang</td>
+                                                            number_format($price['wnaCost'], 0, ',', '.') }} /org</td>
                                                     </tr>
                                                     @endforeach
                                                     @else
@@ -142,6 +142,9 @@
             </div>
         </div>
         @endforeach
+    </div>
+    <div>
+        {{ $packages->links() }}
     </div>
 </div>
 @endsection
