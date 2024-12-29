@@ -23,6 +23,11 @@ class PackageFourDay extends Model
         return $this->belongsToMany(Destination::class, 'package_four_destinations', 'package_id', 'destination_id');
     }
 
+    public function facilities()
+    {
+        return $this->belongsToMany(Facility::class, 'facilities_four_days', 'package_id', 'facility_id');
+    }
+
     public function prices()
     {
         return $this->hasOne(PackageFourPrice::class);

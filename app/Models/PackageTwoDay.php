@@ -25,6 +25,11 @@ class PackageTwoDay extends Model
         return $this->belongsToMany(Destination::class, 'package_two_destinations', 'package_id', 'destination_id');
     }
 
+    public function facilities()
+    {
+        return $this->belongsToMany(Facility::class, 'facilities_two_days', 'package_id', 'facility_id');
+    }
+
     public function prices()
     {
         return $this->hasOne(PackageTwoPrice::class);

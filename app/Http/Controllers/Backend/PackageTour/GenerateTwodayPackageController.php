@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers\Backend\PackageTour;
 
-use App\Models\Hotel;
-use App\Models\ReserveFee;
-use App\Models\AgenFee;
-use App\Models\ServiceFee;
 use App\Models\Crew;
 use App\Models\Meal;
-use App\Models\Vehicle;
-use Illuminate\Support\Facades\Log;
-use App\Models\Regency;
 use App\Models\User;
+use App\Models\Hotel;
+use App\Models\AgenFee;
+use App\Models\Regency;
+use App\Models\Vehicle;
+use App\Models\Facility;
+use App\Models\ReserveFee;
+use App\Models\ServiceFee;
 use App\Models\Destination;
-use App\Models\PackageTwoDay;
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\PackageTwoDay;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 
 class GenerateTwodayPackageController extends Controller
 {
@@ -35,8 +36,9 @@ class GenerateTwodayPackageController extends Controller
         $destinations = Destination::all();
         $agens = User::agen()->get();
         $regencies = Regency::all();
+        $facilities = Facility::all();
 
-        return view('admin.package.twoday.generate_package_twoday', compact('destinations', 'agens', 'regencies'));
+        return view('admin.package.twoday.generate_package_twoday', compact('destinations', 'agens', 'regencies', 'facilities'));
     }
 
     public function generateCodeTwoday(Request $request){
@@ -49,6 +51,8 @@ class GenerateTwodayPackageController extends Controller
                 'cityOrDistrict_id' => 'required|exists:regencies,id',
                 'statusPackage' => 'required|boolean',
                 'NameAgen' => 'required|exists:users,id',
+                'facilities' => 'required|array',
+                'facilities.*' => 'exists:facilities,id',
                 'destinations' => 'required|array',
                 'destinations.*' => 'exists:destinations,id',
             ]);
@@ -61,6 +65,7 @@ class GenerateTwodayPackageController extends Controller
             $statusPackage = $request->input('statusPackage');
             $information = $request->input('information', '');
             $destinationIds = $request->input('destinations');
+            $facilityIds = $request->input('facilities');
 
             // Log::info('Input data processed.', [
             //     'namePackage' => $namePackage,
@@ -78,7 +83,12 @@ class GenerateTwodayPackageController extends Controller
             $serviceFee = ServiceFee::where('duration', '2')->first()->mark ?? 0.14;
             $feeAgen = AgenFee::find(1)->price ?? 50000;
             $reserveFees = ReserveFee::where('duration', '2')->get();
-            $selectedDestinations = Destination::whereIn('id', $destinationIds)->get();
+            $selectedDestinations = Destination::whereIn('id', $destinationIds)
+            ->whereIn('id', Destination::getByRegency($regencyId)->pluck('id'))
+            ->get();
+            $selectedFacilities = Facility::whereIn('id', $facilityIds)
+            ->whereIn('id', Facility::getByRegency($regencyId)->pluck('id'))
+            ->get();
 
             // Log::info('Supporting data fetched.', [
             //     'vehicles' => $vehicles,
@@ -102,6 +112,7 @@ class GenerateTwodayPackageController extends Controller
 
             // Simpan destinasi untuk paket
             $package->destinations()->sync($destinationIds);
+            $package->facilities()->sync($facilityIds);
 
             // Hitung harga per jenis hotel dan jumlah peserta
             $prices = $this->calculatePrices(
@@ -112,6 +123,7 @@ class GenerateTwodayPackageController extends Controller
                 $feeAgen,
                 $reserveFees,
                 $selectedDestinations,
+                $selectedFacilities,
                 $hotels
             );
 

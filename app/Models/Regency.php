@@ -27,12 +27,9 @@ class Regency extends Model
         return $this->hasMany(Destination::class, 'regency_id', 'id');
     }
 
-    /**
-     * Relasi dengan packages (Paket Wisata)
-     */
     public function packages()
     {
-        return $this->hasMany(Package::class);
+        return $this->hasMany(PackageOneDay::class);
     }
 
 

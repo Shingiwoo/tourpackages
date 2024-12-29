@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('facilities_one_days', function (Blueprint $table) {
+        Schema::create('facilities_three_days', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('package_id')->nullable();
             $table->unsignedBigInteger('facility_id')->nullable();
 
             // Add foreign key constraints
-            $table->foreign('package_id')->references('id')->on('package_one_days')->onDelete('cascade')->nullable();
+            $table->foreign('package_id')->references('id')->on('package_three_days')->onDelete('cascade')->nullable();
             $table->foreign('facility_id')->references('id')->on('facilities')->onDelete('cascade')->nullable();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('facilities_one_days');
+        Schema::dropIfExists('facilities_three_days');
     }
 };
