@@ -22,7 +22,7 @@
             <div class="card h-100">
                 <div class="card-header pb-0 d-flex justify-content-between">
                     <div class="card-title mb-0">
-                        <h5 class="mb-1">{{ $pack->name_package }}</h5>
+                        <h4 class="mb-1 text-uppercase">{{ $pack->name_package }}</h4>
                     </div>
                 </div>
                 <div class="card-body">
@@ -38,6 +38,20 @@
                                             @endforeach
                                         </ol>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="mb-2 mt-4">
+                                <h6 class="text-warning">Facility :</h6>
+                                <div class="demo-inline-spacing mt-4">
+                                    <ol class="list-group">
+                                        @forelse ($pack->facilities as $facility)
+                                        <li class="list-group-item list-group-item-action waves-effect waves-light">{{
+                                            $facility->name }}</li>
+                                        @empty
+                                        <li class="list-group-item list-group-item-action waves-effect waves-light">No
+                                            facilities available</li>
+                                        @endforelse
+                                    </ol>
                                 </div>
                             </div>
                             <div class="mb-2 mt-4">
@@ -75,14 +89,14 @@
                     </div>
 
                     <div class="accordion mt-4" id="accordionWithIcon">
-                        <div class="accordion-item card">
-                            <h2 class="accordion-header d-flex align-items-center">
-                                <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse"
+                        <div class="accordion-item card bg-primary text-white">
+                            <h3 class="accordion-header">
+                                <button type="button" class="accordion-button collapsed btn-primary" data-bs-toggle="collapse"
                                     data-bs-target="#accordionWithIcon-2" aria-expanded="false">
-                                    <i class="me-2 ti ti-receipt-2"></i>
-                                    Price List
+                                    <i class="me-2 mt-1 ti ti-receipt-2"></i>
+                                    <h5 class="text-white">Price List</h5>
                                 </button>
-                            </h2>
+                            </h3>
                             <div id="accordionWithIcon-2" class="accordion-collapse collapse">
                                 <div class="accordion-body">
 
@@ -91,23 +105,23 @@
                                             <table class="table table-bordered">
                                                 <thead>
                                                     <tr>
-                                                        <th class="align-content-center text-center">Vehicle</th>
-                                                        <th class="align-content-center text-center">User</th>
-                                                        <th class="align-content-center text-center">Price</th>
-                                                        <th class="align-content-center text-center">Wna Cost</th>
+                                                        <th class="align-content-center text-center text-white">Vehicle</th>
+                                                        <th class="align-content-center text-center text-white">User</th>
+                                                        <th class="align-content-center text-center text-white">Price</th>
+                                                        <th class="align-content-center text-center text-white">Wna Cost</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     @if ($pack->prices)
                                                     @foreach ($pack->prices->prices as $price)
                                                     <tr>
-                                                        <td class="align-content-center text-center">{{
+                                                        <td class="align-content-center text-center text-white">{{
                                                             $price['vehicle'] }}</td>
-                                                        <td class="align-content-center text-center">{{ $price['user']
+                                                        <td class="align-content-center text-center text-white">{{ $price['user']
                                                             }}</td>
-                                                        <td class="align-content-center text-center">Rp {{
+                                                        <td class="align-content-center text-center text-white">Rp {{
                                                             number_format($price['price'], 0, ',', '.') }} /orang</td>
-                                                        <td class="align-content-center text-center">Rp {{
+                                                        <td class="align-content-center text-center text-white">Rp {{
                                                             number_format($price['wnaCost'], 0, ',', '.') }} /orang</td>
                                                     </tr>
                                                     @endforeach
@@ -128,11 +142,6 @@
             </div>
         </div>
         @endforeach
-
-
-        <div class="mt-4">
-            {{ $packages->links() }}
-        </div>
     </div>
 </div>
 @endsection

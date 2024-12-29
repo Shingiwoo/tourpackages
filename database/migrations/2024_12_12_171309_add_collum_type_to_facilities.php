@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('facilities', function (Blueprint $table) {
-            $table->enum('type', ['flat','per_person','info', 'per_day', 'shuttle'. 'doc'])->default('flat')->after('price');
+            $table->enum('type', ['flat','per_person','info', 'per_day', 'shuttle', 'doc', 'tl'])->default('flat')->after('price');
             $table->string('max_user', 4)->after('type')->nullable();
         });
     }

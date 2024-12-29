@@ -93,6 +93,7 @@
                                             <option value="per_person">Per Person</option>
                                             <option value="per_day">Per Day</option>
                                             <option value="doc">Documentation</option>
+                                            <option value="tl">Tour Leader / Guide</option>
                                             <option value="info">Info</option>
                                             <option value="shuttle">Shuttle</option>
                                         </select>

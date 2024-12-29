@@ -339,7 +339,7 @@ class GeneratePackageController extends Controller
                     $facDocCost += $facility->price;
                 }
 
-                if ($facility->name === 'Guide' && $participants >= 18 && $participants <= 55) {
+                if ($facility->type === 'tl' && $participants >= 20 && $participants <= 55) {
                     $groupCount = ceil($participants / $facility->max_user);
                     $guideCost += $groupCount * $facility->price;
                 }
@@ -368,12 +368,21 @@ class GeneratePackageController extends Controller
             $serviceFeeCost = $pricePerPerson * $serviceFee;
             $finalPrice = $pricePerPerson + $serviceFeeCost;
 
-            Log::info('Cost data.', [
-                'totalFacilityCost' => $totalFacilityCost,
-                'guideCost' => $guideCost,
-                'facDocCost' => $facDocCost,
-                'ShuttleCost' => $ShuttleCost
-            ]);
+            // Log::info('Cost data.', [
+            //     'participants' => $participants,
+            //     'totalCostWNI' => $totalCostWNI,
+            //     'transportCost' => $transportCost,
+            //     'feeAgen' => $feeAgen,
+            //     'mealCost' => $mealCost,
+            //     'reserveFeeCost' => $reserveFeeCost,
+            //     'parkingCost' => $parkingCost,
+            //     'totalFacilityCost' => $totalFacilityCost,
+            //     'totalFacilityCost' => $totalFacilityCost,
+            //     'totalCost' => $totalCost,
+            //     'pricePerPerson' => $pricePerPerson,
+            //     'serviceFeeCost' => $serviceFeeCost,
+            //     'finalPrice' => $finalPrice
+            // ]);
 
             $prices[] = [
                 'vehicle' => $vehicle->name,

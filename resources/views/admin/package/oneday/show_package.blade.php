@@ -9,7 +9,7 @@
             <div class="card invoice-preview-card p-sm-12 p-6">
                 <div class="card-header pb-0 d-flex justify-content-between">
                     <div class="card-title mb-0">
-                        <h4 class="mb-1">{{ $package->name_package }}</h4>
+                        <h4 class="mb-1 text-uppercase">{{ $package->name_package }}</h4>
                     </div>
                 </div>
 
@@ -22,9 +22,9 @@
                                     <div class="demo-inline-spacing mt-4">
                                         <ol class="list-group list-group-numbered">
                                             @forelse ($package->destinations as $desti)
-                                            <li class="list-group-item">{{ $desti->name }}</li>
+                                            <li class="list-group-item list-group-item-action waves-effect waves-light">{{ $desti->name }}</li>
                                             @empty
-                                            <li class="list-group-item">No destinations available</li>
+                                            <li class="list-group-item list-group-item-action waves-effect waves-light">No destinations available</li>
                                             @endforelse
                                         </ol>
                                     </div>
@@ -33,11 +33,11 @@
                             <div class="mb-2 mt-4">
                                 <h6 class="text-warning">Facility :</h6>
                                 <div class="demo-inline-spacing mt-4">
-                                    <ol class="list-group list-group-numbered">
+                                    <ol class="list-group">
                                         @forelse ($package->facilities as $facility)
-                                        <li class="list-group-item">{{ $facility->name }}</li>
+                                        <li class="list-group-item list-group-item-action waves-effect waves-light">{{ $facility->name }}</li>
                                         @empty
-                                        <li class="list-group-item">No facilities available</li>
+                                        <li class="list-group-item list-group-item-action waves-effect waves-light">No facilities available</li>
                                         @endforelse
                                     </ol>
                                 </div>
@@ -72,54 +72,54 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
 
-                    <div class="accordion mt-6" id="accordionWithIcon">
-                        <div class="accordion-item card">
-                            <h2 class="accordion-header d-flex align-items-center">
-                                <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse"
-                                    data-bs-target="#accordionWithIcon-2" aria-expanded="false">
-                                    <i class="me-2 ti ti-receipt-2"></i>
-                                    Price List
-                                </button>
-                            </h2>
-                            <div id="accordionWithIcon-2" class="accordion-collapse collapse">
-                                <div class="accordion-body">
-                                    <div class="mt-2">
-                                        <div class="table-responsive text-nowrap">
-                                            <table class="table table-bordered">
-                                                <thead>
+
+            <!-- Price List Package  -->
+            <div class="accordion mt-4" id="accordionExample">
+                <div class="accordion-item card bg-primary text-white">
+                    <h2 class="accordion-header d-flex align-items-center">
+                        <button type="button" class="accordion-button collapsed btn-primary" data-bs-toggle="collapse" data-bs-target="#accordionWithIcon-2" aria-expanded="false">
+                           <h5 class="text-white text-uppercase"><i class="me-2 mb-1 ti ti-receipt-2"></i> Price List</h5>
+                        </button>
+                    </h2>
+                    <div id="accordionWithIcon-2" class="accordion-collapse collapse">
+                        <div class="accordion-body">
+                            <div class="mt-2">
+                                <div class="table-responsive text-nowrap">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th class="align-content-center text-center text-white">Vehicle</th>
+                                                <th class="align-content-center text-center text-white">User</th>
+                                                <th class="align-content-center text-center text-white">Price</th>
+                                                <th class="align-content-center text-center text-white">Wna Cost</th>
+                                            </tr>
+                                        </thead>
+                                        @php
+                                            // Asumsikan $package->prices->price_data sudah berisi JSON yang valid
+                                            $prices = json_decode($package->prices->price_data, true);
+                                        @endphp
+
+                                        <tbody>
+                                            @if (count($prices) > 0)
+                                                @foreach ($prices as $price)
                                                     <tr>
-                                                        <th class="align-content-center text-center">Vehicle</th>
-                                                        <th class="align-content-center text-center">User</th>
-                                                        <th class="align-content-center text-center">Price</th>
-                                                        <th class="align-content-center text-center">Wna Cost</th>
+                                                        <td class="align-content-center text-center text-white">{{ $price['vehicle'] }}</td>
+                                                        <td class="align-content-center text-center text-white">{{ $price['user'] }}</td>
+                                                        <td class="align-content-center text-center text-white">Rp {{ number_format($price['price'], 0, ',', '.') }} /orang</td>
+                                                        <td class="align-content-center text-center text-white">Rp {{
+                                                            number_format($price['wnaCost'], 0, ',', '.') }} /orang</td>
                                                     </tr>
-                                                </thead>
-                                                @php
-                                                    // Asumsikan $package->prices->price_data sudah berisi JSON yang valid
-                                                    $prices = json_decode($package->prices->price_data, true);
-                                                @endphp
-
-                                                <tbody>
-                                                    @if (count($prices) > 0)
-                                                        @foreach ($prices as $price)
-                                                            <tr>
-                                                                <td class="align-content-center text-center">{{ $price['vehicle'] }}</td>
-                                                                <td class="align-content-center text-center">{{ $price['user'] }}</td>
-                                                                <td class="align-content-center text-center">Rp {{ number_format($price['price'], 0, ',', '.') }} /orang</td>
-                                                                <td class="align-content-center text-center">Rp {{
-                                                                    number_format($price['wnaCost'], 0, ',', '.') }} /orang</td>
-                                                            </tr>
-                                                        @endforeach
-                                                    @else
-                                                        <tr>
-                                                            <td colspan="3" class="text-center">No price data available</td>
-                                                        </tr>
-                                                    @endif
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
+                                                @endforeach
+                                            @else
+                                                <tr>
+                                                    <td colspan="3" class="text-center">No price data available</td>
+                                                </tr>
+                                            @endif
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
@@ -133,7 +133,8 @@
         <div class="col-lg-3 col-12 invoice-actions">
             <div class="card mb-6">
                 <div class="card-body">
-                    <a href="{{ route('all.packages') }}" class="btn btn-label-primary d-grid w-100 mb-4">Back</a>
+                    <a href="{{ route('all.packages') }}" class="btn btn-label-primary w-100 mb-4"><i class="ti ti-arrow-big-left me-2"></i>Back</a>
+                    <a href="{{ route('edit.package', $package->id) }}" class="btn btn-label-warning w-100 mb-4"><i class="ti ti-edit me-2"></i>Edit</a>
                 </div>
             </div>
         </div>

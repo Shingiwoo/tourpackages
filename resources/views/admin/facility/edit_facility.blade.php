@@ -59,6 +59,7 @@
                                         <option value="per_person" {{ $facility->type == 'per_person' ? 'selected' : '' }}>Per Person</option>
                                         <option value="per_day" {{ $facility->type == 'per_day' ? 'selected' : '' }}>Per Day</option>
                                         <option value="doc" {{ $facility->type == 'doc' ? 'selected' : '' }}>Documentation</option>
+                                        <option value="tl" {{ $facility->type == 'tl' ? 'selected' : '' }}>Tour Leader / Guide</option>
                                         <option value="info" {{ $facility->type == 'info' ? 'selected' : '' }}>Info</option>
                                         <option value="shuttle" {{ $facility->type == 'shuttle' ? 'selected' : '' }}>Shuttle</option>
                                     </select>
