@@ -3,10 +3,10 @@
 
 <div class="container-xxl flex-grow-1 container-p-y">
 
-    <div class="row invoice-add">
+    <div class="row">
         <!-- Data Package -->
         <div class="col-lg-9 col-12 mb-lg-0 mb-6">
-            <div class="card invoice-preview-card p-sm-12 p-6">
+            <div class="card p-4">
                 <div class="card-header pb-0 d-flex justify-content-between">
                     <div class="card-title mb-0">
                         <h4 class="mb-1 text-uppercase">{{ $package->name_package }}</h4>
@@ -75,7 +75,6 @@
                 </div>
             </div>
 
-
             <!-- Price List Package  -->
             <div class="accordion mt-4" id="accordionExample">
                 <div class="accordion-item card bg-primary text-white">
@@ -130,7 +129,7 @@
         <!-- /Data Package  -->
 
         <!-- Actions -->
-        <div class="col-lg-3 col-12 invoice-actions">
+        <div class="col-lg-3 col-12">
             <div class="card mb-6">
                 <div class="card-body">
                     <a href="{{ route('all.packages') }}" class="btn btn-label-primary w-100 mb-4"><i class="ti ti-arrow-big-left me-2"></i>Back</a>
