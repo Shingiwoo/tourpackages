@@ -174,7 +174,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/show/twoday/package/{id}', 'PackageTwodayShow')->name('show.twoday.package');
     });
 
-    // Package Twoday all Route
+    // Package Threeday all Route
     Route::controller(GenerateThreedayPackageController::class)->group(function () {
 
         // Oneday
@@ -188,7 +188,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/show/threeday/package/{id}', 'PackageThreeDayShow')->name('show.threeday.package');
     });
 
-    // Package Twoday all Route
+    // Package Fourday all Route
     Route::controller(GenerateFourdayPackageController::class)->group(function () {
 
         // Oneday
