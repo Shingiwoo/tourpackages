@@ -83,11 +83,11 @@ class GeneratePackageController extends Controller
             $feeAgen = AgenFee::find(1)->price ?? 50000;
             $reserveFees = ReserveFee::all();
             $selectedDestinations = Destination::whereIn('id', $destinationIds)
-            ->whereIn('id', Destination::getByRegency($regencyId)->pluck('id'))
-            ->get();
+                ->where('regency_id', $regencyId)
+                ->get();
             $selectedFacilities = Facility::whereIn('id', $facilityIds)
-            ->whereIn('id', Facility::getByRegency($regencyId)->pluck('id'))
-            ->get();
+                ->where('regency_id', $regencyId)
+                ->get();
 
             // Log::info('Supporting data fetched.', [
             //     'vehicles' => $vehicles,
