@@ -90,11 +90,11 @@ class GenerateTwodayPackageController extends Controller
                 ->where('regency_id', $regencyId)
                 ->get();
 
-            Log::info('Hotels and facilities loaded', [
-                'hotels' => $hotels,
-                'facilities' => $selectedFacilities,
-                'destinations' => $selectedDestinations,
-            ]);
+            // Log::info('Hotels and facilities loaded', [
+            //     'hotels' => $hotels,
+            //     'facilities' => $selectedFacilities,
+            //     'destinations' => $selectedDestinations,
+            // ]);
 
             // Log::info('Supporting data fetched.', [
             //     'vehicles' => $vehicles,
@@ -213,19 +213,20 @@ class GenerateTwodayPackageController extends Controller
             $destinationIds = $request->input('destinations');
             $facilityIds = $request->input('facilities');
 
+
             $vehicles = Vehicle::all();
-            $hotels = Hotel::all();
+            $hotels = Hotel::where('status', 1)->where('regency_id', $regencyId)->get();
             $meals = Meal::where('duration', '2')->first();
             $crewData = Crew::all();
             $serviceFee = ServiceFee::where('duration', '2')->first()->mark ?? 0.14;
             $feeAgen = AgenFee::find(1)->price ?? 50000;
             $reserveFees = ReserveFee::where('duration', '2')->get();
             $selectedDestinations = Destination::whereIn('id', $destinationIds)
-            ->whereIn('id', Destination::getByRegency($regencyId)->pluck('id'))
-            ->get();
+                ->where('regency_id', $regencyId)
+                ->get();
             $selectedFacilities = Facility::whereIn('id', $facilityIds)
-            ->whereIn('id', Facility::getByRegency($regencyId)->pluck('id'))
-            ->get();
+                ->where('regency_id', $regencyId)
+                ->get();
 
             // Update paket wisata di database
             $package->update([
@@ -416,14 +417,14 @@ class GenerateTwodayPackageController extends Controller
 
                 $priceRow[$hotel->type] = round($finalPrice, 2);
 
-                // Logging harga setiap hotel
-                    Log::info('Calculated price for hotel', [
-                        'hotel' => $hotel->name,
-                        'type' => $hotel->type,
-                        'participants' => $participants,
-                        'finalPrice' => $finalPrice,
-                        'pricePerPerson' => $pricePerPerson,
-                ]);
+                // // Logging harga setiap hotel
+                //     Log::info('Calculated price for hotel', [
+                //         'hotel' => $hotel->name,
+                //         'type' => $hotel->type,
+                //         'participants' => $participants,
+                //         'finalPrice' => $finalPrice,
+                //         'pricePerPerson' => $pricePerPerson,
+                // ]);
             }
 
             $prices[] = $priceRow;
