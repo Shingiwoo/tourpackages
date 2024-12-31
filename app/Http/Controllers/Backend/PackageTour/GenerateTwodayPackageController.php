@@ -238,7 +238,7 @@ class GenerateTwodayPackageController extends Controller
             );
 
             // Update harga di database (dalam format JSON) jika sudah ada, atau buat baru jika belum ada
-            $priceRecord = $package->prices()->first(); // Ambil entri harga terkait
+            $priceRecord = $package->prices()->first();
             if ($priceRecord) {
                 $priceRecord->update([
                     'price_data' => json_encode($prices),
@@ -371,6 +371,7 @@ class GenerateTwodayPackageController extends Controller
         $facPerdayCost = 0;
         $facPerpersonCost = 0;
         $facInfoCost = 0;
+        $facEventCost = 0;
         $facDocCost = 0;
         $guideCost = 0;
 
@@ -419,11 +420,18 @@ class GenerateTwodayPackageController extends Controller
                     $facPerpersonCost += $facility->price * $participants * 2;
                     break;
 
+                case 'event':
+                    // Hitung biaya event
+                    $facEventCost += $facility->price * 3;
+                    break;
+
                 case 'info':
                     // Hitung biaya info
                     $facInfoCost += $facility->price * 2;
                     break;
             }
+
+            $totalFacilityCost = $flatCost + $ShuttleCost + $facPerdayCost + $facDocCost + $guideCost + $facPerpersonCost + $facEventCost + $facInfoCost;
         }
 
         return $totalFacilityCost;
