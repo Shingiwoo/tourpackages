@@ -4,7 +4,7 @@
             <span class="app-brand-logo demo">
 
             </span>
-            <span class="app-brand-text demo menu-text fw-bold">Paket Wisata</span>
+            <span class="app-brand-text demo menu-text fw-bold text-primary">Paket Wisata</span>
         </a>
 
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
