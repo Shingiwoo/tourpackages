@@ -124,8 +124,8 @@
                         <div class="card-body">
                             <div class="row g-6">
                                 <div class="col-12 col-md-12">
-                                    <div class="table-responsive text-nowrap">
-                                        <table class="table table-striped">
+                                    <div class="card-datatable text-nowrap">
+                                        <table id="example" class="datatables-ajax table" style="width:100%">
                                             <thead>
                                                 <tr>
                                                     <th class="align-content-center text-center">SL</th>
@@ -133,7 +133,6 @@
                                                     <th class="align-content-center text-center">Price</th>
                                                     <th class="align-content-center text-center">Type</th>
                                                     <th class="align-content-center text-center">Capacity</th>
-                                                    <th class="align-content-center text-center">City / District</th>
                                                     <th class="align-content-center text-center">Actions</th>
                                                 </tr>
                                             </thead>
@@ -147,8 +146,6 @@
                                                     <td class="align-content-center text-center">{{ $fct->type }}
                                                     </td>
                                                     <td class="align-content-center text-center">{{ $fct->max_user }}
-                                                    </td>
-                                                    <td class="align-content-center text-center">{{ $fct->regency->name }}
                                                     </td>
                                                     <td class="align-content-center text-center">
                                                         <div class="dropdown">
