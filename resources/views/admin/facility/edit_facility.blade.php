@@ -61,6 +61,7 @@
                                         <option value="doc" {{ $facility->type == 'doc' ? 'selected' : '' }}>Documentation</option>
                                         <option value="tl" {{ $facility->type == 'tl' ? 'selected' : '' }}>Tour Leader / Guide</option>
                                         <option value="info" {{ $facility->type == 'info' ? 'selected' : '' }}>Info</option>
+                                        <option value="event" {{ $facility->type == 'event' ? 'selected' : '' }}>Event</option>
                                         <option value="shuttle" {{ $facility->type == 'shuttle' ? 'selected' : '' }}>Shuttle</option>
                                     </select>
                                 </div>
