@@ -22,7 +22,7 @@
             <div class="card h-100">
                 <div class="card-header pb-0 d-flex justify-content-between">
                     <div class="card-title mb-0">
-                        <h5 class="mb-1 text-uppercase">{{ $pack->name_package }}</h5>
+                        <h4 class="mb-1 text-uppercase">{{ $pack->name_package }}</h4>
                     </div>
                 </div>
                 <div class="card-body">
@@ -38,6 +38,18 @@
                                             @endforeach
                                         </ol>
                                     </div>
+                                </div>
+                            </div>
+                            <div class="mb-2 mt-4">
+                                <h6 class="text-warning">Facility :</h6>
+                                <div class="demo-inline-spacing mt-4">
+                                    <ol class="list-group">
+                                        @forelse ($pack->facilities as $facility)
+                                        <li class="list-group-item list-group-item-action waves-effect waves-light">{{ $facility->name }}</li>
+                                        @empty
+                                        <li class="list-group-item list-group-item-action waves-effect waves-light">No facilities available</li>
+                                        @endforelse
+                                    </ol>
                                 </div>
                             </div>
                             <div class="mb-2 mt-4">
@@ -75,9 +87,9 @@
                     </div>
 
                     <div class="accordion mt-4" id="accordionWithIcon">
-                        <div class="accordion-item card">
+                        <div class="accordion-item card bg-secondary">
                             <h2 class="accordion-header d-flex align-items-center">
-                                <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse"
+                                <button type="button" class="accordion-button collapsed btn-secondary" data-bs-toggle="collapse"
                                     data-bs-target="#accordionWithIcon-2" aria-expanded="false">
                                     <i class="me-2 ti ti-receipt-2"></i>
                                     Price List
@@ -91,38 +103,43 @@
                                             <table class="table table-bordered">
                                                 <thead>
                                                     <tr>
-                                                        <th class="align-content-center text-center">Vehicle</th>
-                                                        <th class="align-content-center text-center">User</th>
-                                                        <th class="align-content-center text-center">No Accomodation</th>
-                                                        <th class="align-content-center text-center">Guesthouse</th>
-                                                        <th class="align-content-center text-center">Homestay</th>
-                                                        <th class="align-content-center text-center">TwoStar</th>
-                                                        <th class="align-content-center text-center">ThreeStar</th>
-                                                        <th class="align-content-center text-center">FourStar</th>
-                                                        <th class="align-content-center text-center">FiveStar</th>
-                                                        <th class="align-content-center text-center">Wna Cost</th>
+                                                        <th class="align-content-center text-center text-white">Vehicle</th>
+                                                        <th class="align-content-center text-center text-white">User</th>
+                                                        <th class="align-content-center text-center text-white">Wna Cost</th>
+                                                        @php
+                                                            // Decode the JSON data
+                                                            $prices = json_decode($pack->prices->price_data, true);
+
+                                                            // Extract accommodation types dynamically
+                                                            $accommodationTypes = [];
+                                                            if (is_array($prices) && count($prices) > 0) {
+                                                                $firstRow = $prices[0];
+                                                                $accommodationTypes = array_keys(array_filter($firstRow, function ($key) {
+                                                                    return !in_array($key, ['vehicle', 'user', 'wnaCost']);
+                                                                }, ARRAY_FILTER_USE_KEY));
+                                                            }
+                                                        @endphp
+                                                        @foreach ($accommodationTypes as $type)
+                                                            <th class="align-content-center text-center text-white">{{ ucwords(str_replace(['WithoutAccomodation', 'Guesthouse', 'Homestay', 'TwoStar', 'ThreeStar', 'FourStar', 'FiveStar'], ['Without Accommodation', 'Guesthouse', 'Homestay', 'Two Star', 'Three Star', 'Four Star', 'Five Star'], $type)) }}</th>
+                                                        @endforeach
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    @if ($pack->prices)
-                                                    @foreach ($pack->prices->prices as $priceRow)
-                                                        <tr>
-                                                            <td>{{ $priceRow['vehicle'] }}</td>
-                                                            <td>{{ $priceRow['user'] }}</td>
-                                                            <td>{{ number_format($priceRow['WithoutAccomodation'], 2, ',', '.') }} /orang</td>
-                                                            <td>{{ number_format($priceRow['Guesthouse'], 2, ',', '.') }} /orang</td>
-                                                            <td>{{ number_format($priceRow['Homestay'], 2, ',', '.') }} /orang</td>
-                                                            <td>{{ number_format($priceRow['TwoStar'], 2, ',', '.') }} /orang</td>
-                                                            <td>{{ number_format($priceRow['ThreeStar'], 2, ',', '.') }} /orang</td>
-                                                            <td>{{ number_format($priceRow['FourStar'], 2, ',', '.') }} /orang</td>
-                                                            <td>{{ number_format($priceRow['FiveStar'], 2, ',', '.') }} /orang</td>
-                                                            <td>{{ number_format($priceRow['wnaCost'], 2, ',', '.') }} /orang</td>
-                                                        </tr>
-                                                    @endforeach
+                                                    @if (is_array($prices) && count($prices) > 0)
+                                                        @foreach ($prices as $priceRow)
+                                                            <tr>
+                                                                <td class="align-content-center text-center text-white">{{ $priceRow['vehicle'] }}</td>
+                                                                <td class="align-content-center text-center text-white">{{ $priceRow['user'] }}</td>
+                                                                <td class="align-content-center text-center text-white">{{ number_format($priceRow['wnaCost'], 0, ',', '.') }} /org</td>
+                                                                @foreach ($accommodationTypes as $type)
+                                                                    <td class="align-content-center text-center text-white">{{ number_format($priceRow[$type] ?? 0, 0, ',', '.') }} /org</td>
+                                                                @endforeach
+                                                            </tr>
+                                                        @endforeach
                                                     @else
-                                                    <tr>
-                                                        <td colspan="3" class="text-center">No price data available</td>
-                                                    </tr>
+                                                        <tr>
+                                                            <td colspan="{{ 3 + count($accommodationTypes) }}" class="text-center">No price data available</td>
+                                                        </tr>
                                                     @endif
                                                 </tbody>
                                             </table>

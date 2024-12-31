@@ -4,6 +4,9 @@
 <div class="container-xxl flex-grow-1 container-p-y">
     <!-- Cards with few info -->
     <div class="row g-6 mb-6">
+        <div class="col-sm-6 align-self-center text-center">
+            <h2 class="text-uppercase text-primary">Three Day Package</h2>
+        </div>
         <div class="col-lg-3 col-sm-6">
             <div class="card h-100">
                 <div class="card-body d-flex justify-content-between align-items-center">
