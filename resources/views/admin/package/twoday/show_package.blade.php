@@ -9,14 +9,14 @@
             <div class="card p-4">
                 <div class="card-header pb-0 d-flex justify-content-between">
                     <div class="card-title mb-0">
-                        <h5 class="mb-1">{{ $package->name_package }}</h5>
+                        <h4 class="mb-1 text-uppercase">{{ $package->name_package }}</h4>
                     </div>
                 </div>
 
                 <div class="card-body">
                     <div class="row align-items-center g-md-8">
                         <div class="col-12 col-md-12 d-flex flex-column">
-                            <div class="d-flex gap-1 align-items-center mb-3 flex-wrap">
+                            <div class="d-flex gap-1 align-items-center mb-3 flex-wrap mt-4">
                                 <div class="col-lg-12 mb-4 mb-xl-0">
                                     <h6 class="fw-medium text-info">Destinations :</h6>
                                     <div class="demo-inline-spacing mt-4">
@@ -31,7 +31,19 @@
                                 </div>
                             </div>
                             <div class="mb-2 mt-4">
-                                <h6 class="text-danger">Information :</h6>
+                                <h6 class="text-warning">Facility :</h6>
+                                <div class="demo-inline-spacing mt-4">
+                                    <ol class="list-group">
+                                        @forelse ($package->facilities as $facility)
+                                        <li class="list-group-item list-group-item-action waves-effect waves-light">{{ $facility->name }}</li>
+                                        @empty
+                                        <li class="list-group-item list-group-item-action waves-effect waves-light">No facilities available</li>
+                                        @endforelse
+                                    </ol>
+                                </div>
+                            </div>
+                            <div class="mb-2 mt-4">
+                                <h6 class="text-warning">Information :</h6>
                                 <small class="fw-medium">{{ strip_tags($package->information) }}</small>
                             </div>
                         </div>
@@ -80,40 +92,41 @@
                                             <tr>
                                                 <th class="align-content-center text-center">Vehicle</th>
                                                 <th class="align-content-center text-center">User</th>
-                                                <th class="align-content-center text-center">No Accomodation</th>
-                                                <th class="align-content-center text-center">Guesthouse</th>
-                                                <th class="align-content-center text-center">Homestay</th>
-                                                <th class="align-content-center text-center">TwoStar</th>
-                                                <th class="align-content-center text-center">ThreeStar</th>
-                                                <th class="align-content-center text-center">FourStar</th>
-                                                <th class="align-content-center text-center">FiveStar</th>
                                                 <th class="align-content-center text-center">Wna Cost</th>
+                                                @php
+                                                    // Decode the JSON data
+                                                    $prices = json_decode($package->prices->price_data, true);
+
+                                                    // Extract accommodation types dynamically
+                                                    $accommodationTypes = [];
+                                                    if (is_array($prices) && count($prices) > 0) {
+                                                        $firstRow = $prices[0];
+                                                        $accommodationTypes = array_keys(array_filter($firstRow, function ($key) {
+                                                            return !in_array($key, ['vehicle', 'user', 'wnaCost']);
+                                                        }, ARRAY_FILTER_USE_KEY));
+                                                    }
+                                                @endphp
+                                                @foreach ($accommodationTypes as $type)
+                                                    <th class="align-content-center text-center">{{ ucwords(str_replace(['WithoutAccomodation', 'Guesthouse', 'Homestay', 'TwoStar', 'ThreeStar', 'FourStar', 'FiveStar'], ['Without Accommodation', 'Guesthouse', 'Homestay', 'Two Star', 'Three Star', 'Four Star', 'Five Star'], $type)) }}</th>
+                                                @endforeach
                                             </tr>
                                         </thead>
-                                        @php
-                                            // Asumsikan $package->prices->price_data sudah berisi JSON yang valid
-                                            $prices = json_decode($package->prices->price_data, true);
-                                        @endphp
                                         <tbody>
-                                            @if (count($prices) > 0)
+                                            @if (is_array($prices) && count($prices) > 0)
                                                 @foreach ($prices as $priceRow)
-                                                <tr>
-                                                    <td class="align-content-center text-center">{{ $priceRow['vehicle'] }}</td>
-                                                    <td class="align-content-center text-center">{{ $priceRow['user'] }}</td>
-                                                    <td class="align-content-center text-center">{{ number_format($priceRow['WithoutAccomodation'], 0, ',', '.') }} /org</td>
-                                                    <td class="align-content-center text-center">{{ number_format($priceRow['Guesthouse'], 0, ',', '.') }} /org</td>
-                                                    <td class="align-content-center text-center">{{ number_format($priceRow['Homestay'], 0, ',', '.') }} /org</td>
-                                                    <td class="align-content-center text-center">{{ number_format($priceRow['TwoStar'], 0, ',', '.') }} /org</td>
-                                                    <td>{{ number_format($priceRow['ThreeStar'], 0, ',', '.') }} /org</td>
-                                                    <td class="align-content-center text-center">{{ number_format($priceRow['FourStar'], 0, ',', '.') }} /org</td>
-                                                    <td class="align-content-center text-center">{{ number_format($priceRow['FiveStar'], 0, ',', '.') }} /org</td>
-                                                    <td class="align-content-center text-center">{{ number_format($priceRow['wnaCost'], 0, ',', '.') }} /org</td>
-                                                </tr>
-                                            @endforeach
+                                                    <tr>
+                                                        <td class="align-content-center text-center">{{ $priceRow['vehicle'] }}</td>
+                                                        <td class="align-content-center text-center">{{ $priceRow['user'] }}</td>
+                                                        <td class="align-content-center text-center">{{ number_format($priceRow['wnaCost'], 0, ',', '.') }} /org</td>
+                                                        @foreach ($accommodationTypes as $type)
+                                                            <td class="align-content-center text-center">{{ number_format($priceRow[$type] ?? 0, 0, ',', '.') }} /org</td>
+                                                        @endforeach
+                                                    </tr>
+                                                @endforeach
                                             @else
-                                            <tr>
-                                                <td colspan="3" class="text-center">No price data available</td>
-                                            </tr>
+                                                <tr>
+                                                    <td colspan="{{ 3 + count($accommodationTypes) }}" class="text-center">No price data available</td>
+                                                </tr>
                                             @endif
                                         </tbody>
                                     </table>

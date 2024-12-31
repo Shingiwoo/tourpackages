@@ -23,4 +23,9 @@ class Facility extends Model
     {
         return self::where('regency_id', $regencyId)->get();
     }
+
+    public static function byIdsAndRegency(array $ids, $regencyId)
+    {
+        return self::whereIn('id', $ids)->where('regency_id', $regencyId)->get();
+    }
 }

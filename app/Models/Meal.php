@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 
 class Meal extends Model
 {
@@ -17,6 +18,11 @@ class Meal extends Model
     public function regency()
     {
         return $this->belongsTo(Regency::class);
+    }
+
+    public function scopeForDuration(Builder $query, string $duration): Builder
+    {
+        return $query->where('duration', $duration);
     }
 
 }

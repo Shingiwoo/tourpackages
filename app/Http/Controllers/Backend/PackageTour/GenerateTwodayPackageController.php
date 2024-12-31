@@ -21,7 +21,8 @@ use App\Http\Controllers\Controller;
 class GenerateTwodayPackageController extends Controller
 {
 
-    public function AllTwoDayPackage(Request $request){
+    public function AllTwoDayPackage(Request $request)
+    {
 
         $packages = PackageTwoDay::all();
         $destinations = Destination::all(); // Untuk form generate
@@ -31,7 +32,8 @@ class GenerateTwodayPackageController extends Controller
         return view('admin.package.twoday.all_packages', compact('packages', 'destinations', 'active', 'inactive', 'agens'));
     }
 
-    public function GenerateTwodayPackage(Request $request){
+    public function GenerateTwodayPackage(Request $request)
+    {
 
         $destinations = Destination::all();
         $agens = User::agen()->get();
@@ -41,11 +43,12 @@ class GenerateTwodayPackageController extends Controller
         return view('admin.package.twoday.generate_package_twoday', compact('destinations', 'agens', 'regencies', 'facilities'));
     }
 
-    public function generateCodeTwoday(Request $request){
+    public function generateCodeTwoday(Request $request)
+    {
         try {
             Log::info('generateCodeTwoday method initiated.');
 
-            // Validasi input
+            // Validasi input menggunakan FormRequest
             $validatedData = $request->validate([
                 'NamePackage' => 'required|string|max:255',
                 'cityOrDistrict_id' => 'required|exists:regencies,id',
@@ -56,55 +59,32 @@ class GenerateTwodayPackageController extends Controller
                 'destinations' => 'required|array',
                 'destinations.*' => 'exists:destinations,id',
             ]);
-            Log::info('Validation passed.', ['validated_data' => $validatedData]);
 
             // Ambil data dari request
-            $namePackage = $request->input('NamePackage');
-            $regencyId = $request->input('cityOrDistrict_id');
-            $agenId = $request->input('NameAgen');
-            $statusPackage = $request->input('statusPackage');
+            $namePackage = $validatedData['NamePackage'];
+            $regencyId = $validatedData['cityOrDistrict_id'];
+            $agenId = $validatedData['NameAgen'];
+            $statusPackage = $validatedData['statusPackage'];
             $information = $request->input('information', '');
-            $destinationIds = $request->input('destinations');
-            $facilityIds = $request->input('facilities');
-
-            // Log::info('Input data processed.', [
-            //     'namePackage' => $namePackage,
-            //     'regencyId' => $regencyId,
-            //     'agenId' => $agenId,
-            //     'statusPackage' => $statusPackage,
-            //     'destinationIds' => $destinationIds,
-            // ]);
+            $destinationIds = $validatedData['destinations'];
+            $facilityIds = $validatedData['facilities'];
 
             // Ambil data terkait
             $vehicles = Vehicle::all();
-            $hotels = Hotel::where('status', 1)->where('regency_id', $regencyId)->get();
-            $meals = Meal::where('duration', '2')->first();
+            $hotels = Hotel::active()->byRegency($regencyId)->get(); // Gunakan scope
+            $meals = Meal::forDuration(2)->first(); // Gunakan scope
             $crewData = Crew::all();
-            $serviceFee = ServiceFee::where('duration', '2')->first()->mark ?? 0.14;
-            $feeAgen = AgenFee::find(1)->price ?? 50000;
-            $reserveFees = ReserveFee::where('duration', '2')->get();
-            $selectedDestinations = Destination::whereIn('id', $destinationIds)
-                ->where('regency_id', $regencyId)
-                ->get();
-            $selectedFacilities = Facility::whereIn('id', $facilityIds)
-                ->where('regency_id', $regencyId)
-                ->get();
+            $serviceFee = ServiceFee::forDuration(2)->value('mark') ?? 0.14; // Ambil nilai langsung
+            $feeAgen = AgenFee::defaultFee();
+            $reserveFees = ReserveFee::forDuration(2)->get();
+            $selectedDestinations = Destination::byIdsAndRegency($destinationIds, $regencyId);
+            $selectedFacilities = Facility::byIdsAndRegency($facilityIds, $regencyId);
 
-            // Log::info('Hotels and facilities loaded', [
-            //     'hotels' => $hotels,
-            //     'facilities' => $selectedFacilities,
-            //     'destinations' => $selectedDestinations,
-            // ]);
-
-            // Log::info('Supporting data fetched.', [
-            //     'vehicles' => $vehicles,
-            //     'meals' => $meals,
-            //     'crewData' => $crewData,
-            //     'serviceFee' => $serviceFee,
-            //     'feeAgen' => $feeAgen,
-            //     'reserveFees' => $reserveFees,
-            //     'selectedDestinations' => $selectedDestinations,
-            // ]);
+            Log::info('Hotels and facilities loaded.', [
+                'hotels_count' => $hotels->count(),
+                'facilities_count' => $selectedFacilities->count(),
+                'destinations_count' => $selectedDestinations->count(),
+            ]);
 
             // Simpan paket wisata ke database
             $package = PackageTwoDay::create([
@@ -114,13 +94,14 @@ class GenerateTwodayPackageController extends Controller
                 'status' => $statusPackage,
                 'information' => $information,
             ]);
-            Log::info('Package saved to database.', ['package' => $package]);
 
-            // Simpan destinasi untuk paket
+            Log::info('Package saved.', ['package_id' => $package->id]);
+
+            // Simpan destinasi dan fasilitas
             $package->destinations()->sync($destinationIds);
             $package->facilities()->sync($facilityIds);
 
-            // Hitung harga per jenis hotel dan jumlah peserta
+            // Hitung harga
             $prices = $this->calculatePrices(
                 $vehicles,
                 $meals,
@@ -130,38 +111,36 @@ class GenerateTwodayPackageController extends Controller
                 $reserveFees,
                 $selectedDestinations,
                 $selectedFacilities,
-                $hotels
+                $hotels,
+                $regencyId
             );
 
-            // Simpan harga ke database (dalam format JSON)
+            // Simpan harga
             $package->prices()->create([
                 'price_data' => json_encode($prices),
             ]);
-            // Log::info('Prices saved to database.', ['prices' => $prices]);
-            Log::info('Prices saved to database successfully!');
 
-            // Kirim notifikasi berhasil
-            $notification = [
+            Log::info('Prices saved.', ['package_id' => $package->id]);
+
+            return redirect()->route('all.twoday.packages')->with([
                 'message' => 'Package generated successfully!',
                 'alert-type' => 'success',
-            ];
-            Log::info('Notification prepared.', ['notification' => $notification]);
+            ]);
 
-            return redirect()->route('all.twoday.packages')->with($notification);
         } catch (\Illuminate\Validation\ValidationException $e) {
-            Log::error('Validation error in generateCodeTwoday.', ['errors' => $e->errors()]);
+            Log::error('Validation error.', ['errors' => $e->errors()]);
             return redirect()->back()->withErrors($e->errors())->withInput();
-        } catch (\Exception $e) {
-            Log::error('Unexpected error in generateCodeTwoday.', ['message' => $e->getMessage()]);
+        } catch (\Throwable $e) {
+            Log::error('Unexpected error.', ['message' => $e->getMessage()]);
             return redirect()->back()->with([
                 'message' => 'An error occurred while generating package.',
-                'alert-type' => 'error'
+                'alert-type' => 'error',
             ])->withInput();
         }
     }
 
-
-    public function EditGenerateTwodayPackage($id){
+    public function EditGenerateTwodayPackage($id)
+    {
 
         $package = PackageTwoDay::with('destinations')->find($id);
 
@@ -179,23 +158,48 @@ class GenerateTwodayPackageController extends Controller
         return view('admin.package.twoday.edit_package', compact('destinations', 'agens', 'regencies', 'package', 'selectedDestinations', 'facilities', 'selectedFacilities'));
     }
 
-    public function UpdateGenerateCodeTwoday(Request $request, $id){
+    public function UpdateGenerateCodeTwoday(Request $request, $id)
+    {
         try {
+            Log::info('generateCodeTwoday method initiated.');
 
-            Log::info('UpdateGenerateCodeTwoday method initiated.');
-
-            // Validasi input
+            // Validasi input menggunakan FormRequest
             $validatedData = $request->validate([
                 'NamePackage' => 'required|string|max:255',
                 'cityOrDistrict_id' => 'required|exists:regencies,id',
                 'statusPackage' => 'required|boolean',
+                'NameAgen' => 'required|exists:users,id',
                 'facilities' => 'required|array',
                 'facilities.*' => 'exists:facilities,id',
-                'NameAgen' => 'required|exists:users,id',
                 'destinations' => 'required|array',
                 'destinations.*' => 'exists:destinations,id',
             ]);
-            Log::info('Validation passed.', ['validated_data' => $validatedData]);
+
+            // Ambil data dari request
+            $namePackage = $validatedData['NamePackage'];
+            $regencyId = $validatedData['cityOrDistrict_id'];
+            $agenId = $validatedData['NameAgen'];
+            $statusPackage = $validatedData['statusPackage'];
+            $information = $request->input('information', '');
+            $destinationIds = $validatedData['destinations'];
+            $facilityIds = $validatedData['facilities'];
+
+            // Ambil data terkait
+            $vehicles = Vehicle::all();
+            $hotels = Hotel::active()->byRegency($regencyId)->get();
+            $meals = Meal::forDuration(2)->first();
+            $crewData = Crew::all();
+            $serviceFee = ServiceFee::forDuration(2)->value('mark') ?? 0.14;
+            $feeAgen = AgenFee::defaultFee();
+            $reserveFees = ReserveFee::forDuration(2)->get();
+            $selectedDestinations = Destination::byIdsAndRegency($destinationIds, $regencyId);
+            $selectedFacilities = Facility::byIdsAndRegency($facilityIds, $regencyId);
+
+            Log::info('Hotels and facilities loaded.', [
+                'hotels_count' => $hotels->count(),
+                'facilities_count' => $selectedFacilities->count(),
+                'destinations_count' => $selectedDestinations->count(),
+            ]);
 
             // Cari data package berdasarkan ID
             $package = PackageTwoDay::find($id);
@@ -204,31 +208,7 @@ class GenerateTwodayPackageController extends Controller
                 return redirect()->route('all.twoday.packages')->with('error', 'Package not found!');
             }
 
-            // Ambil data dari request
-            $namePackage = $request->input('NamePackage');
-            $regencyId = $request->input('cityOrDistrict_id');
-            $agenId = $request->input('NameAgen');
-            $statusPackage = $request->input('statusPackage');
-            $information = $request->input('information', '');
-            $destinationIds = $request->input('destinations');
-            $facilityIds = $request->input('facilities');
-
-
-            $vehicles = Vehicle::all();
-            $hotels = Hotel::where('status', 1)->where('regency_id', $regencyId)->get();
-            $meals = Meal::where('duration', '2')->first();
-            $crewData = Crew::all();
-            $serviceFee = ServiceFee::where('duration', '2')->first()->mark ?? 0.14;
-            $feeAgen = AgenFee::find(1)->price ?? 50000;
-            $reserveFees = ReserveFee::where('duration', '2')->get();
-            $selectedDestinations = Destination::whereIn('id', $destinationIds)
-                ->where('regency_id', $regencyId)
-                ->get();
-            $selectedFacilities = Facility::whereIn('id', $facilityIds)
-                ->where('regency_id', $regencyId)
-                ->get();
-
-            // Update paket wisata di database
+            // Simpan paket wisata ke database
             $package->update([
                 'name_package' => $namePackage,
                 'regency_id' => $regencyId,
@@ -236,9 +216,10 @@ class GenerateTwodayPackageController extends Controller
                 'status' => $statusPackage,
                 'information' => $information,
             ]);
-            Log::info('Package update to database.', ['package' => $package]);
 
-            // Simpan destinasi untuk paket
+            Log::info('Package saved to database.', ['package' => $package]);
+
+            // Simpan destinasi dan fasilitas
             $package->destinations()->sync($destinationIds);
             $package->facilities()->sync($facilityIds);
 
@@ -252,15 +233,23 @@ class GenerateTwodayPackageController extends Controller
                 $reserveFees,
                 $selectedDestinations,
                 $selectedFacilities,
-                $hotels
+                $hotels,
+                $regencyId
             );
 
-            // Update harga di database (dalam format JSON)
-            $package->prices()->update([
-                'price_data' => json_encode($prices),
-            ]);
-            //Log::info('Prices update to database.', ['prices' => $prices]);
-            Log::info('Prices update to database successfully!');
+            // Update harga di database (dalam format JSON) jika sudah ada, atau buat baru jika belum ada
+            $priceRecord = $package->prices()->first(); // Ambil entri harga terkait
+            if ($priceRecord) {
+                $priceRecord->update([
+                    'price_data' => json_encode($prices),
+                ]);
+                Log::info('Prices updated in database successfully!');
+            } else {
+                $package->prices()->create([
+                    'price_data' => json_encode($prices),
+                ]);
+                Log::info('Prices created in database successfully!');
+            }
 
             // Kirim notifikasi berhasil
             $notification = [
@@ -276,13 +265,14 @@ class GenerateTwodayPackageController extends Controller
         } catch (\Exception $e) {
             Log::error('Unexpected error in UpdateGenerateCodeTwoday.', ['message' => $e->getMessage()]);
             return redirect()->back()->with([
-                'message' => 'An error occurred while update generating package.',
+                'message' => 'An error occurred while updating the package.',
                 'alert-type' => 'error'
             ])->withInput();
         }
     }
 
-    private function calculatePrices($vehicles, $meals, $crewData, $serviceFee, $feeAgen, $reserveFees, $selectedDestinations,$selectedFacilities, $hotels ){
+
+    private function calculatePrices($vehicles, $meals, $crewData, $serviceFee, $feeAgen, $reserveFees, $selectedDestinations, $selectedFacilities, $hotels, $regencyId){
         $prices = [];
 
         for ($participants = 1; $participants <= 55; $participants++) {
@@ -296,88 +286,15 @@ class GenerateTwodayPackageController extends Controller
             $crew = $crewData->firstWhere(fn($c) => $participants >= $c->min_participants && $participants <= $c->max_participants);
 
             // Biaya destinasi dan parkir
-            $totalCostWNI = 0;
-            $totalCostWNA = 0;
-            $parkingCost = 0;
+            [$totalCostWNI, $totalCostWNA, $parkingCost] = $this->calculateDestinationCosts($selectedDestinations, $participants, $vehicle);
 
-            foreach ($selectedDestinations as $destination) {
-                if ($destination->price_type === 'per_person') {
-                    $totalCostWNI += $destination->price_wni * $participants;
-                    $totalCostWNA += $destination->price_wna * $participants;
-                } elseif ($destination->price_type === 'flat') {
-                    $groupCount = ceil($participants / $destination->max_participants);
-                    $totalCostWNI += $groupCount * $destination->price_wni;
-                    $totalCostWNA += $groupCount * $destination->price_wna;
-                }
+            // Biaya fasilitas
+            $totalFacilityCost = $this->calculateFacilityCosts($selectedFacilities, $participants);
 
-                $parkingCosts = [
-                    'City Car' => $destination->parking_city_car,
-                    'Mini Bus' => $destination->parking_mini_bus,
-                    'Bus' => $destination->parking_bus,
-                ];
-
-                $parkingCost += $parkingCosts[$vehicle->type] ?? 0;
-            }
-
-            // Perhitungan biaya fasilitas
-            $ShuttleCost = 0;
-            $flatCost = 0;
-            $facPerdayCost = 0;
-            $facPerpersonCost = 0;
-            $facInfoCost = 0;
-            $facDocCost = 0;
-            $guideCost = 0;
-
-            foreach ($selectedFacilities as $facility) {
-
-                if ($facility->type === 'flat') {
-                    // Hitung biaya flat
-                    $groupCount = ceil($participants / $facility->max_user);
-                    $flatCost += $groupCount * $facility->price;
-
-                    // Hitung biaya shuttle berdasarkan kondisi yang ada
-                    if ($facility->type === 'shuttle' && $participants >= 18 && $participants <= 55) {
-                        $groupCount = ceil($participants / $facility->max_user);
-                        $ShuttleCost += $groupCount * $facility->price;
-                    }
-                } else {
-                    // Jika bukan flat, dan memenuhi syarat peserta, kalikan 2
-                    if ($facility->type === 'shuttle' && $participants >= 18 && $participants <= 55) {
-                        $groupCount = ceil($participants / $facility->max_user);
-                        $ShuttleCost += $groupCount * $facility->price * 2;
-                    }
-                }
-
-                if ($facility->type === 'per_day') {
-                    $facPerdayCost += $facility->price * 2;
-                }
-
-                if ($facility->type === 'doc' && $participants >= 20 && $participants <= 55) {
-                    $facDocCost += $facility->price * 2;
-                }
-
-                if ($facility->type === 'tl' && $participants >= 20 && $participants <= 55) {
-                    $groupCount = ceil($participants / $facility->max_user);
-                    $guideCost += $groupCount * $facility->price * 2;
-                }
-
-                if ($facility->type === 'per_person') {
-                    $facPerpersonCost += $facility->price * $participants * 2;
-                }
-
-                if ($facility->type === 'info') {
-                    $facInfoCost += $facility->price * 2;
-                }
-            }
-
-            $totalFacilityCost = $ShuttleCost + $flatCost + $facPerdayCost + $facPerpersonCost + $facDocCost + $facInfoCost + $guideCost;
-
-
-            // Biaya tambahan untuk WNA
-            $priceDifference = ($totalCostWNA - $totalCostWNI) / $participants;
-
-            // Biaya tambahan lainnya
+            // Biaya makanan
             $mealCost = $meals ? $meals->price * $meals->num_meals * ($participants + $crew->num_crew) : 0;
+
+            // Biaya reservasi
             $reserveFee = $reserveFees->firstWhere(fn($r) => $participants >= $r->min_user && $participants <= $r->max_user);
             $reserveFeeCost = $reserveFee ? $reserveFee->price * $participants * 2 : 0;
 
@@ -385,60 +302,145 @@ class GenerateTwodayPackageController extends Controller
             $priceRow = [
                 'vehicle' => $vehicle->name,
                 'user' => $participants,
-                'wnaCost' => round($priceDifference, 2), // Tambahkan biaya tambahan untuk WNA
+                'wnaCost' => round(($totalCostWNA - $totalCostWNI) / $participants, 2),
             ];
 
-            foreach ($hotels as $hotel) {
-                // Validasi tipe hotel
-                if (!in_array($hotel->type, ['TwoStar','ThreeStar','FourStar','FiveStar','Villa','Homestay','Cottage','Cabin','Guesthouse','WithoutAccomodation'])) {
-                    Log::warning('Invalid hotel type detected', [
-                        'hotel' => $hotel->name,
-                        'type' => $hotel->type,
-                    ]);
-                    continue; // Lewatkan iterasi jika tipe hotel tidak valid
+            if ($hotels->isNotEmpty()) {
+                foreach ($hotels as $hotel) {
+                    $hotelCost = $this->calculateHotelCost($hotel, $participants);
+                    $totalCost = $totalCostWNI + $transportCost + ($feeAgen * $participants * 2) + $hotelCost + $mealCost + $reserveFeeCost + $parkingCost + $totalFacilityCost;
+
+                    $pricePerPerson = $totalCost / $participants;
+                    $finalPrice = $pricePerPerson + ($pricePerPerson * $serviceFee);
+
+                    $priceRow[$hotel->type] = round($finalPrice, 2);
+
+                    // Logging harga setiap hotel
+                    // Log::info('Calculated price for hotel', [
+                    //     'hotel' => $hotel->name,
+                    //     'type' => $hotel->type,
+                    //     'participants' => $participants,
+                    //     'finalPrice' => $finalPrice,
+                    //     'pricePerPerson' => $pricePerPerson,
+                    // ]);
                 }
-
-                $numRooms = intdiv($participants, 2); // Bagi dua peserta untuk menghitung kamar
-                $extraBedCost = 0;
-
-                // Jika jumlah peserta ganjil, hitung biaya extrabed
-                if ($participants % 2 !== 0) {
-                    $numRooms += 1;
-                    $extraBedCost = $hotel->extrabed_price; // Ambil harga extrabed dari database
-                }
-
-                $hotelCost = ($hotel->price * $numRooms) + $extraBedCost;
-
-                $totalCost = $totalCostWNI + $transportCost + ($feeAgen * $participants * 2) + $hotelCost + $mealCost + $reserveFeeCost + $parkingCost + $totalFacilityCost;
-
-                $pricePerPerson = $totalCost / $participants;
-                $serviceFeeCost = $pricePerPerson * $serviceFee;
-                $finalPrice = $pricePerPerson + $serviceFeeCost;
-
-                $priceRow[$hotel->type] = round($finalPrice, 2);
-
-                // // Logging harga setiap hotel
-                //     Log::info('Calculated price for hotel', [
-                //         'hotel' => $hotel->name,
-                //         'type' => $hotel->type,
-                //         'participants' => $participants,
-                //         'finalPrice' => $finalPrice,
-                //         'pricePerPerson' => $pricePerPerson,
-                // ]);
+            } else {
+                Log::warning('No hotels found for regency', ['regencyId' => $regencyId]);
             }
 
             $prices[] = $priceRow;
-
-            // // Logging hasil untuk setiap peserta
-                // Log::info('Calculated prices for participants', [
-                //     'participants' => $participants,
-                //     'priceRow' => $priceRow,
-            // ]);
         }
 
         return $prices;
     }
 
+    private function calculateDestinationCosts($destinations, $participants, $vehicle)
+    {
+        $totalCostWNI = 0;
+        $totalCostWNA = 0;
+        $parkingCost = 0;
+
+        foreach ($destinations as $destination) {
+            if ($destination->price_type === 'per_person') {
+                $totalCostWNI += $destination->price_wni * $participants;
+                $totalCostWNA += $destination->price_wna * $participants;
+            } elseif ($destination->price_type === 'flat') {
+                $groupCount = ceil($participants / $destination->max_participants);
+                $totalCostWNI += $groupCount * $destination->price_wni;
+                $totalCostWNA += $groupCount * $destination->price_wna;
+            }
+
+            $parkingCosts = [
+                'City Car' => $destination->parking_city_car,
+                'Mini Bus' => $destination->parking_mini_bus,
+                'Bus' => $destination->parking_bus,
+            ];
+
+            $parkingCost += $parkingCosts[$vehicle->type] ?? 0;
+        }
+
+        return [$totalCostWNI, $totalCostWNA, $parkingCost];
+    }
+
+    private function calculateFacilityCosts($facilities, $participants)
+    {
+        // Inisialisasi biaya fasilitas
+        $totalFacilityCost = 0;
+        $ShuttleCost = 0;
+        $flatCost = 0;
+        $facPerdayCost = 0;
+        $facPerpersonCost = 0;
+        $facInfoCost = 0;
+        $facDocCost = 0;
+        $guideCost = 0;
+
+        foreach ($facilities as $facility) {
+            $groupCount = ceil($participants / ($facility->max_user ?? $participants)); // Hitung grup berdasarkan max_user
+
+            switch ($facility->type) {
+                case 'flat':
+                    // Hitung biaya flat
+                    $flatCost += $groupCount * $facility->price;
+
+                    // Jika memenuhi syarat shuttle, hitung biaya shuttle
+                    if ($participants >= 18 && $participants <= 55 && $facility->type === 'shuttle') {
+                        $ShuttleCost += $groupCount * $facility->price;
+                    }
+                    break;
+
+                case 'shuttle':
+                    // Hitung biaya shuttle dengan syarat peserta
+                    if ($participants >= 18 && $participants <= 55) {
+                        $ShuttleCost += $groupCount * $facility->price * 2;
+                    }
+                    break;
+
+                case 'per_day':
+                    // Hitung biaya per hari
+                    $facPerdayCost += $facility->price * 2;
+                    break;
+
+                case 'doc':
+                    // Hitung biaya doc jika peserta dalam rentang 20-55
+                    if ($participants >= 20 && $participants <= 55) {
+                        $facDocCost += $facility->price * 2;
+                    }
+                    break;
+
+                case 'tl':
+                    // Hitung biaya guide jika peserta dalam rentang 20-55
+                    if ($participants >= 20 && $participants <= 55) {
+                        $guideCost += $groupCount * $facility->price * 2;
+                    }
+                    break;
+
+                case 'per_person':
+                    // Hitung biaya per orang
+                    $facPerpersonCost += $facility->price * $participants * 2;
+                    break;
+
+                case 'info':
+                    // Hitung biaya info
+                    $facInfoCost += $facility->price * 2;
+                    break;
+            }
+        }
+
+        return $totalFacilityCost;
+    }
+
+    private function calculateHotelCost($hotel, $participants)
+    {
+        $numRooms = intdiv($participants, 2);
+        $extraBedCost = 0;
+
+        if ($participants % 2 !== 0) {
+            $numRooms += 1;
+            $extraBedCost = $hotel->extrabed_price;
+        }
+
+        return ($hotel->price * $numRooms) + $extraBedCost;
+    }
 
     public function AllTwodayPackagesAgen($id)
     {
@@ -486,8 +488,6 @@ class GenerateTwodayPackageController extends Controller
 
             // Hapus relasi destinasi (pivot table)
             $package->destinations()->detach();
-
-            // Hapus relasi fasilitas (pivot table)
             $package->facilities()->detach();
 
             // Hapus relasi harga
@@ -507,4 +507,5 @@ class GenerateTwodayPackageController extends Controller
             ], 500);
         }
     }
+
 }
