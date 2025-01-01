@@ -158,8 +158,7 @@ class GenerateTwodayPackageController extends Controller
         return view('admin.package.twoday.edit_package', compact('destinations', 'agens', 'regencies', 'package', 'selectedDestinations', 'facilities', 'selectedFacilities'));
     }
 
-    public function UpdateGenerateCodeTwoday(Request $request, $id)
-    {
+    public function UpdateGenerateCodeTwoday(Request $request, $id){
         try {
             Log::info('generateCodeTwoday method initiated.');
 
@@ -422,7 +421,7 @@ class GenerateTwodayPackageController extends Controller
 
                 case 'event':
                     // Hitung biaya event
-                    $facEventCost += $facility->price * 3;
+                    $facEventCost += $facility->price;
                     break;
 
                 case 'info':
