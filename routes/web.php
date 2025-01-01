@@ -14,6 +14,7 @@ use App\Http\Controllers\Backend\ReserveFee\ReserveFeeController;
 use App\Http\Controllers\Backend\ServiceFee\ServiceFeeController;
 use App\Http\Controllers\Backend\Destinastion\DestinationController;
 use App\Http\Controllers\Backend\PackageTour\GeneratePackageController;
+use App\Http\Controllers\Backend\PackageTour\GenerateAllPackageController;
 use App\Http\Controllers\Backend\PackageTour\GenerateTwodayPackageController;
 use App\Http\Controllers\Backend\PackageTour\GenerateFourdayPackageController;
 use App\Http\Controllers\Backend\PackageTour\GenerateThreedayPackageController;
@@ -144,6 +145,12 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/edit/hotel/{id}', 'EditHotel')->name('edit.hotel');
         Route::put('/hotel/update', 'UpdateHotel')->name('hotel.update');
         Route::delete('/delete/hotel/{id}', 'DeleteHotel')->name('delete.hotel');
+    });
+
+    // Unified package routes
+    Route::controller(GenerateAllPackageController::class)->group(function () {
+        Route::get('/all/packages', 'GeneratePackages')->name('generate.all.packages');
+        Route::post('/packages/generate', 'generate')->name('generate.packages');
     });
 
     // Package Oneday all Route

@@ -49,6 +49,14 @@
             <span class="menu-header-text" data-i18n="Packages">Packages</span>
         </li>
 
+
+        <li class="menu-item">
+            <a href="{{ route('generate.all.packages') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-folder-cog"></i>
+                <div data-i18n="Generate All Tour">Generate All Tour</div>
+            </a>
+        </li>
+
         <li  class="menu-item">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
                 <i class="menu-icon tf-icons ti ti-torii"></i>

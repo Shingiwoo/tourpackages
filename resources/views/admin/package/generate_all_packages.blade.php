@@ -3,9 +3,8 @@
 
 
 <!-- Content -->
-
 <div class="container-xxl flex-grow-1 container-p-y">
-    <form id="mydata" action="{{ route('generatecode.package') }}" method="POST">
+    <form id="mydata" action="{{ url('/packages/generate') }}" method="POST">
         @csrf
         <div class="app-ecommerce">
             <!-- Add Product -->
@@ -29,7 +28,7 @@
                     <!-- Product Information -->
                     <div class="card mb-6">
                         <div class="card-header">
-                            <h5 class="card-tile mb-0">Detail Package</h5>
+                            <h5 class="card-title mb-0">Detail Package</h5>
                         </div>
                         <div class="card-body">
                             <div class="row mb-6">
@@ -51,6 +50,17 @@
                             </div>
                             <div class="row mb-6">
                                 <div class="col">
+                                    <label class="form-label" for="duration_package">Duration</label>
+                                    <select required id="duration_package" name="DurationPackage"
+                                        class="select2 form-select" data-allow-clear="true">
+                                        <option value="">Select Duration</option>
+                                        <option value="1">One Day</option>
+                                        <option value="2">Two Days</option>
+                                        <option value="3">Three Days</option>
+                                        <option value="4">Four Days</option>
+                                    </select>
+                                </div>
+                                <div class="col">
                                     <label class="form-label" for="status_package">Status</label>
                                     <select required id="status_package" name="statusPackage"
                                         class="select2 form-select" data-allow-clear="true">
@@ -71,13 +81,11 @@
                                 </div>
                             </div>
                                 <!-- Description -->
-                                <!-- Full Editor -->
                                 <div class="col">
                                     <h5 class="card-title mb-1">Information</h5>
                                     <div id="quill-editor" class="mb-3" style="height: 80px;"> </div>
                                     <textarea rows="3" class="mb-3 d-none" name="information" id="quill-editor-area"></textarea>
                                 </div>
-                                <!-- /Full Editor -->
                         </div>
                     </div>
                     <!-- /Product Information -->
@@ -114,5 +122,7 @@
     </form>
 </div>
 <!-- / Content -->
+
+
 
 @endsection
