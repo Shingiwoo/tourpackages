@@ -77,9 +77,9 @@
 
             <!-- Price List Package  -->
             <div class="accordion mt-4" id="accordionExample">
-                <div class="accordion-item card bg-primary text-white">
+                <div class="accordion-item card text-white">
                     <h2 class="accordion-header d-flex align-items-center">
-                        <button type="button" class="accordion-button collapsed btn-primary" data-bs-toggle="collapse" data-bs-target="#accordionWithIcon-2" aria-expanded="false">
+                        <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#accordionWithIcon-2" aria-expanded="false">
                            <h5 class="text-white text-uppercase"><i class="me-2 mb-1 ti ti-receipt-2"></i> Price List</h5>
                         </button>
                     </h2>

@@ -89,9 +89,9 @@
                     </div>
 
                     <div class="accordion mt-4" id="accordionWithIcon">
-                        <div class="accordion-item card bg-primary text-white">
+                        <div class="accordion-item card bg-secondary text-white">
                             <h3 class="accordion-header">
-                                <button type="button" class="accordion-button collapsed btn-primary" data-bs-toggle="collapse"
+                                <button type="button" class="accordion-button collapsed btn-secondary" data-bs-toggle="collapse"
                                     data-bs-target="#accordionWithIcon-2" aria-expanded="false">
                                     <i class="me-2 mt-1 ti ti-receipt-2"></i>
                                     <h5 class="text-white">Price List</h5>
