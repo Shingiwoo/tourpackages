@@ -28,7 +28,7 @@
                 <div class="card-body">
                     <div class="row align-items-center g-md-8">
                         <div class="col-12 col-md-12 d-flex flex-column">
-                            <div class="d-flex gap-1 align-items-center mb-3 flex-wrap">
+                            <div class="d-flex gap-1 align-items-center mb-3 flex-wrap mt-2">
                                 <div class="col-lg-12 mb-4 mb-xl-0">
                                     <h6 class="fw-medium text-info">Destinations :</h6>
                                     <div class="demo-inline-spacing mt-4">

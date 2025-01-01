@@ -5,18 +5,18 @@
 <!-- Content -->
 
 <div class="container-xxl flex-grow-1 container-p-y">
-    <form id="mydata" action="{{ route('generatecode.fourday.package') }}" method="POST">
+    <form id="mydata" action="{{ route('generatecode.package') }}" method="POST">
         @csrf
         <div class="app-ecommerce">
             <!-- Add Product -->
             <div
                 class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
                 <div class="d-flex flex-column justify-content-center">
-                    <h4 class="mb-1">Generate Package Fourday</h4>
+                    <h4 class="mb-1">Generate Package</h4>
                     <p class="mb-0">To Generate a tour package Price</p>
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-4">
-                    <a href="{{ route('all.fourday.packages') }}">
+                    <a href="{{ route('admin.dashboard') }}">
                         <button type="button" class="btn btn-primary ml-2">Back</button>
                     </a>
                     <button type="submit" class="btn btn-primary">Generate</button>
@@ -69,26 +69,28 @@
                                         @endforeach
                                     </select>
                                 </div>
+                            </div>
+                                <!-- Description -->
                                 <!-- Full Editor -->
-                                <div class="col-12">
+                                <div class="col">
                                     <h5 class="card-title mb-1">Information</h5>
                                     <div id="quill-editor" class="mb-3" style="height: 80px;"> </div>
                                     <textarea rows="3" class="mb-3 d-none" name="information" id="quill-editor-area"></textarea>
                                 </div>
                                 <!-- /Full Editor -->
-                            </div>
                         </div>
                     </div>
                     <!-- /Product Information -->
                 </div>
                 <div class="col-12 col-lg-6">
-                    <!-- Destination & Facility -->
+                    <!-- Destination Card -->
                     <div class="card mb-6">
                         <div class="card-header">
-                            <h5 class="card-title mb-0">Destination & Facility</h5>
+                            <h5 class="card-title mb-0">Select Destination & Facility</h5>
                         </div>
                         <div class="card-body">
-                            <div class="mb-6">
+                            <div class="col mb-6">
+                                <label class="form-label" for="destinations">Destination</label>
                                 <select id="destinations" name="destinations[]" class="select2 form-select" multiple>
                                     @foreach ($destinations as $destination)
                                     <option value="{{ $destination->id }}">{{ $destination->name }}</option>
@@ -105,7 +107,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- /Destination & Facility -->
+                    <!-- /Destination Card -->
                 </div>
             </div>
         </div>
