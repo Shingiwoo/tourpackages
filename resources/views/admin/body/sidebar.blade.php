@@ -40,26 +40,58 @@
                         <div data-i18n="Agen List">Agen List</div>
                     </a>
                 </li>
+                <li class="menu-item">
+                    <a href="" class="menu-link">
+                        <div data-i18n="Add Agen">Add Agen</div>
+                    </a>
+                </li>
             </ul>
         </li>
         <!-- End Manage Agen-->
+
+        <!-- Booking -->
+        <li class="menu-header small">
+            <span class="menu-header-text" data-i18n="Booking">Booking</span>
+        </li>
+
+
+
+        <li class="menu-item">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-notebook"></i>
+                <div data-i18n="Booking Manage">Booking Manage</div>
+            </a>
+            <!-- Booking Manage -->
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="" class="menu-link">
+                        <div data-i18n="All Booking">All Booking</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="" class="menu-link">
+                        <div data-i18n="Booking">Booking</div>
+                    </a>
+                </li>
+            </ul>
+            <!-- Booking Manage End -->
+        </li>
 
         <!-- Packages -->
         <li class="menu-header small">
             <span class="menu-header-text" data-i18n="Packages">Packages</span>
         </li>
 
-
         <li class="menu-item">
             <a href="{{ route('generate.all.packages') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-folder-cog"></i>
+                <i class="menu-icon tf-icons ti ti-package-export"></i>
                 <div data-i18n="Generate All Tour">Generate All Tour</div>
             </a>
         </li>
 
-        <li  class="menu-item">
+        <li class="menu-item">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons ti ti-torii"></i>
+                <i class="menu-icon tf-icons ti ti-map-bolt"></i>
                 <div data-i18n="Tour">Tour</div>
             </a>
             <!-- One Day -->
