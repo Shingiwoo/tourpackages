@@ -65,6 +65,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::delete('/delete/destination/{id}', 'DeleteDestination')->name('delete.destination');
         Route::get('/import/destinations', 'PageImportDestinations')->name('import.destinations');
         Route::post('/destination/import', 'ImportDestination')->name('destinations.import');
+        Route::get('/export/destination', 'Export')->name('export.destinations');
     });
 
     // Vehicles all Route

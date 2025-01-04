@@ -16,6 +16,12 @@
                     <p class="mb-0">Upload file Excel Or CSV to Import</p>
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-4">
+                    <a href="{{ route('all.destinations') }}"
+                    class="btn btn-secondary buttons-collection btn-label-secondary me-4 waves-effect waves-light border-none"><span><i class="ti ti-caret-left ti-xs me-1"></i>
+                        <span class="d-none d-sm-inline-block">Back</span></span></a>
+                    <a href="{{ route('export.destinations') }}"
+                                    class="btn btn-secondary buttons-collection btn-label-danger me-4 waves-effect waves-light border-none"><span><i class="ti ti-file-export ti-xs me-1"></i>
+                                        <span class="d-none d-sm-inline-block">Export</span></span></a>
                     <button type="submit" class="btn btn-primary">Publish</button>
                 </div>
             </div>

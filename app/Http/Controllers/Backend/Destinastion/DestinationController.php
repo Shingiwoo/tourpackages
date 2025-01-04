@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend\Destinastion;
 use App\Models\Regency;
 use App\Models\Destination;
 use Illuminate\Http\Request;
+use App\Exports\DestinationExport;
 use App\Imports\DestinationsImport;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -233,6 +234,10 @@ class DestinationController extends Controller
         }
     }
 
+    public function Export()
+    {
+        return Excel::download(new DestinationExport, 'destinations.xlsx');
+    }
 
 
 }
