@@ -57,6 +57,8 @@
                                             <span class="badge bg-danger text-uppercase"><i class="ti ti-lock-access me-2"></i>{{ $item->group_name }}</span>
                                         @elseif ($item->group_name === 'permission')
                                             <span class="badge bg-secondary text-uppercase"><i class="ti ti-user-shield me-2"></i>{{ $item->group_name }}</span>
+                                        @elseif ($item->group_name === 'Roles and Permissions')
+                                            <span class="badge bg-dark text-uppercase"><i class="ti ti-shield-lock me-2"></i>{{ $item->group_name }}</span>
                                         @endif
                                     </td>
                                     <td class="align-content-center">
@@ -108,14 +110,8 @@
                             </div>
                             <div class="col-12 mb-4">
                                 <label class="form-label" for="modalPermissionGroup">Group Name</label>
-                                <select id="modalPermissionGroup" name="permissionGroup" class="select2 form-select" required>
-                                    <option value="agen">Agen</option>
-                                    <option value="booking">Booking</option>
-                                    <option value="package">Package</option>
-                                    <option value="rent">Rent</option>
-                                    <option value="role">Role</option>
-                                    <option value="permission">Permission</option>
-                                </select>
+                                <input id="modalPermissionGroup" name="permissionGroup" class="form-control"  placeholder="Permission Group" required>
+                                </input>
                             </div>
                             <div class="col-12 text-center demo-vertical-spacing">
                                 <button type="submit" class="btn btn-primary me-4">Create Permission</button>

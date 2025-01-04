@@ -15,7 +15,7 @@
                     <h4 class="mb-1">Edit Permission</h4>
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-4">
-                    <a href="{{ route('all.permission') }}">
+                    <a href="{{ route('all.permissions') }}">
                         <button type="button" class="btn btn-primary ml-2">Back</button>
                     </a>
                     <button type="submit" class="btn btn-primary">Update</button>
@@ -39,16 +39,10 @@
                                         required />
                                 </div>
                                 <div class="col">
-                                    <label class="form-label" for="permission_group">Group</label>Agen
-                                    <select required id="permission_group" name="permissionGroup"
-                                        class="select2 form-select" data-allow-clear="true">
-                                        <option value="agen" {{ $permission->group_name == 'agen' ? 'selected' : '' }}>Agen</option>
-                                        <option value="booking" {{ $permission->group_name == 'booking' ? 'selected' : '' }}>Booking</option>
-                                        <option value="package" {{ $permission->group_name == 'package' ? 'selected' : '' }}>Package</option>
-                                        <option value="rent" {{ $permission->group_name == 'rent' ? 'selected' : '' }}>Rent</option>
-                                        <option value="role" {{ $permission->group_name == 'role' ? 'selected' : '' }}>Role</option>
-                                        <option value="permission" {{ $permission->group_name == 'permission' ? 'selected' : '' }}>Permission</option>
-                                    </select>
+                                    <label class="form-label" for="permission_group">Group</label>
+                                    <input required id="permission_group" name="permissionGroup"
+                                        class="form-control" aria-label="Permission Group" value="{{$permission->group_name}}"
+                                        required >
                                 </div>
                             </div>
                         </div>

@@ -3,93 +3,84 @@
 namespace App\Http\Controllers\Backend\Role;
 
 use Illuminate\Http\Request;
-use App\Exports\PermissionExport;
-use App\Imports\PermissionImport;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Maatwebsite\Excel\Facades\Excel;
-use Spatie\Permission\Models\Permission;
-use Illuminate\Support\Facades\Validator;
 
 class RoleController extends Controller
 {
-    public function AllPermission()
+    public function AllRoles()
     {
-        $permissions = Permission::latest()->get();
+        $roles = Role::latest()->get();
 
-        return view('admin.role.all_permission', compact('permissions'));
+        return view('admin.role.all_role', compact('roles'));
     }
 
-    public function StorePermission(Request $request)
+    public function StoreRole(Request $request)
     {
         Log::info('Request Data:', $request->all());
 
         // Validasi data input
         $validatedData = $request->validate([
-            'permissionName' => 'required|string|max:255',
-            'permissionGroup' => 'required|string|max:255',
+            'RoleName' => 'required|string|max:255',
         ]);
 
         Log::info('Check Data Validasi:', $validatedData);
 
         // Mapping nama input form ke nama kolom database
-        $permissionData = [
-            'name' => $validatedData['permissionName'],
-            'group_name' => $validatedData['permissionGroup'],
+        $roleData = [
+            'name' => $validatedData['RoleName'],
         ];
 
         // Buat data baru di database
-        Permission::create($permissionData);
+        Role::create($roleData);
 
         // Kirim notifikasi berhasil
         $notification = [
-            'message' => 'Permission Data Saved',
+            'message' => 'Role Data Saved',
             'alert-type' => 'success',
         ];
 
         // Redirect ke halaman destinasi dengan notifikasi
-        return redirect()->route('all.permission')->with($notification);
+        return redirect()->route('all.roles')->with($notification);
     }
 
-    public function EditPermission($id)
+    public function EditRole($id)
     {
-        $permission = Permission::findOrFail($id);
+        $role = Role::findOrFail($id);
 
-        return view('admin.role.edit_permission', compact('permission'));
+        return view('admin.role.edit_role', compact('role'));
     }
 
-    public function UpdatePermission(Request $request, $id)
+    public function UpdateRole(Request $request, $id)
     {
         // Validasi data input
         $validatedData = $request->validate([
-            'permissionName' => 'required|string|max:255|unique:permissions,name,' . $id,
-            'permissionGroup' => 'required|string',
+            'roleName' => 'required|string|max:255|unique:roles,name,' . $id,
         ]);
 
         // Temukan data berdasarkan ID
-        $permissionData = Permission::findOrFail($id);
+        $roleData = Role::findOrFail($id);
 
         // Update data
-        $permissionData->update([
-            'name' => $validatedData['permissionName'],
-            'group_name' => $validatedData['permissionGroup'],
+        $roleData->update([
+            'name' => $validatedData['roleName'],
         ]);
 
         // Kirim notifikasi berhasil
         $notification = [
-            'message' => 'Permission Data Updated',
+            'message' => 'Role Data Updated',
             'alert-type' => 'success',
         ];
 
-        return redirect()->route('all.permission')->with($notification);
+        return redirect()->route('all.role')->with($notification);
     }
 
-    public function DeletePermission($id)
+    public function DeleteRole($id)
     {
         try {
-            $permissionData = Permission::findOrFail($id);
-            $permissionData->delete();
+            $roleData = Role::findOrFail($id);
+            $roleData->delete();
 
             return response()->json([
                 'success' => true,
@@ -100,79 +91,6 @@ class RoleController extends Controller
                 'success' => false,
                 'message' => 'Failed to delete data',
             ], 500);
-        }
-    }
-
-    public function PageImportPermission(){
-
-        return view('admin.role.import_permission');
-    }
-
-    public function Export()
-    {
-        return Excel::download(new PermissionExport, 'permissions.xlsx');
-    }
-
-    public function Import(Request $request)
-    {
-        try {
-            if (!$request->hasFile('importFile')) {
-                return redirect()->back()->with([
-                    'message' => 'No file uploaded. Please upload a valid CSV or Excel file.',
-                    'alert-type' => 'error',
-                ]);
-            }
-
-            $file = $request->file('importFile');
-
-            Log::info('File uploaded successfully: ' . $file->getClientOriginalName());
-
-            // Validasi tipe file
-            $validator = Validator::make($request->all(), [
-                'importFile' => 'required|file|mimes:csv,xlsx',
-            ]);
-
-            if ($validator->fails()) {
-                Log::warning('File validation failed.');
-                return redirect()->back()->with([
-                    'message' => 'Invalid file format. Only CSV or Excel files are allowed.',
-                    'alert-type' => 'error',
-                ]);
-            }
-
-            Log::info('File validation passed. Starting import.');
-
-            // Proses file
-            Excel::import(new PermissionImport, $file);
-
-            Log::info('Excel import process completed.');
-
-            // Kirim notifikasi berhasil
-            $notification = [
-                'message' => 'Permission Import Updated',
-                'alert-type' => 'success',
-            ];
-
-            return redirect()->route('all.permission')->with($notification);
-
-        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-            Log::error('Validation errors in Excel file: ' . json_encode($e->failures()));
-            $failures = $e->failures();
-            $errorMessages = '';
-            foreach ($failures as $failure) {
-                $errorMessages .= "Row {$failure->row()}: " . implode(', ', $failure->errors()) . "\n";
-            }
-
-            return redirect()->back()->with([
-                'message' => "Import failed:\n$errorMessages",
-                'alert-type' => 'error',
-            ]);
-        } catch (\Exception $e) {
-            Log::error('An unexpected error occurred: ' . $e->getMessage());
-            return redirect()->back()->with([
-                'message' => 'An error occurred during import: ' . $e->getMessage(),
-                'alert-type' => 'error',
-            ]);
         }
     }
 }

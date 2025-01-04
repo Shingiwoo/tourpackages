@@ -13,12 +13,6 @@ document.addEventListener('DOMContentLoaded', function () {
         // Reset form modal setiap kali tombol di-klik
         const form = document.getElementById('addPermissionForm');
         form.reset();
-
-        // Reset select2 dropdown jika menggunakan plugin
-        const select = document.getElementById('modalPermissionGroup');
-        if ($(select).data('select2')) {
-            $(select).val(null).trigger('change');
-        }
     });
 });
 

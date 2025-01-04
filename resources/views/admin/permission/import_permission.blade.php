@@ -16,7 +16,7 @@
                     <p class="mb-0">Upload file Excel Or CSV to Import & Export Permissions</p>
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-4">
-                    <a href="{{ route('all.permission') }}"
+                    <a href="{{ route('all.permissions') }}"
                     class="btn btn-secondary buttons-collection btn-label-secondary me-4 waves-effect waves-light border-none"><span><i class="ti ti-caret-left ti-xs me-1"></i>
                         <span class="d-none d-sm-inline-block">Back</span></span></a>
                     <a href="{{ route('export.permissions') }}"

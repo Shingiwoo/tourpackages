@@ -141,6 +141,7 @@
     <script src="{{ asset('assets/js/ui-carousel.js') }}"></script>
     <script src="{{ asset('assets/js/modal-service-fee.js') }}"></script>
     <script src="{{ asset('assets/js/modal-add-permission.js') }}"></script>
+    <script src="{{ asset('assets/js/modal-add-role.js') }}"></script>
     <script src="{{ asset('assets/js/forms-editors.js') }}"></script>
     <script>
         $(document).ready(function() {

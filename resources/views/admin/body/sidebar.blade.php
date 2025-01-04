@@ -275,18 +275,18 @@
         </li>
         <li class="menu-item">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons ti ti-lock-access"></i>
+                <i class="menu-icon tf-icons ti ti-shield-lock"></i>
                 <div data-i18n="Roles & Permissions">Roles & Permissions</div>
             </a>
             <!-- Booking Manage -->
             <ul class="menu-sub">
                 <li class="menu-item">
-                    <a href="" class="menu-link">
+                    <a href="{{ route('all.roles') }}" class="menu-link">
                         <div data-i18n="Roles">Roles</div>
                     </a>
                 </li>
                 <li class="menu-item">
-                    <a href="{{ route('all.permission') }}" class="menu-link">
+                    <a href="{{ route('all.permissions') }}" class="menu-link">
                         <div data-i18n="Permissions">Permissions</div>
                     </a>
                 </li>
