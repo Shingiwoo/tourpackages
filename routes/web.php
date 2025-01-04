@@ -79,6 +79,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::delete('/delete/vehicle/{id}', 'DeleteVehicle')->name('delete.vehicle');
         Route::get('/import/vehicles', 'PageImportVehicles')->name('import.vehicles');
         Route::get('/export/vehicles', 'Export')->name('export.vehicles');
+        Route::post('/import/vehicle', 'Import')->name('import.vehicle');
     });
 
     // Service all Route

@@ -158,22 +158,22 @@ class VehicleController extends Controller
         return view('admin.vehicles.import_vehicles');
     }
 
-    public function ImportVehicles(Request $request){
+    public function Import(Request $request){
         try {
-            if (!$request->hasFile('file')) {
+            if (!$request->hasFile('importFile')) {
                 return redirect()->back()->with([
                     'message' => 'No file uploaded. Please upload a valid CSV or Excel file.',
                     'alert-type' => 'error',
                 ]);
             }
 
-            $file = $request->file('file');
+            $file = $request->file('importFile');
 
             Log::info('File uploaded successfully: ' . $file->getClientOriginalName());
 
             // Validasi tipe file
             $validator = Validator::make($request->all(), [
-                'file' => 'required|file|mimes:csv,xlsx',
+                'importFile' => 'required|file|mimes:csv,xlsx',
             ]);
 
             if ($validator->fails()) {
@@ -184,17 +184,21 @@ class VehicleController extends Controller
                 ]);
             }
 
-            Log::info('File validation passed. Starting Excel import.');
+            Log::info('File validation passed. Starting import.');
 
             // Proses file
             Excel::import(new VehiclesImport, $file);
 
             Log::info('Excel import process completed.');
 
-            return redirect()->back()->with([
-                'message' => 'Data imported successfully.',
+            // Kirim notifikasi berhasil
+            $notification = [
+                'message' => 'Data imported successfully!',
                 'alert-type' => 'success',
-            ]);
+            ];
+
+            // Redirect ke halaman kendaraan dengan notifikasi
+            return redirect()->route('all.vehicles')->with($notification);
 
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             Log::error('Validation errors in Excel file: ' . json_encode($e->failures()));

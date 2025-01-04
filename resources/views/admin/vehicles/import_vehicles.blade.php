@@ -5,7 +5,7 @@
 <!-- Content -->
 
 <div class="container-xxl flex-grow-1 container-p-y">
-    <form id="mydata" action="" method="POST" enctype="multipart/form-data">
+    <form id="mydata" action="{{ route('import.vehicle') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="app-ecommerce">
             <!-- Add Destination -->
@@ -38,7 +38,7 @@
                             <div class="row mb-6">
                                 <div class="col">
                                     <label class="form-label" for="file">Upload File (CSV or Excel):</label>
-                                    <input type="file" name="file" id="file" class="form-control" required>
+                                    <input type="file" name="importFile" id="file" class="form-control" required>
                                 </div>
                             </div>
                         </div>

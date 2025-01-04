@@ -17,13 +17,13 @@ class VehiclesImport implements ToModel
     {
         try {
             return new Vehicle([
-                'regency_id' => $row['regency_id'],
-                'name' => $row['name'],
-                'status' => $row['status'],
-                'type' => $row['type'],
-                'price' => $row['price'],
-                'capacity_min' => $row['capacity_min'],
-                'capacity_max' => $row['capacity_max'],
+                'regency_id' => $row[0],
+                'name' => $row[1],
+                'type' => $row[2],
+                'capacity_min' => $row[3],
+                'capacity_max' => $row[4],
+                'price' => $row[5],
+                'status' => $row[6],
 
             ]);
         } catch (\Exception $e) {
@@ -32,26 +32,26 @@ class VehiclesImport implements ToModel
         }
     }
 
-    public function rules(): array
-    {
-        return [
-            'regency_id' => 'required|exists:regencies,id',
-            'name' => 'required|string|max:255',
-            'status' => 'required|boolean',
-            'type' => 'required|in:City Car,Mini Bus,Bus',
-            'price' => 'required|string',
-            'capacity_min' => 'required|string',
-            'capacity_max' => 'required|string',
-        ];
-    }
+    // public function rules(): array
+    // {
+    //     return [
+    //         'regency_id' => 'required|exists:regencies,id',
+    //         'name' => 'required|string|max:255',
+    //         'type' => 'required|in:City Car,Mini Bus,Bus',
+    //         'capacity_min' => 'required|string',
+    //         'capacity_max' => 'required|string',
+    //         'price' => 'required|string',
+    //         'status' => 'required|boolean',
+    //     ];
+    // }
 
-    public function customValidationMessages()
-    {
-        return [
-            'regency_id.required' => 'Regency ID is required.',
-            'regency_id.exists' => 'Regency ID must exist in the regencies table.',
-            'name.required' => 'Vehicle name is required.',
-            'type.in' => 'Type must be either City Car, Mini Bus or Bus.',
-        ];
-    }
+    // public function customValidationMessages()
+    // {
+    //     return [
+    //         'regency_id.required' => 'Regency ID is required.',
+    //         'regency_id.exists' => 'Regency ID must exist in the regencies table.',
+    //         'name.required' => 'Vehicle name is required.',
+    //         'type.in' => 'Type must be either City Car, Mini Bus or Bus.',
+    //     ];
+    // }
 }
