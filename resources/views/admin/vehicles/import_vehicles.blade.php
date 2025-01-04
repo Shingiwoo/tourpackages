@@ -5,7 +5,7 @@
 <!-- Content -->
 
 <div class="container-xxl flex-grow-1 container-p-y">
-    <form id="mydata" action="{{ route('vehicles.import') }}" method="POST" enctype="multipart/form-data">
+    <form id="mydata" action="" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="app-ecommerce">
             <!-- Add Destination -->
@@ -13,9 +13,15 @@
                 class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
                 <div class="d-flex flex-column justify-content-center">
                     <h4 class="mb-1">Mass add a new Vehicles</h4>
-                    <p class="mb-0">Upload file Excel Or CSV to Import</p>
+                    <p class="mb-0">Upload file Excel Or CSV to Import & Export Vehicles</p>
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-4">
+                    <a href="{{ route('all.vehicles') }}"
+                    class="btn btn-secondary buttons-collection btn-label-secondary me-4 waves-effect waves-light border-none"><span><i class="ti ti-caret-left ti-xs me-1"></i>
+                        <span class="d-none d-sm-inline-block">Back</span></span></a>
+                    <a href="{{ route('export.vehicles') }}"
+                                    class="btn btn-secondary buttons-collection btn-label-danger me-4 waves-effect waves-light border-none"><span><i class="ti ti-file-export ti-xs me-1"></i>
+                                        <span class="d-none d-sm-inline-block">Export</span></span></a>
                     <button type="submit" class="btn btn-primary">Publish</button>
                 </div>
             </div>

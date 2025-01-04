@@ -77,6 +77,8 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/edit/vehicle/{id}', 'EditVehicle')->name('edit.vehicle');
         Route::post('/vehicle/update', 'UpdateVehicle')->name('vehicle.update');
         Route::delete('/delete/vehicle/{id}', 'DeleteVehicle')->name('delete.vehicle');
+        Route::get('/import/vehicles', 'PageImportVehicles')->name('import.vehicles');
+        Route::get('/export/vehicles', 'Export')->name('export.vehicles');
     });
 
     // Service all Route

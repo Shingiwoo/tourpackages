@@ -105,6 +105,9 @@
                         <div class="dt-action-buttons text-end pt-6 pt-md-0">
                             <div class="dt-buttons btn-group flex-wrap">
                                 <div class="btn-group">
+                                    <a href="{{ route('import.vehicles') }}"
+                                        class="btn btn-secondary buttons-collection btn-label-warning me-4 waves-effect waves-light border-none"><span><i class="ti ti-file-import ti-xs me-sm-1"></i>
+                                            <span class="d-none d-sm-inline-block">Import</span></span></a>
                                 </div>
                                 <a href="{{ route('add.vehicle') }}"
                                     class="btn btn-secondary create-new btn-primary waves-effect waves-light" tabindex="0"

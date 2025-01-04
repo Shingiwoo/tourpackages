@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Vehicle;
 
+use App\Exports\VehicleExport;
 use App\Models\Regency;
 use App\Models\Vehicle;
 use Illuminate\Http\Request;
@@ -85,9 +86,6 @@ class VehicleController extends Controller
         return view('admin.vehicles.edit_vehicle', compact('vehicle', 'regencies'));
     }
 
-
-
-
     public function UpdateVehicle(Request $request){
         $vehicleId = $request->id;
 
@@ -137,8 +135,6 @@ class VehicleController extends Controller
         return redirect()->route('all.vehicles')->with($notification);
     }
 
-
-
     public function DeleteVehicle($id){
         try {
             $vehicle = Vehicle::findOrFail($id);
@@ -155,7 +151,6 @@ class VehicleController extends Controller
             ], 500);
         }
     }
-
 
 
     public function PageImportVehicles(){
@@ -220,5 +215,10 @@ class VehicleController extends Controller
                 'alert-type' => 'error',
             ]);
         }
+    }
+
+    public function Export()
+    {
+        return Excel::download(new VehicleExport, 'vehicles.xlsx');
     }
 }

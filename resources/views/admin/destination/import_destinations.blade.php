@@ -13,7 +13,7 @@
                 class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
                 <div class="d-flex flex-column justify-content-center">
                     <h4 class="mb-1">Mass add a new Destination</h4>
-                    <p class="mb-0">Upload file Excel Or CSV to Import</p>
+                    <p class="mb-0">Upload file Excel Or CSV to Import & Export Vehicles</p>
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-4">
                     <a href="{{ route('all.destinations') }}"
