@@ -290,6 +290,11 @@
                         <div data-i18n="Permissions">Permissions</div>
                     </a>
                 </li>
+                <li class="menu-item">
+                    <a href="{{ route('add.roles.permission') }}" class="menu-link">
+                        <div data-i18n="Set Role Permission">Set Role Permission</div>
+                    </a>
+                </li>
             </ul>
             <!-- Booking Manage End -->
         </li>

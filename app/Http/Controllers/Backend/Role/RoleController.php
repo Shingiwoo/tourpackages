@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\Backend\Role;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
@@ -93,4 +95,14 @@ class RoleController extends Controller
             ], 500);
         }
     }
+
+    public function AddRolesPermission()
+    {
+        $roles = Role::all();
+        $permissions = Permission::all();
+        $permission_groups = User::getpermissionGroup();
+
+        return view('admin.rolesetup.add_roles_permission', compact('roles', 'permissions', 'permission_groups'));
+    }
+
 }

@@ -231,5 +231,8 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/edit/role/{id}', 'EditRole')->name('edit.role');
         Route::patch('/update/role/{id}', 'UpdateRole')->name('update.role');
         Route::delete('/delete/role/{id}', 'DeleteRole')->name('delete.role');
+
+
+        Route::get('/add/roles/permission', 'AddRolesPermission')->name('add.roles.permission');
     });
 });
