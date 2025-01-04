@@ -47,6 +47,7 @@
                                         <option value="package" {{ $permission->group_name == 'package' ? 'selected' : '' }}>Package</option>
                                         <option value="rent" {{ $permission->group_name == 'rent' ? 'selected' : '' }}>Rent</option>
                                         <option value="role" {{ $permission->group_name == 'role' ? 'selected' : '' }}>Role</option>
+                                        <option value="permission" {{ $permission->group_name == 'permission' ? 'selected' : '' }}>Permission</option>
                                     </select>
                                 </div>
                             </div>

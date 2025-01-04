@@ -15,6 +15,11 @@
                             <h5 class="card-title mb-0">Permission List</h5>
                         </div>
                         <div class="dt-action-buttons text-end pt-6 pt-md-0">
+                            <div class="btn-group">
+                            <a href="{{ route('import.permissions') }}"
+                                class="btn btn-secondary buttons-collection btn-label-warning me-4 waves-effect waves-light border-none"><span><i class="ti ti-file-import ti-xs me-sm-1"></i>
+                                    <span class="d-none d-sm-inline-block">Import</span></span></a>
+                            </div>
                             <button type="button"
                                 class="btn btn-secondary create-new btn-primary waves-effect waves-light"
                                 data-bs-toggle="modal" data-bs-target="#addPermissionModal">
@@ -50,6 +55,8 @@
                                             <span class="badge bg-warning text-uppercase"><i class="ti ti-car-garage me-2"></i>{{ $item->group_name }}</span>
                                         @elseif ($item->group_name === 'role')
                                             <span class="badge bg-danger text-uppercase"><i class="ti ti-lock-access me-2"></i>{{ $item->group_name }}</span>
+                                        @elseif ($item->group_name === 'permission')
+                                            <span class="badge bg-secondary text-uppercase"><i class="ti ti-user-shield me-2"></i>{{ $item->group_name }}</span>
                                         @endif
                                     </td>
                                     <td class="align-content-center">
@@ -107,6 +114,7 @@
                                     <option value="package">Package</option>
                                     <option value="rent">Rent</option>
                                     <option value="role">Role</option>
+                                    <option value="permission">Permission</option>
                                 </select>
                             </div>
                             <div class="col-12 text-center demo-vertical-spacing">

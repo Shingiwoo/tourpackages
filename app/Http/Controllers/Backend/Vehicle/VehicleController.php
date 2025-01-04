@@ -152,7 +152,6 @@ class VehicleController extends Controller
         }
     }
 
-
     public function PageImportVehicles(){
 
         return view('admin.vehicles.import_vehicles');
