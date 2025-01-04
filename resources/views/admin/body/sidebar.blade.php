@@ -53,12 +53,9 @@
         <li class="menu-header small">
             <span class="menu-header-text" data-i18n="Booking">Booking</span>
         </li>
-
-
-
         <li class="menu-item">
             <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons ti ti-notebook"></i>
+                <i class="menu-icon tf-icons ti ti-calendar-cog"></i>
                 <div data-i18n="Booking Manage">Booking Manage</div>
             </a>
             <!-- Booking Manage -->
@@ -76,6 +73,7 @@
             </ul>
             <!-- Booking Manage End -->
         </li>
+        <!-- Booking End -->
 
         <!-- Packages -->
         <li class="menu-header small">
@@ -84,7 +82,7 @@
 
         <li class="menu-item">
             <a href="{{ route('generate.all.packages') }}" class="menu-link">
-                <i class="menu-icon tf-icons ti ti-package-export"></i>
+                <i class="menu-icon tf-icons ti ti-adjustments-plus"></i>
                 <div data-i18n="Generate All Tour">Generate All Tour</div>
             </a>
         </li>
@@ -271,11 +269,33 @@
         </li>
         <!-- Packages end -->
 
-
-
-
-
-
+        <!-- Roles & Permissions -->
+        <li class="menu-header small">
+            <span class="menu-header-text" data-i18n="Roles & Permissions">Roles & Permissions</span>
+        </li>
+        <li class="menu-item">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-lock-access"></i>
+                <div data-i18n="Roles & Permissions">Roles & Permissions</div>
+            </a>
+            <!-- Booking Manage -->
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="" class="menu-link">
+                        <div data-i18n="Roles">Roles</div>
+                    </a>
+                </li>
+                <li class="menu-item">
+                    <a href="{{ route('all.permission') }}" class="menu-link">
+                        <div data-i18n="Permissions">Permissions</div>
+                    </a>
+                </li>
+            </ul>
+            <!-- Booking Manage End -->
+        </li>
+        <!-- Roles & Permissions end -->
 
     </ul>
+    <div class="mb-6">
+    </div>
 </aside>

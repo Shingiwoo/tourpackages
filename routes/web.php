@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Backend\Agen\AgenController;
 use App\Http\Controllers\Backend\Crew\CrewController;
 use App\Http\Controllers\Backend\Meal\MealController;
+use App\Http\Controllers\Backend\Role\RoleController;
 use App\Http\Controllers\Backend\Admin\AdminController;
 use App\Http\Controllers\Backend\Hotel\HotelController;
 use App\Http\Controllers\Backend\AgenFee\AgenFeeController;
@@ -43,6 +44,8 @@ Route::get('/admin/login', [AdminController::class, 'AdminLogin'])->name('admin.
 
 Route::middleware(['auth', 'roles:admin'])->group(function () {
 
+    // Profile Route
+
     Route::get('/admin/dashboard', [AdminController::class, 'AdminDashboard'])->name('admin.dashboard');
     Route::get('/admin/logout', [AdminController::class, 'AdminLogout'])->name('admin.logout');
     Route::get('/admin/profile', [AdminController::class, 'AdminProfile'])->name('admin.profile');
@@ -50,11 +53,6 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
 
     Route::get('/admin/change/password', [AdminController::class, 'AdminChangePassword'])->name('admin.change.password');
     Route::post('/admin/password/update', [AdminController::class, 'AdminPasswordUpdate'])->name('admin.password.update');
-});
-
-
-// Admin Group Middlware
-Route::middleware(['auth', 'roles:admin'])->group(function () {
 
     // Destinations all Route
     Route::controller(DestinationController::class)->group(function () {
@@ -207,5 +205,14 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::delete('/delete/fourday/package/{id}', 'DeleteFourDayPackage')->name('delete.fourday.package');
         Route::get('/packages/fourday/agen/{id}', 'AllFourDayPackagesAgen')->name('all.fourday.packages.agen');
         Route::get('/show/fourday/package/{id}', 'PackageFourDayShow')->name('show.fourday.package');
+    });
+
+    // Permissions all Route
+    Route::controller(RoleController::class)->group(function () {
+        Route::get('/all/permission', 'AllPermission')->name('all.permission');
+        Route::post('/store/permission', 'StorePermission')->name('permission.store');
+        Route::get('/edit/permission/{$id}', 'EditPermission')->name('edit.permission');
+        Route::post('/update/permission/{$id}', 'UpdatePermission')->name('update.permission');
+        Route::delete('/delete/permission/{$id}', 'DeletePermission')->name('delete.permission');
     });
 });

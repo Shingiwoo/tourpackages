@@ -5,31 +5,20 @@
 'use strict';
 
 // Add permission form validation
-document.addEventListener('DOMContentLoaded', function (e) {
-  (function () {
-    FormValidation.formValidation(document.getElementById('addPermissionForm'), {
-      fields: {
-        modalPermissionName: {
-          validators: {
-            notEmpty: {
-              message: 'Please enter permission name'
-            }
-          }
+document.addEventListener('DOMContentLoaded', function () {
+    // Tangkap tombol yang memicu modal
+    const addPermissionButton = document.querySelector('[data-bs-target="#addPermissionModal"]');
+
+    addPermissionButton.addEventListener('click', function () {
+        // Reset form modal setiap kali tombol di-klik
+        const form = document.getElementById('addPermissionForm');
+        form.reset();
+
+        // Reset select2 dropdown jika menggunakan plugin
+        const select = document.getElementById('modalPermissionGroup');
+        if ($(select).data('select2')) {
+            $(select).val(null).trigger('change');
         }
-      },
-      plugins: {
-        trigger: new FormValidation.plugins.Trigger(),
-        bootstrap5: new FormValidation.plugins.Bootstrap5({
-          // Use this for enabling/changing valid/invalid class
-          // eleInvalidClass: '',
-          eleValidClass: '',
-          rowSelector: '.col-12'
-        }),
-        submitButton: new FormValidation.plugins.SubmitButton(),
-        // Submit the form when all fields are valid
-        // defaultSubmit: new FormValidation.plugins.DefaultSubmit(),
-        autoFocus: new FormValidation.plugins.AutoFocus()
-      }
     });
-  })();
 });
+
