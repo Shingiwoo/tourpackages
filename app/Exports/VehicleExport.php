@@ -12,6 +12,6 @@ class VehicleExport implements FromCollection
     */
     public function collection()
     {
-        return Vehicle::all();
+        return Vehicle::select('regency_id', 'name', 'type', 'capacity_min', 'capacity_max', 'price', 'status')->get();
     }
 }

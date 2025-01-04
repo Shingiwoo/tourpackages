@@ -12,6 +12,8 @@ class DestinationExport implements FromCollection
     */
     public function collection()
     {
-        return Destination::all();
+        return Destination::select(
+            'regency_id', 'name', 'price_wni', 'price_wna', 'price_type', 'max_participants', 'parking_city_car', 'parking_mini_bus', 'parking_bus', 'ket', 'status'
+        )->get();
     }
 }
