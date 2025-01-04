@@ -49,18 +49,18 @@ class RoleController extends Controller
     }
 
 
-    public function EditPermission(Request $request, $id)
+    public function EditPermission($id)
     {
-        $permissions = Permission::all();
+        $permission = Permission::findOrFail($id);
 
-        return view('admin.role.edit_permission', compact('permissions'));
+        return view('admin.role.edit_permission', compact('permission'));
     }
 
     public function UpdatePermission(Request $request, $id)
     {
         // Validasi data input
         $validatedData = $request->validate([
-            'permissionName' => 'required',
+            'permissionName' => 'required|string|max:255|unique:permissions,name,' . $id,
             'permissionGroup' => 'required|string',
         ]);
 

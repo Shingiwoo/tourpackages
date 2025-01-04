@@ -211,8 +211,8 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::controller(RoleController::class)->group(function () {
         Route::get('/all/permission', 'AllPermission')->name('all.permission');
         Route::post('/store/permission', 'StorePermission')->name('permission.store');
-        Route::get('/edit/permission/{$id}', 'EditPermission')->name('edit.permission');
-        Route::post('/update/permission/{$id}', 'UpdatePermission')->name('update.permission');
-        Route::delete('/delete/permission/{$id}', 'DeletePermission')->name('delete.permission');
+        Route::get('/edit/permission/{id}', 'EditPermission')->name('edit.permission');
+        Route::patch('/update/permission/{id}', 'UpdatePermission')->name('update.permission');
+        Route::delete('/delete/permission/{id}', 'DeletePermission')->name('delete.permission');
     });
 });
