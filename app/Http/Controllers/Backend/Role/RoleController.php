@@ -112,7 +112,7 @@ class RoleController extends Controller
     {
         Log::info('Request Data:', $request->all());
 
-        $data =array();
+        $data = array();
         $permissions = $request->permission;
 
         foreach ($permissions as $key => $item) {
@@ -137,22 +137,67 @@ class RoleController extends Controller
         return view('admin.rolesetup.all_role_permission', compact('roles'));
     }
 
-    public function EditRolePermission($id)
+    public function AdminEditRole($id)
     {
         $role = Role::findOrFail($id);
-        return view('admin.rolesetup.all_role_permission', compact('role'));
+        $permissions = Permission::all();
+        $permission_groups = User::getpermissionGroup();
+        return view('admin.rolesetup.admin_edit_role', compact('role', 'permissions', 'permission_groups'));
     }
 
-    public function UpdateRolePermission()
+    public function AdminUpdateRole(Request $request, $id)
     {
-        // $roles = Role::all();
-        // return view('admin.rolesetup.all_role_permission', compact('roles'));
+        $role = Role::findOrFail($id);
+        $permissions = $request->permission;
+
+        // Log::info($request->permission);
+
+        if (!empty($permissions)) {
+            // Validasi izin
+            $validPermissions = Permission::whereIn('name', $permissions)->pluck('name')->toArray();
+
+            // Sinkronisasi izin yang valid saja
+            $role->syncPermissions($validPermissions);
+        }
+
+        $notification = [
+            'message' => 'Role Permissions Updated Successfully!',
+            'alert-type' => 'success',
+        ];
+
+        return redirect()->route('all.role.permission')->with($notification);
     }
 
-    public function DeleteRolePermission()
+
+    public function AdminDeleteRole($id)
     {
-        // $roles = Role::all();
-        // return view('admin.rolesetup.all_role_permission', compact('roles'));
-    }
+        try {
+            // Cari paket berdasarkan ID
+            $role = Role::find($id);
 
+            if (!$role) {
+                return redirect()->route('all.role.permission')->with([
+                    'message' => 'Role not found!',
+                    'alert-type' => 'error',
+                ]);
+            }
+
+            // Hapus semua izin yang terkait dengan role
+            $role->permissions()->detach();
+
+            // Hapus role
+            $role->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data has been successfully deleted',
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete data',
+            ], 500);
+        }
+    }
 }

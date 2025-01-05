@@ -55,8 +55,8 @@
                                                     <i class="ti ti-dots-vertical"></i>
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
-                                                    <li><a class="dropdown-item text-warning" href="{{ route('edit.role.permission', $item->id) }}"><i class="ti ti-edit"></i> Edit</a></li>
-                                                    <li><a href="javascript:void(0)" class="dropdown-item text-danger delete-confirm" data-id="{{ $item->id }}" data-url="{{ route('delete.role.permission', $item->id) }}"> <i class="ti ti-trash"></i> Delete
+                                                    <li><a class="dropdown-item text-warning" href="{{ route('admin.edit.role', $item->id) }}"><i class="ti ti-edit"></i> Edit</a></li>
+                                                    <li><a href="javascript:void(0)" class="dropdown-item text-danger delete-confirm" data-id="{{ $item->id }}" data-url="{{ route('admin.delete.role', $item->id) }}"> <i class="ti ti-trash"></i> Delete
                                                      </a></li>
                                                 </ul>
                                             </div>
