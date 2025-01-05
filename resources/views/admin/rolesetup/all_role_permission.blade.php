@@ -39,8 +39,8 @@
                                 <tr>
                                     <td class="align-content-center">{{ $key+1 }}</td>
                                     <td class="align-content-center text-center text-nowrap">
-                                        <span class="text-uppercase">{{ $item->name}}</span>
-                                    <td class="align-content-center text-center">
+                                        <span class="badge rounded-pill bg-primary bg-glow text-uppercase">{{ $item->name}}</span>
+                                    <td class="align-content-center">
                                             @foreach ($item->permissions as $per)
                                             <span class="badge bg-danger m-1">{{ $per->name }}</span>
                                             @endforeach
