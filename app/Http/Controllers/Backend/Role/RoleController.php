@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\Role;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -75,7 +76,7 @@ class RoleController extends Controller
             'alert-type' => 'success',
         ];
 
-        return redirect()->route('all.role')->with($notification);
+        return redirect()->route('all.roles')->with($notification);
     }
 
     public function DeleteRole($id)
@@ -103,6 +104,55 @@ class RoleController extends Controller
         $permission_groups = User::getpermissionGroup();
 
         return view('admin.rolesetup.add_roles_permission', compact('roles', 'permissions', 'permission_groups'));
+    }
+
+
+
+    public function RolePermissionStore(Request $request)
+    {
+        Log::info('Request Data:', $request->all());
+
+        $data =array();
+        $permissions = $request->permission;
+
+        foreach ($permissions as $key => $item) {
+            $data['role_id'] = $request->role_id;
+            $data['permission_id'] = $item;
+
+            DB::table('role_has_permissions')->insert($data);
+        }
+
+        // Kirim notifikasi berhasil
+        $notification = [
+            'message' => 'Role Permissions Added Successfully!',
+            'alert-type' => 'success',
+        ];
+
+        return redirect()->route('all.role.permission')->with($notification);
+    }
+
+    public function AllRolePermission()
+    {
+        $roles = Role::all();
+        return view('admin.rolesetup.all_role_permission', compact('roles'));
+    }
+
+    public function EditRolePermission($id)
+    {
+        $role = Role::findOrFail($id);
+        return view('admin.rolesetup.all_role_permission', compact('role'));
+    }
+
+    public function UpdateRolePermission()
+    {
+        // $roles = Role::all();
+        // return view('admin.rolesetup.all_role_permission', compact('roles'));
+    }
+
+    public function DeleteRolePermission()
+    {
+        // $roles = Role::all();
+        // return view('admin.rolesetup.all_role_permission', compact('roles'));
     }
 
 }

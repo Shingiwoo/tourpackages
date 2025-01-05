@@ -5,7 +5,7 @@
 <div class="content-wrapper">
     <!-- Content -->
     <div class="container-xxl flex-grow-1 container-p-y">
-        <form id="mydata" action="{{ route('role.permission.store') }}" method="POST">
+        <form id="mydata" action="" method="POST">
             @csrf
             <div class="app-ecommerce">
                 <div
@@ -15,7 +15,7 @@
                         <p class="mb-0">Set role permissions</p>
                     </div>
                     <div class="d-flex align-content-center flex-wrap gap-4">
-                        <a href="{{ route('all.role.permission') }}">
+                        <a href="{{ route('all.roles') }}">
                             <button type="button" class="btn btn-primary ml-2">Back</button>
                         </a>
                         <button type="submit" class="btn btn-primary">Submit</button>
@@ -25,7 +25,7 @@
                 <div class="m-2">
                     <div class="col-12">
                         <label class="form-label" for="RoleName">Role Name</label>
-                        <select required id="RoleName" name="role_id" class="select2 form-select"
+                        <select required id="role_id" name="roleName" class="select2 form-select"
                             data-allow-clear="true">
                             <option value="">Select Role</option>
                             @foreach($roles as $role)
