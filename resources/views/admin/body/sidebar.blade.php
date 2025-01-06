@@ -269,6 +269,27 @@
         </li>
         <!-- Packages end -->
 
+        <!-- Manage Admin -->
+        <li class="menu-header small">
+            <span class="menu-header-text" data-i18n="Manage Admin">Manage Admin</span>
+        </li>
+        <li class="menu-item">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-password-user"></i>
+                <div data-i18n="Manage Admin">Manage Admin</div>
+            </a>
+            <!-- Manage Admin -->
+            <ul class="menu-sub">
+                <li class="menu-item">
+                    <a href="{{ route('all.admin') }}" class="menu-link">
+                        <div data-i18n="All Admin">All Admin</div>
+                    </a>
+                </li>
+            </ul>
+            <!-- /Manage Admin End -->
+        </li>
+        <!-- Manage Admin -->
+
         <!-- Roles & Permissions -->
         <li class="menu-header small">
             <span class="menu-header-text" data-i18n="Roles & Permissions">Roles & Permissions</span>

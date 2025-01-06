@@ -8,41 +8,36 @@
         @csrf
         @method('PATCH')
         <div class="app-ecommerce">
-            <!-- Add Permission -->
+            <!-- Update Role -->
             <div
                 class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
                 <div class="d-flex flex-column justify-content-center">
-                    <h4 class="mb-1">Edit Permission</h4>
+                    <h4 class="mb-1">Update Role</h4>
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-4">
-                    <a href="{{ route('all.permission') }}">
-                        <button type="button" class="btn btn-primary ml-2">Back</button>
-                    </a>
-                    <button type="submit" class="btn btn-primary">Update</button>
                 </div>
             </div>
 
             <div class="row">
                 <!-- First column-->
-                <div class="col-12">
+                <div class="col-8">
                     <!-- Permission Information -->
                     <div class="card mb-6">
                         <div class="card-header">
-                            <h5 class="card-tile mb-0">Detail Permission</h5>
+                            <h5 class="card-tile mb-0">Detail Role</h5>
                         </div>
                         <div class="card-body">
                             <div class="row mb-6">
-                                <div class="col">
-                                    <label class="form-label" for="name_permission">Name</label>
-                                    <input type="text" class="form-control" id="name_permission" placeholder="Name Permission"
-                                        value="{{$permission->name}}" name="permissionName" aria-label="Name Permission"
-                                        required />
+                                <div class="col-12 mb-4">
+                                    <label class="form-label" for="modalRoleName">Name</label>
+                                    <input type="text" id="modalRoleName" name="RoleName" class="form-control"
+                                        placeholder="Role Name" value="{{ $role->name }}" required />
                                 </div>
-                                <div class="col">
-                                    <label class="form-label" for="permission_group">Group</label>
-                                    <input required id="permission_group" name="permissionGroup"
-                                        class="form-control" aria-label="Permission Group" value="{{$permission->group_name}}"
-                                        required >
+                                <div class="col-12 text-center">
+                                    <button type="submit" class="btn btn-primary me-2 mt-1">Update Role</button>
+                                    <a href="{{ route('all.roles') }}">
+                                        <button type="button" class="btn btn-info mt-1">Back</button>
+                                    </a>
                                 </div>
                             </div>
                         </div>

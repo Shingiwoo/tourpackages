@@ -4,6 +4,9 @@ namespace App\Http\Controllers\Backend\Admin;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -91,9 +94,6 @@ class AdminController extends Controller
         return redirect()->back()->with($notification);
     }
 
-
-
-
     public function AdminChangePassword(){
 
         $id = Auth::user()->id;
@@ -132,4 +132,151 @@ class AdminController extends Controller
 
         return back()->with($notification);
     }
+
+    public function AllAdmin()
+    {
+        $alladmin = User::where('role', 'admin')->get();
+        return view('admin.access.all_admin', compact('alladmin'));
+    }
+
+    public function AddAdmin()
+    {
+        $roles = Role::all();
+        return view('admin.access.add_admin', compact('roles'));
+    }
+
+    public function StoreAdmin(Request $request)
+    {
+        $validatedData = $request->validate([
+            'fullname' => 'required|string|max:255',
+            'alias' => 'required|string',
+            'youremail' => 'required|string|email|unique:users,email',
+            'yourphone' => 'required|string',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'fulladdress' => 'required|string',
+            'roleID' => 'required|exists:roles,id', // Pastikan roleID valid
+        ]);
+
+        // Simpan nilai asli roleID
+        $roleID = $validatedData['roleID'];
+
+        // Ambil nama role berdasarkan roleID
+        $roleName = Role::findOrFail($roleID)->name;
+
+        // Tentukan nilai role untuk disimpan di kolom 'role'
+        $role = $roleID == '12' ? 'agen' : 'admin';
+
+        // Buat data untuk user
+        $adminData = [
+            'name' => $validatedData['fullname'],
+            'username' => $validatedData['alias'],
+            'email' => $validatedData['youremail'],
+            'phone' => $validatedData['yourphone'],
+            'role' => $role, // Kolom 'role' berisi 'admin' atau 'agen'
+            'password' => Hash::make($validatedData['password']),
+            'address' => $validatedData['fulladdress'],
+        ];
+
+        // Simpan user ke database
+        $user = User::create($adminData);
+
+        // Assign role menggunakan nama role
+        $user->assignRole($roleName);
+
+        // Kirim notifikasi berhasil
+        $notification = [
+            'message' => 'Admin Data Created successfully!',
+            'alert-type' => 'success',
+        ];
+
+        // Redirect ke halaman destinasi dengan notifikasi
+        return redirect()->route('all.admin')->with($notification);
+    }
+
+    public function EditAdmin($id)
+    {
+        $user = User::findOrfail($id);
+        $roles = Role::all();
+        return view('admin.access.edit_admin', compact('roles','user'));
+    }
+
+
+
+    public function UpdateAdmin(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'fullname' => 'required|string|max:255',
+            'alias' => 'required|string',
+            'youremail' => 'required|string|email|unique:users,email,' . $id, // Kecualikan email user ini
+            'yourphone' => 'required|string',
+            'adminStatus' => 'required|in:active,inactive',
+            'fulladdress' => 'required|string',
+            'roleID' => 'required|exists:roles,id', // Pastikan roleID valid
+        ]);
+
+        // Simpan nilai asli roleID
+        $roleID = $validatedData['roleID'];
+
+        // Ambil nama role berdasarkan roleID
+        $roleName = Role::findOrFail($roleID)->name;
+
+        // Tentukan nilai role untuk disimpan di kolom 'role'
+        $role = $roleID == '12' ? 'agen' : 'admin';
+
+        // Buat data untuk user
+        $adminData = [
+            'name' => $validatedData['fullname'],
+            'username' => $validatedData['alias'],
+            'email' => $validatedData['youremail'],
+            'phone' => $validatedData['yourphone'],
+            'status' => $validatedData['adminStatus'],
+            'role' => $role, // Kolom 'role' berisi 'admin' atau 'agen'
+            'address' => $validatedData['fulladdress'],
+        ];
+
+        // Cari user berdasarkan ID
+        $user = User::findOrFail($id);
+
+        // Update data user
+        $user->update($adminData);
+
+        // Hapus role lama
+        $user->roles()->detach();
+
+        // Assign role baru menggunakan nama role
+        $user->assignRole($roleName);
+
+        // Kirim notifikasi berhasil
+        $notification = [
+            'message' => 'Admin Data Updated successfully!',
+            'alert-type' => 'success',
+        ];
+
+        // Redirect ke halaman destinasi dengan notifikasi
+        return redirect()->route('all.admin')->with($notification);
+    }
+
+
+
+    public function DeleteAdmin($id)
+    {
+        try {
+            $adminData = User::findOrFail($id);
+
+            $adminData->roles()->detach();
+            $adminData->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Admin Data has been successfully deleted',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete Admin data',
+            ], 500);
+        }
+    }
+
+
 }
