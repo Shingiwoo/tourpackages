@@ -48,7 +48,7 @@ class PermissionController extends Controller
         ];
 
         // Redirect ke halaman destinasi dengan notifikasi
-        return redirect()->route('all.permission')->with($notification);
+        return redirect()->route('all.permissions')->with($notification);
     }
 
     public function EditPermission($id)
@@ -81,7 +81,7 @@ class PermissionController extends Controller
             'alert-type' => 'success',
         ];
 
-        return redirect()->route('all.permission')->with($notification);
+        return redirect()->route('all.permissions')->with($notification);
     }
 
     public function DeletePermission($id)

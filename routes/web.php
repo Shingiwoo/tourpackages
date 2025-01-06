@@ -26,11 +26,11 @@ Route::get('/', function () {
 });
 
 Route::get('/admin/dashboard', [AdminController::class, 'index'])
-    ->middleware(['auth', 'role:admin'])
+    ->middleware(['auth', 'roles:admin'])
     ->name('admin.dashboard');
 
 Route::get('/dashboard', [AgenController::class, 'index'])
-    ->middleware(['auth', 'role:agen'])
+    ->middleware(['auth', 'roles:agen'])
     ->name('agen.dashboard');
 
 Route::middleware('auth')->group(function () {
