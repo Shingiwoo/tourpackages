@@ -66,7 +66,7 @@ class FacilityController extends Controller
 
         // Validasi data input
         $validatedData = $request->validate([
-            'nameFacility' => 'required',
+            'nameFacility' => 'required|unique:facilities,name',
             'cityOrDistrict_id' => 'required|exists:regencies,id',
             'priceFacility' => 'required',
             'typeFacility' => 'required|in:flat,per_person,per_day,info,shuttle,doc,tl,event',

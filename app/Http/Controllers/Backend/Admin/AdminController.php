@@ -149,7 +149,7 @@ class AdminController extends Controller
     {
         $validatedData = $request->validate([
             'fullname' => 'required|string|max:255',
-            'alias' => 'required|string',
+            'alias' => 'required|string|unique:users,username',
             'youremail' => 'required|string|email|unique:users,email',
             'yourphone' => 'required|string',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
@@ -206,7 +206,7 @@ class AdminController extends Controller
     {
         $validatedData = $request->validate([
             'fullname' => 'required|string|max:255',
-            'alias' => 'required|string',
+            'alias' => 'required|string|unique:users,username',
             'youremail' => 'required|string|email|unique:users,email,' . $id, // Kecualikan email user ini
             'yourphone' => 'required|string',
             'adminStatus' => 'required|in:active,inactive',
