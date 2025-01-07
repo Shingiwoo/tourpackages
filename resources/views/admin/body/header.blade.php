@@ -293,8 +293,8 @@
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <h6 class="mb-0">John Doe</h6>
-                                    <small class="text-muted">Admin</small>
+                                    <h6 class="mb-0">{{ $profileData->username }}</h6>
+                                    <small class="text-muted">{{ $profileData->role }}</small>
                                 </div>
                             </div>
                         </a>

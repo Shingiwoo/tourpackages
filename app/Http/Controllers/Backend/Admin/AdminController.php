@@ -6,10 +6,11 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
 use Spatie\Permission\Models\Role;
-use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Permission;
 
 class AdminController extends Controller
 {
@@ -200,61 +201,67 @@ class AdminController extends Controller
         return view('admin.access.edit_admin', compact('roles','user'));
     }
 
-
-
     public function UpdateAdmin(Request $request, $id)
     {
-        $validatedData = $request->validate([
-            'fullname' => 'required|string|max:255',
-            'alias' => 'required|string|unique:users,username',
-            'youremail' => 'required|string|email|unique:users,email,' . $id, // Kecualikan email user ini
-            'yourphone' => 'required|string',
-            'adminStatus' => 'required|in:active,inactive',
-            'fulladdress' => 'required|string',
-            'roleID' => 'required|exists:roles,id', // Pastikan roleID valid
-        ]);
+        try {
+            $validatedData = $request->validate([
+                'fullname' => 'required|string|max:255',
+                'alias' => 'required|string|unique:users,username,' . $id, // Perbaiki validasi unique
+                'youremail' => 'required|string|email|unique:users,email,' . $id, // Kecualikan email user ini
+                'yourphone' => 'required|string',
+                'adminStatus' => 'required|in:active,inactive',
+                'fulladdress' => 'required|string',
+                'roleID' => 'required|exists:roles,id', // Pastikan roleID valid
+            ]);
 
-        // Simpan nilai asli roleID
-        $roleID = $validatedData['roleID'];
+            // Log::info('Validated Data:', $validatedData);
 
-        // Ambil nama role berdasarkan roleID
-        $roleName = Role::findOrFail($roleID)->name;
+            // Simpan nilai asli roleID
+            $roleID = $validatedData['roleID'];
 
-        // Tentukan nilai role untuk disimpan di kolom 'role'
-        $role = $roleID == '12' ? 'agen' : 'admin';
+            // Ambil nama role berdasarkan roleID
+            $roleName = Role::findOrFail($roleID)->name;
 
-        // Buat data untuk user
-        $adminData = [
-            'name' => $validatedData['fullname'],
-            'username' => $validatedData['alias'],
-            'email' => $validatedData['youremail'],
-            'phone' => $validatedData['yourphone'],
-            'status' => $validatedData['adminStatus'],
-            'role' => $role, // Kolom 'role' berisi 'admin' atau 'agen'
-            'address' => $validatedData['fulladdress'],
-        ];
+            // Tentukan nilai role untuk disimpan di kolom 'role'
+            $role = $roleID == '12' ? 'agen' : 'admin';
 
-        // Cari user berdasarkan ID
-        $user = User::findOrFail($id);
+            // Buat data untuk user
+            $adminData = [
+                'name' => $validatedData['fullname'],
+                'username' => $validatedData['alias'],
+                'email' => $validatedData['youremail'],
+                'phone' => $validatedData['yourphone'],
+                'status' => $validatedData['adminStatus'],
+                'role' => $role, // Kolom 'role' berisi 'admin' atau 'agen'
+                'address' => $validatedData['fulladdress'],
+            ];
 
-        // Update data user
-        $user->update($adminData);
+            // Cari user berdasarkan ID
+            $user = User::findOrFail($id);
 
-        // Hapus role lama
-        $user->roles()->detach();
+            // Update data user
+            $user->update($adminData);
 
-        // Assign role baru menggunakan nama role
-        $user->assignRole($roleName);
+            // Hapus role lama
+            $user->roles()->detach();
 
-        // Kirim notifikasi berhasil
-        $notification = [
-            'message' => 'Admin Data Updated successfully!',
-            'alert-type' => 'success',
-        ];
+            // Assign role baru menggunakan nama role
+            $user->assignRole($roleName);
 
-        // Redirect ke halaman destinasi dengan notifikasi
-        return redirect()->route('all.admin')->with($notification);
+            // Kirim notifikasi berhasil
+            $notification = [
+                'message' => 'Admin Data Updated successfully!',
+                'alert-type' => 'success',
+            ];
+
+            return redirect()->route('all.admin')->with($notification);
+
+        } catch (\Exception $e) {
+            Log::error('Error in UpdateAdmin:', ['error' => $e->getMessage()]);
+            return redirect()->back()->withErrors('An error occurred while updating admin data.');
+        }
     }
+
 
 
 
