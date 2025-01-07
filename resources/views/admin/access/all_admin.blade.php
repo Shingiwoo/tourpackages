@@ -143,7 +143,7 @@
                                         @foreach ($item->roles as $role )
 
                                             @if ($role->name === 'Super Admin')
-                                                <span class="badge rounded-pill bg-primary text-uppercase"><i class="ti ti-shield me-2"></i>{{ $role->name}}</span>
+                                                <span class="badge rounded-pill bg-primary text-uppercase"><i class="ti ti-shield-lock me-2"></i>{{ $role->name}}</span>
                                             @elseif ($role->name === 'Admin')
                                                 <span class="badge rounded-pill bg-info text-uppercase"><i class="ti ti-adjustments-search me-2"></i>{{ $role->name }}</span>
                                             @elseif ($role->name === 'Accounting')
