@@ -58,6 +58,7 @@
 
                 <div class="tab-pane fade show active" role="tabpanel">
                     <!-- Reserve Fee Input -->
+                    @if (Auth::user()->can('serive.add'))
                     <form id="mydata" action="{{ route('reservefee.store') }}" method="POST">
                         @csrf
                         <div class="card mb-6">
@@ -101,6 +102,7 @@
                             </div>
                         </div>
                     </form>
+                    @endif
                     <!-- Index Reserve Fee Tab -->
                     <div class="card mb-6">
                         <div class="card-header">
@@ -117,7 +119,9 @@
                                                     <th class="align-content-center text-center">Price</th>
                                                     <th class="align-content-center text-center">Day</th>
                                                     <th class="align-content-center text-center">User</th>
+                                                    @if (Auth::user()->can('service.action'))
                                                     <th class="align-content-center text-center">Actions</th>
+                                                    @endif
                                                 </tr>
                                             </thead>
                                             <tbody class="table-border-bottom-0">
@@ -132,6 +136,7 @@
                                                     <td class="align-content-center text-center">
                                                     Min : {{ $fee->min_user }}<br>Max : {{ $fee->max_user }}
                                                     </td>
+                                                    @if (Auth::user()->can('service.action'))
                                                     <td class="align-content-center text-center">
                                                         <div class="dropdown">
                                                             <button type="button"
@@ -140,6 +145,7 @@
                                                                 <i class="ti ti-dots-vertical"></i>
                                                             </button>
                                                             <div class="dropdown-menu">
+                                                                @if (Auth::user()->can('service.edit'))
                                                                 <a class="dropdown-item button" data-bs-toggle="modal"
                                                                     data-bs-target="#enableReserveFee"
                                                                     data-id="{{ $fee->id }}"
@@ -149,13 +155,17 @@
                                                                     data-ReserveFeeMaxUser="{{ $fee->max_user }}">
                                                                     <i class="ti ti-pencil me-1"></i> Edit
                                                                 </a>
+                                                                @endif
+                                                                @if (Auth::user()->can('service.delete'))
                                                                 <a class="dropdown-item button text-danger delete-confirm"
                                                                     data-id="{{ $fee->id }}"
                                                                     data-url="{{ route('delete.reservefee', $fee->id) }}"><i
                                                                         class="ti ti-trash me-1"></i> Delete</a>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </td>
+                                                    @endif
                                                 </tr>
                                                 @endforeach
                                             </tbody>

@@ -17,6 +17,7 @@
                         <div class="dt-action-buttons text-end pt-6 pt-md-0">
                             <div class="btn-group">
                             </div>
+                            @if (Auth::user()->can('role.add'))
                             <button type="button"
                                 class="btn btn-secondary create-new btn-primary waves-effect waves-light"
                                 data-bs-toggle="modal" data-bs-target="#addRoleModal">
@@ -24,6 +25,7 @@
                                     <span class="d-none d-sm-inline-block">Add Roles</span>
                                 </span>
                             </button>
+                            @endif
                         </div>
                     </div>
                     <div class="card-datatable text-nowrap">
@@ -32,7 +34,9 @@
                                 <tr>
                                     <th class="align-content-center text-center">#</th>
                                     <th class="align-content-center text-center">Role Name</th>
+                                    @if (Auth::user()->can('role.action'))
                                     <th class="align-content-center">Actions</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -40,6 +44,7 @@
                                 <tr>
                                     <td class="align-content-center text-center">{{ $key+1 }}</td>
                                     <td class="align-content-center text-center">{{ $item->name }}</td>
+                                    @if (Auth::user()->can('role.action'))
                                     <td class="align-content-center">
                                         <!-- Icon Dropdown -->
                                         <div class="col-lg-3 col-sm-6 col-12">
@@ -50,14 +55,17 @@
                                                     <i class="ti ti-dots-vertical"></i>
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
-                                                    <li><a class="dropdown-item text-warning" href="{{ route('edit.role', $item->id) }}"><i class="ti ti-edit"></i> Edit</a></li>
+                                                    @if (Auth::user()->can('role.edit'))
+                                                    <li><a class="dropdown-item text-warning" href="{{ route('edit.role', $item->id) }}"><i class="ti ti-edit"></i> Edit</a></li>@endif
+                                                    @if (Auth::user()->can('role.delete'))
                                                     <li><a href="javascript:void(0)" class="dropdown-item text-danger delete-confirm" data-id="{{ $item->id }}" data-url="{{ route('delete.role', $item->id) }}"> <i class="ti ti-trash"></i> Delete
-                                                     </a></li>
+                                                     </a></li>@endif
                                                 </ul>
                                             </div>
                                         </div>
                                         <!--/ Icon Dropdown -->
                                     </td>
+                                    @endif
                                 </tr>
                                 @endforeach
                             </tbody>

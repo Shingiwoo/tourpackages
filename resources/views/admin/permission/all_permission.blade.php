@@ -20,6 +20,7 @@
                                 class="btn btn-secondary buttons-collection btn-label-warning me-4 waves-effect waves-light border-none"><span><i class="ti ti-file-import ti-xs me-sm-1"></i>
                                     <span class="d-none d-sm-inline-block">Import</span></span></a>
                             </div>
+                            @if (Auth::user()->can('permission.add'))
                             <button type="button"
                                 class="btn btn-secondary create-new btn-primary waves-effect waves-light"
                                 data-bs-toggle="modal" data-bs-target="#addPermissionModal">
@@ -27,6 +28,7 @@
                                     <span class="d-none d-sm-inline-block">Add Permission</span>
                                 </span>
                             </button>
+                            @endif
                         </div>
                     </div>
                     <div class="card-datatable text-nowrap">
@@ -36,7 +38,9 @@
                                     <th class="align-content-center text-center">#</th>
                                     <th class="align-content-center text-center">Permission Name</th>
                                     <th class="align-content-center text-center">Permission Group</th>
+                                    @if (Auth::user()->can('permission.action'))
                                     <th class="align-content-center">Actions</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -65,6 +69,7 @@
                                             <span class="badge bg-success text-uppercase"><i class="ti ti-adjustments-search me-2"></i>{{ $item->group_name }}</span>
                                         @endif
                                     </td>
+                                    @if (Auth::user()->can('permission.add'))
                                     <td class="align-content-center">
                                         <!-- Icon Dropdown -->
                                         <div class="col-lg-3 col-sm-6 col-12">
@@ -75,14 +80,19 @@
                                                     <i class="ti ti-dots-vertical"></i>
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
+                                                    @if (Auth::user()->can('permission.edit'))
                                                     <li><a class="dropdown-item text-warning" href="{{ route('edit.permission', $item->id) }}"><i class="ti ti-edit"></i> Edit</a></li>
+                                                    @endif
+                                                    @if (Auth::user()->can('permission.delete'))
                                                     <li><a href="javascript:void(0)" class="dropdown-item text-danger delete-confirm" data-id="{{ $item->id }}" data-url="{{ route('delete.permission', $item->id) }}"> <i class="ti ti-trash"></i> Delete
                                                      </a></li>
+                                                    @endif
                                                 </ul>
                                             </div>
                                         </div>
                                         <!--/ Icon Dropdown -->
                                     </td>
+                                    @endif
                                 </tr>
                                 @endforeach
                             </tbody>
