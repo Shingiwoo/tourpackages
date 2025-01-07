@@ -88,7 +88,7 @@
         <!-- Booking End -->
 
         <!-- Packages -->
-        @if (Auth::user()->can('package.menu'))
+        @if (Auth::user()->can('package.tour.menu'))
             <li class="menu-header small">
                 <span class="menu-header-text" data-i18n="Packages">Packages</span>
             </li>

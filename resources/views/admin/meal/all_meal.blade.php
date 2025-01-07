@@ -58,6 +58,7 @@
 
                 <div class="tab-pane fade show active" role="tabpanel">
                     <!-- Meals Tab -->
+                    @if (Auth::user()->can('service.add'))
                     <form id="mydata" action="{{ route('meal.store') }}" method="POST">
                         @csrf
                         <div class="card mb-6">
@@ -121,6 +122,7 @@
                             </div>
                         </div>
                     </form>
+                    @endif
                     <!-- Index Meals Tab -->
                     <div class="card mb-6">
                         <div class="card-header">
@@ -139,7 +141,9 @@
                                                     <th class="align-content-center text-center">Day</th>
                                                     <th class="align-content-center text-center">Total Meal</th>
                                                     <th class="align-content-center text-center">City / District</th>
+                                                    @if (Auth::user()->can('service.action'))
                                                     <th class="align-content-center text-center">Actions</th>
+                                                    @endif
                                                 </tr>
                                             </thead>
                                             <tbody class="table-border-bottom-0">
@@ -156,6 +160,7 @@
                                                     <td class="align-content-center text-center">{{ $mkn->regency->name
                                                         }}
                                                     </td>
+                                                    @if (Auth::user()->can('service.action'))
                                                     <td class="align-content-center text-center">
                                                         <div class="dropdown">
                                                             <button type="button"
@@ -164,6 +169,7 @@
                                                                 <i class="ti ti-dots-vertical"></i>
                                                             </button>
                                                             <div class="dropdown-menu">
+                                                                @if (Auth::user()->can('service.add'))
                                                                 <a class="dropdown-item button" data-bs-toggle="modal"
                                                                     data-bs-target="#enableMeal"
                                                                     data-id="{{ $mkn->id }}"
@@ -174,13 +180,17 @@
                                                                     data-city="{{ $mkn->regency_id }}">
                                                                     <i class="ti ti-pencil me-1"></i> Edit
                                                                 </a>
+                                                                @endif
+                                                                @if (Auth::user()->can('service.delete'))
                                                                 <a class="dropdown-item button text-danger delete-confirm"
                                                                     data-id="{{ $mkn->id }}"
                                                                     data-url="{{ route('delete.meal', $mkn->id) }}"><i
                                                                         class="ti ti-trash me-1"></i> Delete</a>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </td>
+                                                    @endif
                                                 </tr>
                                                 @endforeach
                                             </tbody>

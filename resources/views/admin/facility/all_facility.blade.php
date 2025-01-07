@@ -126,56 +126,58 @@
                         <div class="card-body">
                             <div class="row g-6">
                                 <div class="col-12 col-md-12">
-                                    <div class="card-datatable text-nowrap">
-                                        <table id="example" class="datatables-ajax table" style="width:100%">
-                                            <thead>
-                                                <tr>
-                                                    <th class="align-content-center text-center">SL</th>
-                                                    <th class="align-content-center text-center">Name</th>
-                                                    <th class="align-content-center text-center">Price</th>
-                                                    <th class="align-content-center text-center">Type</th>
-                                                    <th class="align-content-center text-center">Capacity</th>
-                                                    @if (Auth::user()->can('service.action'))
-                                                    <th class="align-content-center text-center">Actions</th>
-                                                    @endif
-                                                </tr>
-                                            </thead>
-                                            <tbody class="table-border-bottom-0">
-                                                @foreach ($facilities as $key=> $fct )
-                                                <tr>
-                                                    <td class="align-content-center text-center">#{{ $key+1 }}</td>
-                                                    <td class="align-content-center text-center">{{ $fct->name }}
-                                                    </td>
-                                                    <td class="align-content-center text-center">Rp {{ number_format($fct->price, 0, ',', '.')  }}</td>
-                                                    <td class="align-content-center text-center">{{ $fct->type }}
-                                                    </td>
-                                                    <td class="align-content-center text-center">{{ $fct->max_user }}
-                                                    </td>
-                                                    @if (Auth::user()->can('service.action'))
-                                                    <td class="align-content-center text-center">
-                                                        <div class="dropdown">
-                                                            <button type="button"
-                                                                class="btn p-0 dropdown-toggle hide-arrow"
-                                                                data-bs-toggle="dropdown">
-                                                                <i class="ti ti-dots-vertical"></i>
-                                                            </button>
-                                                            <div class="dropdown-menu">
-                                                                @if (Auth::user()->can('service.add'))
-                                                                <a class="dropdown-item button" href="{{ route('edit.facility', $fct->id) }}">
-                                                                    <i class="ti ti-pencil me-1"></i> Edit
-                                                                </a>
-                                                                @endif
-                                                                @if (Auth::user()->can('service.delete'))
-                                                                <a class="dropdown-item button text-danger delete-confirm" data-id="{{ $fct->id }}" data-url="{{ route('delete.facility', $fct->id) }}"><i class="ti ti-trash me-1"></i> Delete</a>
-                                                                @endif
+                                    <div class="card-datatable table-responsive">
+                                        <div class="card-datatable text-nowrap">
+                                            <table id="example" class="datatables-ajax table" style="width:100%">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="align-content-center text-center">SL</th>
+                                                        <th class="align-content-center text-center">Name</th>
+                                                        <th class="align-content-center text-center">Price</th>
+                                                        <th class="align-content-center text-center">Type</th>
+                                                        <th class="align-content-center text-center">Capacity</th>
+                                                        @if (Auth::user()->can('service.action'))
+                                                        <th class="align-content-center text-center">Actions</th>
+                                                        @endif
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="table-border-bottom-0">
+                                                    @foreach ($facilities as $key=> $fct )
+                                                    <tr>
+                                                        <td class="align-content-center text-center">#{{ $key+1 }}</td>
+                                                        <td class="align-content-center text-center">{{ $fct->name }}
+                                                        </td>
+                                                        <td class="align-content-center text-center">Rp {{ number_format($fct->price, 0, ',', '.')  }}</td>
+                                                        <td class="align-content-center text-center">{{ $fct->type }}
+                                                        </td>
+                                                        <td class="align-content-center text-center">{{ $fct->max_user }}
+                                                        </td>
+                                                        @if (Auth::user()->can('service.action'))
+                                                        <td class="align-content-center text-center">
+                                                            <div class="dropdown">
+                                                                <button type="button"
+                                                                    class="btn p-0 dropdown-toggle hide-arrow"
+                                                                    data-bs-toggle="dropdown">
+                                                                    <i class="ti ti-dots-vertical"></i>
+                                                                </button>
+                                                                <div class="dropdown-menu">
+                                                                    @if (Auth::user()->can('service.add'))
+                                                                    <a class="dropdown-item button text-warning" href="{{ route('edit.facility', $fct->id) }}">
+                                                                        <i class="ti ti-pencil me-1"></i> Edit
+                                                                    </a>
+                                                                    @endif
+                                                                    @if (Auth::user()->can('service.delete'))
+                                                                    <a class="dropdown-item button text-danger delete-confirm" data-id="{{ $fct->id }}" data-url="{{ route('delete.facility', $fct->id) }}"><i class="ti ti-trash me-1"></i> Delete</a>
+                                                                    @endif
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    </td>
-                                                    @endif
-                                                </tr>
-                                                @endforeach
-                                            </tbody>
-                                        </table>
+                                                        </td>
+                                                        @endif
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>

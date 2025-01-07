@@ -103,7 +103,12 @@
                                     aria-describedby="basic-icon-default-message2"></textarea>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-primary waves-effect waves-light">Send</button>
+                        <div class="d-flex align-content-center flex-wrap gap-4">
+                            <a href="{{ route('all.admin') }}">
+                                <button type="button" class="btn btn-primary ml-2">Back</button>
+                            </a>
+                            <button type="submit" class="btn btn-primary waves-effect waves-light">Create</button>
+                        </div>
                     </form>
                 </div>
             </div>

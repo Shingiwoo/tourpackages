@@ -13,10 +13,12 @@
                     <p class="mb-0">Set role permissions</p>
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-4">
+                    @if (Auth::user()->can('role.add'))
                     <a href="{{ route('add.roles.permission')}}" type="button" class="btn btn-secondary create-new btn-primary waves-effect waves-light" >
                         <span><i class="ti ti-plus me-sm-1"></i>
                         <span class="d-none d-sm-inline-block">Set Role & Permissions </span></span>
                     </a>
+                    @endif
                 </div>
             </div>
 
@@ -31,7 +33,9 @@
                                     <th class="align-content-center text-center">#</th>
                                     <th class="align-content-center text-center">Role Name</th>
                                     <th class="align-content-center text-center">Permission</th>
+                                    @if (Auth::user()->can('role.action'))
                                     <th class="align-content-center">Actions</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -45,6 +49,7 @@
                                             <span class="badge bg-danger m-1">{{ $per->name }}</span>
                                             @endforeach
                                     </td>
+                                    @if (Auth::user()->can('role.action'))
                                     <td class="align-content-center">
                                         <!-- Icon Dropdown -->
                                         <div class="col-lg-3 col-sm-6 col-12">
@@ -55,14 +60,19 @@
                                                     <i class="ti ti-dots-vertical"></i>
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
+                                                    @if (Auth::user()->can('role.add'))
                                                     <li><a class="dropdown-item text-warning" href="{{ route('admin.edit.role', $item->id) }}"><i class="ti ti-edit"></i> Edit</a></li>
+                                                    @endif
+                                                    @if (Auth::user()->can('role.delete'))
                                                     <li><a href="javascript:void(0)" class="dropdown-item text-danger delete-confirm" data-id="{{ $item->id }}" data-url="{{ route('admin.delete.role', $item->id) }}"> <i class="ti ti-trash"></i> Delete
                                                      </a></li>
+                                                    @endif
                                                 </ul>
                                             </div>
                                         </div>
                                         <!--/ Icon Dropdown -->
                                     </td>
+                                    @endif
                                 </tr>
                                 @endforeach
                             </tbody>

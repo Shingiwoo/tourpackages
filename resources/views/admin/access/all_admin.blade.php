@@ -17,7 +17,7 @@
               <div class="avatar avatar-lg">
                 <div class="avatar-initial bg-label-primary rounded">
                   <div>
-                    <img src="{{ asset('assets/svg/icons/laptop.svg') }}" alt="paypal" class="img-fluid">
+                    <img src="{{ asset('assets/svg/icons/shield-lock.svg') }}" alt="Super Admin" class="img-fluid">
                   </div>
                 </div>
               </div>
@@ -31,7 +31,7 @@
               <div class="avatar avatar-lg">
                 <div class="avatar-initial bg-label-info rounded">
                   <div>
-                    <img src="{{ asset('assets/svg/icons/lightbulb.svg') }}" alt="Lightbulb" class="img-fluid">
+                    <img src="{{ asset('assets/svg/icons/adjustments-search.svg') }}" alt="Admin" class="img-fluid">
                   </div>
                 </div>
               </div>
@@ -45,7 +45,7 @@
               <div class="avatar avatar-lg">
                 <div class="avatar-initial bg-label-success rounded">
                   <div>
-                    <img src="{{ asset('assets/svg/icons/calculator.svg') }}" alt="Check" class="img-fluid">
+                    <img src="{{ asset('assets/svg/icons/calculator.svg') }}" alt="Accounting" class="img-fluid">
                   </div>
                 </div>
               </div>
@@ -59,7 +59,7 @@
               <div class="avatar avatar-lg">
                 <div class="avatar-initial bg-label-danger rounded">
                   <div>
-                    <img src="{{ asset('assets/svg/icons/map-route.svg') }}" alt="Check" class="img-fluid">
+                    <img src="{{ asset('assets/svg/icons/map-route.svg') }}" alt="Tour Planner" class="img-fluid">
                   </div>
                 </div>
               </div>
@@ -73,7 +73,7 @@
               <div class="avatar avatar-lg">
                 <div class="avatar-initial bg-label-warning rounded">
                   <div>
-                    <img src="{{ asset('assets/svg/icons/user-hexagon.svg') }}" alt="Check" class="img-fluid">
+                    <img src="{{ asset('assets/svg/icons/user-hexagon.svg') }}" alt="Agen" class="img-fluid">
                   </div>
                 </div>
               </div>
@@ -143,13 +143,15 @@
                                         @foreach ($item->roles as $role )
 
                                             @if ($role->name === 'Super Admin')
-                                                <span class="badge rounded-pill bg-warning text-uppercase"><i class="ti ti-shield me-2"></i>{{ $role->name}}</span>
+                                                <span class="badge rounded-pill bg-primary text-uppercase"><i class="ti ti-shield me-2"></i>{{ $role->name}}</span>
                                             @elseif ($role->name === 'Admin')
-                                                <span class="badge rounded-pill bg-danger text-uppercase"><i class="ti ti-adjustments-search me-2"></i>{{ $role->name }}</span>
+                                                <span class="badge rounded-pill bg-info text-uppercase"><i class="ti ti-adjustments-search me-2"></i>{{ $role->name }}</span>
                                             @elseif ($role->name === 'Accounting')
                                                 <span class="badge rounded-pill bg-success text-uppercase"><i class="ti ti-calculator me-2"></i>{{ $role->name }}</span>
-                                            @elseif ($role->name === 'Tour Planer')
-                                                <span class="badge rounded-pill bg-info text-uppercase"><i class="ti ti-lock-access me-2"></i>{{ $role->name }}</span>
+                                            @elseif ($role->name === 'Tour Planner')
+                                                <span class="badge rounded-pill bg-danger text-uppercase"><i class="ti ti-map-route me-2"></i>{{ $role->name }}</span>
+                                            @else
+                                                <span class="badge rounded-pill bg-warning text-uppercase"><i class="ti ti-user-hexagon me-2"></i>{{ $role->name }}</span>
                                             @endif
 
                                         @endforeach
