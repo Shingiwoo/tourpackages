@@ -58,6 +58,7 @@
 
                 <div class="tab-pane fade show active" role="tabpanel">
                     <!-- Crew Tab -->
+                    @if (Auth::user()->can('service.add'))
                     <form id="mydata" action="{{ route('crew.store') }}" method="POST">
                         @csrf
                         <div class="card mb-6">
@@ -89,6 +90,7 @@
                             </div>
                         </div>
                     </form>
+                    @endif
                     <!-- Index Crew Tab -->
                     <div class="card mb-6">
                         <div class="card-header">
@@ -105,7 +107,9 @@
                                                     <th class="align-content-center text-center">Min User</th>
                                                     <th class="align-content-center text-center">Max User</th>
                                                     <th class="align-content-center text-center">Total Crew</th>
+                                                    @if (Auth::user()->can('service.action'))
                                                     <th class="align-content-center text-center">Actions</th>
+                                                    @endif
                                                 </tr>
                                             </thead>
                                             <tbody class="table-border-bottom-0">
@@ -117,6 +121,7 @@
                                                     <td class="align-content-center text-center">{{ $cr->max_participants }}
                                                     </td>
                                                     <td class="align-content-center text-center">{{ $cr->num_crew }}</td>
+                                                    @if (Auth::user()->can('service.action'))
                                                     <td class="align-content-center text-center">
                                                         <div class="dropdown">
                                                             <button type="button"
@@ -125,6 +130,7 @@
                                                                 <i class="ti ti-dots-vertical"></i>
                                                             </button>
                                                             <div class="dropdown-menu">
+                                                                @if (Auth::user()->can('service.edit'))
                                                                 <a class="dropdown-item button" data-bs-toggle="modal"
                                                                     data-bs-target="#enableCrew" data-id="{{ $cr->id }}"
                                                                     data-minUser="{{ $cr->min_participants }}"
@@ -132,10 +138,14 @@
                                                                     data-totalCrew="{{ $cr->num_crew }}">
                                                                     <i class="ti ti-pencil me-1"></i> Edit
                                                                 </a>
+                                                                @endif
+                                                                @if (Auth::user()->can('service.delete'))
                                                                 <a class="dropdown-item button text-danger delete-confirm" data-id="{{ $cr->id }}" data-url="{{ route('delete.crew', $cr->id) }}"><i class="ti ti-trash me-1"></i> Delete</a>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </td>
+                                                    @endif
                                                 </tr>
                                                 @endforeach
                                             </tbody>

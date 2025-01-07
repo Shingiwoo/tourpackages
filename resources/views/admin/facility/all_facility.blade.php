@@ -58,6 +58,7 @@
 
                 <div class="tab-pane fade show active" role="tabpanel">
                     <!-- Facility Tab -->
+                    @if (Auth::user()->can('service.add'))
                     <form id="mydata" action="{{ route('facility.store') }}" method="POST">
                         @csrf
                         <div class="card mb-6">
@@ -116,6 +117,7 @@
                             </div>
                         </div>
                     </form>
+                    @endif
                     <!-- Index Facility Tab -->
                     <div class="card mb-6">
                         <div class="card-header">
@@ -133,7 +135,9 @@
                                                     <th class="align-content-center text-center">Price</th>
                                                     <th class="align-content-center text-center">Type</th>
                                                     <th class="align-content-center text-center">Capacity</th>
+                                                    @if (Auth::user()->can('service.action'))
                                                     <th class="align-content-center text-center">Actions</th>
+                                                    @endif
                                                 </tr>
                                             </thead>
                                             <tbody class="table-border-bottom-0">
@@ -147,6 +151,7 @@
                                                     </td>
                                                     <td class="align-content-center text-center">{{ $fct->max_user }}
                                                     </td>
+                                                    @if (Auth::user()->can('service.action'))
                                                     <td class="align-content-center text-center">
                                                         <div class="dropdown">
                                                             <button type="button"
@@ -155,13 +160,18 @@
                                                                 <i class="ti ti-dots-vertical"></i>
                                                             </button>
                                                             <div class="dropdown-menu">
+                                                                @if (Auth::user()->can('service.add'))
                                                                 <a class="dropdown-item button" href="{{ route('edit.facility', $fct->id) }}">
                                                                     <i class="ti ti-pencil me-1"></i> Edit
                                                                 </a>
+                                                                @endif
+                                                                @if (Auth::user()->can('service.delete'))
                                                                 <a class="dropdown-item button text-danger delete-confirm" data-id="{{ $fct->id }}" data-url="{{ route('delete.facility', $fct->id) }}"><i class="ti ti-trash me-1"></i> Delete</a>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </td>
+                                                    @endif
                                                 </tr>
                                                 @endforeach
                                             </tbody>

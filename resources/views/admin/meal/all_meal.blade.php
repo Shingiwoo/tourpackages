@@ -264,9 +264,11 @@
                                 </select>
                             </div>
                         </div>
+                        @if (Auth::user()->can('service.edit'))
                         <div class="d-flex justify-content-end gap-4">
                             <button type="submit" class="btn btn-primary">Save Changes</button>
                         </div>
+                        @endif
                     </div>
                 </form>
 

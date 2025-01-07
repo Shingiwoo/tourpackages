@@ -61,12 +61,14 @@
                             <div class="button-group" style="padding-right: 15px">
                                 <a id="showAgenPackagesBtn" class="btn btn-warning" href="#">Package By Agen</a>
                             </div>
+                            @if (Auth::user()->can('package.add'))
                             <a href="{{ route('generate.fourday.package') }}"
                                 class="btn btn-secondary create-new btn-primary waves-effect waves-light">
                                 <span><i class="ti ti-plus me-sm-1"></i>
                                     <span class="d-none d-sm-inline-block">Add Package</span>
                                 </span>
                             </a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -79,7 +81,9 @@
                                 <th class="align-content-center text-center">Agen</th>
                                 <th class="align-content-center text-center">Location</th>
                                 <th class="align-content-center text-center">Status</th>
+                                @if (Auth::user()->can('package.action'))
                                 <th class="align-content-center text-center">Action</th>
+                                @endif
                             </tr>
                         </thead>
                         <tbody>
@@ -99,6 +103,7 @@
                                     <span class="badge bg-label-danger rounded p-2"><i class="ti ti-bulb-off text-danger"></i></span>
                                     @endif
                                 </td>
+                                @if (Auth::user()->can('package.action'))
                                 <td class="align-content-center text-center">
                                     <!-- Icon Dropdown -->
                                     <div class="col-lg-3 col-sm-6 col-12">
@@ -109,22 +114,29 @@
                                                 <i class="ti ti-dots-vertical"></i>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end">
+                                                @if (Auth::user()->can('package.show'))
                                                 <li><a class="dropdown-item text-info" href="{{ route('show.fourday.package', $pack->id) }}"><i
                                                             class="ti ti-eye"></i>View</a></li>
+                                                @endif
+                                                @if (Auth::user()->can('package.edit'))
                                                 <li><a class="dropdown-item text-warning"
                                                         href="{{ route('edit.fourday.package', $pack->id) }}"><i
                                                             class="ti ti-edit"></i> Edit</a></li>
+                                                @endif
+                                                @if (Auth::user()->can('package.delete'))
                                                 <li><a href="javascript:void(0)"
                                                         class="dropdown-item text-danger delete-confirm"
                                                         data-id="{{ $pack->id }}"
                                                         data-url="{{ route('delete.fourday.package', $pack->id) }}"> <i
                                                             class="ti ti-trash"></i> Delete
                                                     </a></li>
+                                                @endif
                                             </ul>
                                         </div>
                                     </div>
                                     <!--/ Icon Dropdown -->
                                 </td>
+                                @endif
                             </tr>
                             @endforeach
                         </tbody>

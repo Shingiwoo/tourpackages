@@ -81,15 +81,19 @@
                     <div class="dt-action-buttons text-end pt-6 pt-md-0">
                         <div class="dt-buttons btn-group flex-wrap">
                             <div class="btn-group">
+                                @if (Auth::user()->can('destinations.import'))
                                 <a href="{{ route('import.destinations') }}"
                                     class="btn btn-secondary buttons-collection btn-label-warning me-4 waves-effect waves-light border-none"><span><i class="ti ti-file-import ti-xs me-sm-1"></i>
                                         <span class="d-none d-sm-inline-block">Import</span></span></a>
+                                @endif
                             </div>
+                            @if (Auth::user()->can('destinations.add'))
                             <a href="{{ route('add.destination') }}"
                                 class="btn btn-secondary create-new btn-primary waves-effect waves-light" tabindex="0"
                                 aria-controls="DataTables_Table_0" type="button"> <span><i
                                         class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Add
                                         Destination</span></span></a>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -105,7 +109,9 @@
                             <th class="align-content-center text-center">Max User</th>
                             <th class="align-content-center text-center">Status</th>
                             <th class="align-content-center text-center">Location</th>
+                            @if (Auth::user()->can('destinations.action'))
                             <th class="align-content-center text-center">Action</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -125,6 +131,7 @@
                                 @endif
                             </td>
                             <td class="align-content-center text-center">{{ $dts->regency->name}}</td>
+                            @if (Auth::user()->can('destinations.action'))
                             <td class="align-content-center text-center">
                                 <!-- Icon Dropdown -->
                                 <div class="col-lg-3 col-sm-6 col-12">
@@ -135,14 +142,19 @@
                                             <i class="ti ti-dots-vertical"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
+                                            @if (Auth::user()->can('destinations.edit'))
                                             <li><a class="dropdown-item text-warning" href="{{ route('edit.destination', $dts->id) }}"><i class="ti ti-edit"></i> Edit</a></li>
+                                            @endif
+                                            @if (Auth::user()->can('destinations.delete'))
                                             <li><a href="javascript:void(0)" class="dropdown-item text-danger delete-confirm" data-id="{{ $dts->id }}" data-url="{{ route('delete.destination', $dts->id) }}"> <i class="ti ti-trash"></i> Delete
                                              </a></li>
+                                            @endif
                                         </ul>
                                     </div>
                                 </div>
                                 <!--/ Icon Dropdown -->
                             </td>
+                            @endif
                         </tr>
                         @endforeach
                     </tbody>

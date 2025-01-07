@@ -19,7 +19,9 @@
                     <a href="{{ route('all.twoday.packages') }}">
                         <button type="button" class="btn btn-primary ml-2">Back</button>
                     </a>
+                    @if (Auth::user()->can('package.add'))
                     <button type="submit" class="btn btn-primary">Generate</button>
+                    @endif
                 </div>
             </div>
 

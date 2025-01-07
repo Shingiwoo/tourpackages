@@ -45,6 +45,7 @@
                     <div class="head-label text-center">
                         <h5 class="card-title mb-0">Hotels List</h5>
                     </div>
+                    @if (Auth::user()->can('hotels.add'))
                     <div class="dt-action-buttons text-end pt-6 pt-md-0">
                         <div class="dt-buttons btn-group flex-wrap">
                             <a href="{{ route('add.hotel') }}"
@@ -54,6 +55,7 @@
                                         Hotel</span></span></a>
                         </div>
                     </div>
+                    @endif
                 </div>
                 <div class="card-datatable text-nowrap">
                 <table id="example" class="datatables-ajax table" style="width:100%">
@@ -65,7 +67,9 @@
                             <th class="align-content-center text-center">Type</th>
                             <th class="align-content-center text-center">Status</th>
                             <th class="align-content-center text-center">Location</th>
+                            @if (Auth::user()->can('hotels.action'))
                             <th class="align-content-center text-center">Action</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
@@ -83,6 +87,7 @@
                                 @endif
                             </td>
                             <td class="align-content-center text-center">{{ $htl->regency->name}}</td>
+                            @if (Auth::user()->can('hotels.action'))
                             <td class="align-content-center text-center">
                                 <!-- Icon Dropdown -->
                                 <div class="col-lg-3 col-sm-6 col-12">
@@ -93,14 +98,19 @@
                                             <i class="ti ti-dots-vertical"></i>
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
+                                            @if (Auth::user()->can('hotels.add'))
                                             <li><a class="dropdown-item text-warning" href="{{ route('edit.hotel', $htl->id) }}"><i class="ti ti-edit"></i> Edit</a></li>
+                                            @endif
+                                            @if (Auth::user()->can('hotels.delete'))
                                             <li><a href="javascript:void(0)" class="dropdown-item text-danger delete-confirm" data-id="{{ $htl->id }}" data-url="{{ route('delete.hotel', $htl->id) }}"> <i class="ti ti-trash"></i> Delete
                                              </a></li>
+                                            @endif
                                         </ul>
                                     </div>
                                 </div>
                                 <!--/ Icon Dropdown -->
                             </td>
+                            @endif
                         </tr>
                         @endforeach
                     </tbody>
