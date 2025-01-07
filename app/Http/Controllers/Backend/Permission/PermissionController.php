@@ -152,7 +152,7 @@ class PermissionController extends Controller
                 'alert-type' => 'success',
             ];
 
-            return redirect()->route('all.permission')->with($notification);
+            return redirect()->route('all.permissions')->with($notification);
 
         } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
             Log::error('Validation errors in Excel file: ' . json_encode($e->failures()));

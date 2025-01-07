@@ -59,8 +59,10 @@
                                             <span class="badge bg-secondary text-uppercase"><i class="ti ti-user-shield me-2"></i>{{ $item->group_name }}</span>
                                         @elseif ($item->group_name === 'Roles and Permissions')
                                             <span class="badge bg-dark text-uppercase"><i class="ti ti-shield-lock me-2"></i>{{ $item->group_name }}</span>
+                                        @elseif ($item->group_name === 'admin')
+                                            <span class="badge bg-info text-uppercase"><i class="ti ti-shield me-2"></i>{{ $item->group_name }}</span>
                                         @else
-                                        <span class="badge bg-info text-uppercase"><i class="ti ti-shield me-2"></i>{{ $item->group_name }}</span>
+                                            <span class="badge bg-success text-uppercase"><i class="ti ti-adjustments-search me-2"></i>{{ $item->group_name }}</span>
                                         @endif
                                     </td>
                                     <td class="align-content-center">

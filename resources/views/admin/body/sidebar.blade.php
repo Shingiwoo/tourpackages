@@ -221,6 +221,7 @@
                 </a>
                 <ul class="menu-sub">
                     <!-- Destinations -->
+                    @if (Auth::user()->can('destinations.list'))
                     <li class="menu-item">
                         <a class="menu-link menu-toggle">
                             <div data-i18n="Destinations">Destinations</div>
@@ -232,21 +233,27 @@
                                     <div data-i18n="Destinations List">Destinations List</div>
                                 </a>
                             </li>
+                            @if (Auth::user()->can('destinations.add'))
                             <li class="menu-item">
                                 <a href="{{ route('add.destination') }}" class="menu-link">
                                     <div data-i18n="Add Destination">Add Destination</div>
                                 </a>
                             </li>
+                            @endif
+                            @if (Auth::user()->can('destinations.import'))
                             <li class="menu-item">
                                 <a href="{{ route('import.destinations') }}" class="menu-link">
                                     <div data-i18n="Import Destinations">Import Destinations</div>
                                 </a>
                             </li>
+                            @endif
                         </ul>
                     </li>
+                    @endif
                     <!-- End Destinations-->
 
                     <!-- Vehicle -->
+                    @if (Auth::user()->can('vehicles.list'))
                     <li class="menu-item">
                         <a href="" class="menu-link menu-toggle">
                             <i class="menu-icon tf-icons ti ti-car-garage"></i>
@@ -259,16 +266,20 @@
                                     <div data-i18n="Vehicles List">Vehicles List</div>
                                 </a>
                             </li>
+                            @if (Auth::user()->can('vehicles.add'))
                             <li class="menu-item">
                                 <a href="{{ route('add.vehicle') }}" class="menu-link">
                                     <div data-i18n="Add Vehicle">Add Vehicle</div>
                                 </a>
                             </li>
+                            @endif
                         </ul>
                     </li>
+                    @endif
                     <!-- End Vehicle-->
 
                     <!-- Hotel -->
+                    @if (Auth::user()->can('hotels.list'))
                     <li class="menu-item">
                         <a href="" class="menu-link menu-toggle">
                             <i class="menu-icon tf-icons ti ti-building-skyscraper"></i>
@@ -281,22 +292,27 @@
                                     <div data-i18n="Hotels List">Hotels List</div>
                                 </a>
                             </li>
+                            @if (Auth::user()->can('hotels.add'))
                             <li class="menu-item">
                                 <a href="{{ route('add.hotel') }}" class="menu-link">
                                     <div data-i18n="Add hotel">Add Hotel</div>
                                 </a>
                             </li>
+                            @endif
                         </ul>
                     </li>
+                    @endif
                     <!-- End Hotel-->
 
                     <!-- Other -->
+                    @if (Auth::user()->can('service.list'))
                     <li class="menu-item">
                         <a href="{{ route('all.service') }}" class="menu-link">
                             <i class="menu-icon tf-icons ti ti-device-ipad-cog"></i>
                             <div data-i18n="Service">Service</div>
                         </a>
                     </li>
+                    @endif
                     <!-- End Other -->
                 </ul>
             </li>
@@ -315,7 +331,7 @@
                     <div data-i18n="Manage Admin">Manage Admin</div>
                 </a>
                 <!-- Manage Admin -->
-                @if (Auth::user()->can('admin.all'))
+                @if (Auth::user()->can('admin.list'))
                 <ul class="menu-sub">
                     <li class="menu-item">
                         <a href="{{ route('all.admin') }}" class="menu-link">
