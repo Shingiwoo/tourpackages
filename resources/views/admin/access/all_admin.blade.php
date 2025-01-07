@@ -83,6 +83,7 @@
               </div>
             </div>
             <!-- Button -->
+            @if (Auth::user()->can('admin.add'))
             <div class="d-flex align-items-center gap-3">
               <div class="content-right">
                 <a href="{{ route('add.admin') }}" class="btn btn-secondary create-new btn-primary waves-effect waves-light">
@@ -92,6 +93,7 @@
                 </a>
               </div>
             </div>
+            @endif
           </div>
         <!-- Role cards -->
         <div class="row g-6">
@@ -113,7 +115,9 @@
                                     <th class="align-content-center text-center">Email</th>
                                     <th class="align-content-center text-center">Phone</th>
                                     <th class="align-content-center text-center">Role</th>
+                                    @if (Auth::user()->can('admin.action'))
                                     <th class="align-content-center text-center">Actions</th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -151,6 +155,7 @@
                                         @endforeach
 
                                     </td>
+                                    @if (Auth::user()->can('admin.action'))
                                     <td class="align-content-center text-center">
                                         <!-- Icon Dropdown -->
                                         <div class="col-sm-3 col-sm-6 col-sm-12">
@@ -161,14 +166,20 @@
                                                     <i class="ti ti-dots-vertical"></i>
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end">
-                                                    <li><a class="dropdown-item text-warning" href="{{ route('edit.admin', $item->id )}}"><i class="ti ti-edit"></i> Edit</a></li>
+                                                    @if (Auth::user()->can('admin.edit'))
+                                                    <li><a class="dropdown-item text-warning" href="{{ route('edit.admin', $item->id )}}"><i class="ti ti-edit"></i> Edit</a>
+                                                    </li>
+                                                    @endif
+                                                    @if (Auth::user()->can('admin.delete'))
                                                     <li><a href="javascript:void(0)" class="dropdown-item text-danger delete-confirm" data-id="{{ $item->id }}" data-url="{{ route('delete.admin', $item->id) }}"> <i class="ti ti-trash"></i> Delete
                                                      </a></li>
+                                                    @endif
                                                 </ul>
                                             </div>
                                         </div>
                                         <!--/ Icon Dropdown -->
                                     </td>
+                                    @endif
                                 </tr>
                                 @endforeach
                             </tbody>

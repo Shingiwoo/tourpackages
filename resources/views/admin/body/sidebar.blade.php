@@ -320,6 +320,7 @@
         @endif
         <!-- Packages end -->
 
+
         <!-- Manage Admin -->
         @if (Auth::user()->can('admin.menu'))
             <li class="menu-header small">
