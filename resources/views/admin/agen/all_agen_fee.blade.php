@@ -1,7 +1,7 @@
 @extends('admin.admin_dashboard')
 @section('admin')
 
-
+<!-- Agen role & permissions not yet implemented -->
 <!-- Content -->
 
 <div class="container-xxl flex-grow-1 container-p-y">
