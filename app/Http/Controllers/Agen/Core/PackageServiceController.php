@@ -57,10 +57,10 @@ class PackageServiceController extends Controller
         $agen = Auth::user();
 
         // Cek di masing-masing tabel
-        $package = PackageOneDay::where('agen_id', $agen->id)->with(['destinations', 'prices', 'regency'])->find($id)
-            ?? PackageTwoDay::where('agen_id', $agen->id)->with(['destinations', 'prices', 'regency'])->find($id)
-            ?? PackageThreeDay::where('agen_id', $agen->id)->with(['destinations', 'prices', 'regency'])->find($id)
-            ?? PackageFourDay::where('agen_id', $agen->id)->with(['destinations', 'prices', 'regency'])->find($id);
+        $package = PackageOneDay::where('agen_id', $agen->id)->with(['destinations', 'prices', 'regency'])->where('id', $id)->first()
+            ?? PackageTwoDay::where('agen_id', $agen->id)->with(['destinations', 'prices', 'regency'])->where('id', $id)->first()
+            ?? PackageThreeDay::where('agen_id', $agen->id)->with(['destinations', 'prices', 'regency'])->where('id', $id)->first()
+            ?? PackageFourDay::where('agen_id', $agen->id)->with(['destinations', 'prices', 'regency'])->where('id', $id)->first();
 
         if (!$package) {
             abort(404, 'Paket tidak ditemukan');
