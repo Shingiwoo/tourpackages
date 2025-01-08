@@ -42,4 +42,9 @@ class PackageFourDay extends Model
     {
         return $this->belongsTo(Regency::class, 'regency_id', 'id');
     }
+
+    public static function countByAgen($agenId)
+    {
+        return static::where('agen_id', $agenId)->count();
+    }
 }

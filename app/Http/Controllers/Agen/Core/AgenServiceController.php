@@ -4,6 +4,10 @@ namespace App\Http\Controllers\Agen\Core;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\PackageOneDay;
+use App\Models\PackageTwoDay;
+use App\Models\PackageFourDay;
+use App\Models\PackageThreeDay;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +21,14 @@ class AgenServiceController extends Controller
 
     public function AgenDashboard()
     {
-        return view('agen.index');
+        $agen = Auth::user();
+
+        $totalPackage = PackageOneDay::countByAgen($agen->id)
+                        + PackageTwoDay::countByAgen($agen->id)
+                        + PackageThreeDay::countByAgen($agen->id)
+                        + PackageFourDay::countByAgen($agen->id);
+
+        return view('agen.index', compact('agen','totalPackage'));
     }
 
     public function AgenLogout(Request $request)

@@ -10,10 +10,10 @@
                   <div class="d-flex align-items-end row">
                     <div class="col-7">
                       <div class="card-body text-nowrap">
-                        <h5 class="card-title mb-0">Congratulations Agen! 🎉</h5>
-                        <p class="mb-2">Best seller of the month</p>
+                        <h5 class="card-title mb-0 text-capitalize">Welcome {{ $agen->username }}! 🎉</h5>
+                        <p class="mb-2">Your seller for this month</p>
                         <h4 class="text-primary mb-1">$48.9k</h4>
-                        <a href="javascript:;" class="btn btn-primary">View Agen</a>
+                        <a href="javascript:;" class="btn btn-primary">View Detail</a>
                       </div>
                     </div>
                     <div class="col-5 text-center text-sm-left">
@@ -33,7 +33,7 @@
               <div class="col-xl-8 col-md-12">
                 <div class="card h-100">
                   <div class="card-header d-flex justify-content-between">
-                    <h5 class="card-title mb-0">Statistics</h5>
+                    <h5 class="card-title mb-0">Statistic</h5>
                     <small class="text-muted">Updated 1 month ago</small>
                   </div>
                   <div class="card-body d-flex align-items-end">
@@ -45,8 +45,8 @@
                               <i class="ti ti-packages ti-lg"></i>
                             </div>
                             <div class="card-info">
-                              <h5 class="mb-0">230k</h5>
-                              <small>All Packages</small>
+                              <h5 class="mb-0">{{ $totalPackage }}</h5>
+                              <small>Packages</small>
                             </div>
                           </div>
                         </div>
