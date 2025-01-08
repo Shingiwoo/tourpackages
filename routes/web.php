@@ -8,6 +8,7 @@ use App\Http\Controllers\Backend\Meal\MealController;
 use App\Http\Controllers\Backend\Role\RoleController;
 use App\Http\Controllers\Backend\Admin\AdminController;
 use App\Http\Controllers\Backend\Hotel\HotelController;
+use App\Http\Controllers\Agen\Core\AgenServiceController;
 use App\Http\Controllers\Backend\AgenFee\AgenFeeController;
 use App\Http\Controllers\Backend\Vehicle\VehicleController;
 use App\Http\Controllers\Backend\Facility\FacilityController;
@@ -29,15 +30,15 @@ Route::get('/admin/dashboard', [AdminController::class, 'index'])
     ->middleware(['auth', 'roles:admin'])
     ->name('admin.dashboard');
 
-Route::get('/dashboard', [AgenController::class, 'index'])
+Route::get('/dashboard', [AgenServiceController::class, 'AgenDashboard'])
     ->middleware(['auth', 'roles:agen'])
     ->name('agen.dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+// Route::middleware('auth')->group(function () {
+//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+// });
 
 require __DIR__ . '/auth.php';
 
@@ -261,4 +262,18 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
 
 
     });
+});
+
+Route::get('/login', [AgenServiceController::class, 'AgenLogin'])->name('login');
+
+route::middleware(['auth','roles:agen'])->group(function(){
+
+    // Profile Route
+    Route::get('/agen/dashboard', [AgenServiceController::class, 'AgenDashboard'])->name('dashboard');
+    Route::get('/agen/logout', [AgenServiceController::class, 'AgenLogout'])->name('agen.logout');
+    Route::get('/agen/profile', [AgenServiceController::class, 'AgenProfile'])->name('agen.profile');
+    Route::post('/agen/profile/store', [AgenServiceController::class, 'AgenProfileStore'])->name('agen.profile.store');
+
+    Route::get('/agen/change/password', [AgenServiceController::class, 'AgenChangePassword'])->name('agen.change.password');
+    Route::post('/agen/password/update', [AgenServiceController::class, 'AgenPasswordUpdate'])->name('agen.password.update');
 });

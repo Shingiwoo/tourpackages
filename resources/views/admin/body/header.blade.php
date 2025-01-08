@@ -151,7 +151,7 @@
                                 <div class="d-flex">
                                     <div class="flex-shrink-0 me-3">
                                         <div class="avatar">
-                                            <img src="{{ asset('') }}assets/img/avatars/9.png" alt
+                                            <img src="{{ asset('assets/img/avatars/9.png') }}" alt
                                                 class="rounded-circle" />
                                         </div>
                                     </div>
@@ -274,6 +274,7 @@
             @php
                 $id = Auth::user()->id;
                 $profileData = App\Models\User::find($id);
+                $role = Auth::user()->role;
             @endphp
 
             <!-- User -->
@@ -285,7 +286,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li>
-                        <a class="dropdown-item mt-0" href="{{ route('admin.profile') }}">
+                        <a class="dropdown-item mt-0" href="{{ route('agen.profile') }}">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0 me-2">
                                     <div class="avatar avatar-online">
@@ -293,8 +294,8 @@
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <h6 class="mb-0">{{ $profileData->username }}</h6>
-                                    <small class="text-muted">{{ $profileData->role }}</small>
+                                    <h6 class="mb-0">{{ $profileData->name }}</h6>
+                                    <small class="text-muted">{{ $profileData->username }}</small>
                                 </div>
                             </div>
                         </a>
@@ -303,14 +304,26 @@
                         <div class="dropdown-divider my-1 mx-n2"></div>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="{{ route('admin.profile') }}">
-                            <i class="ti ti-user me-3 ti-md"></i><span class="align-middle">My Profile</span>
-                        </a>
+                        @if ($profileData->role == 'admin')
+                            <a class="dropdown-item" href="{{ route('admin.profile') }}">
+                                <i class="ti ti-user me-3 ti-md"></i><span class="align-middle">My Profile</span>
+                            </a>
+                        @else
+                            <a class="dropdown-item" href="{{ route('agen.profile') }}">
+                                <i class="ti ti-user me-3 ti-md"></i><span class="align-middle">My Profile</span>
+                            </a>
+                        @endif
                     </li>
                     <li>
-                        <a class="dropdown-item" href="{{ route('admin.change.password') }}">
-                            <i class="ti ti-settings me-3 ti-md"></i><span class="align-middle">Settings</span>
-                        </a>
+                        @if ($profileData->role == 'admin')
+                            <a class="dropdown-item" href="{{ route('admin.change.password') }}">
+                                <i class="ti ti-settings me-3 ti-md"></i><span class="align-middle">Settings</span>
+                            </a>
+                        @else
+                            <a class="dropdown-item" href="{{ route('agen.change.password') }}">
+                                <i class="ti ti-settings me-3 ti-md"></i><span class="align-middle">Settings</span>
+                            </a>
+                        @endif
                     </li>
                     <li>
                         <a class="dropdown-item" href="pages-account-settings-billing.html">
@@ -324,10 +337,17 @@
                     </li>
                     <li>
                         <div class="d-grid px-2 pt-2 pb-1">
+                            @if ($profileData->role == 'admin')
                             <a class="btn btn-sm btn-danger d-flex" href="{{ route('admin.logout') }}">
                                 <small class="align-middle">Logout</small>
                                 <i class="ti ti-logout ms-2 ti-14px"></i>
                             </a>
+                            @else
+                            <a class="btn btn-sm btn-danger d-flex" href="{{ route('agen.logout') }}">
+                                <small class="align-middle">Logout</small>
+                                <i class="ti ti-logout ms-2 ti-14px"></i>
+                            </a>
+                            @endif
                         </div>
                     </li>
                 </ul>

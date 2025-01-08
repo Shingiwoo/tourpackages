@@ -18,10 +18,17 @@
     <ul class="menu-inner py-1">
         <!-- Dashboards -->
         <li class="menu-item">
+            @if (Auth::user()->role == 'admin')
             <a href="{{ route('admin.dashboard') }}" class="menu-link">
                 <i class="menu-icon tf-icons ti ti-layout-dashboard"></i>
                 <div data-i18n="Dashboards">Dashboards</div>
             </a>
+            @else
+            <a href="{{ route('agen.dashboard') }}" class="menu-link">
+                <i class="menu-icon tf-icons ti ti-layout-dashboard"></i>
+                <div data-i18n="Dashboards">Dashboards</div>
+            </a>
+            @endif
         </li>
 
         <!-- Manage Agen-->
