@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\Hotel\HotelController;
 use App\Http\Controllers\Agen\Core\AgenServiceController;
 use App\Http\Controllers\Backend\AgenFee\AgenFeeController;
 use App\Http\Controllers\Backend\Vehicle\VehicleController;
+use App\Http\Controllers\Agen\Core\PackageServiceController;
 use App\Http\Controllers\Backend\Facility\FacilityController;
 use App\Http\Controllers\Backend\Permission\PermissionController;
 use App\Http\Controllers\Backend\ReserveFee\ReserveFeeController;
@@ -274,6 +275,12 @@ route::middleware(['auth','roles:agen'])->group(function(){
     Route::get('/agen/profile', [AgenServiceController::class, 'AgenProfile'])->name('agen.profile');
     Route::post('/agen/profile/store', [AgenServiceController::class, 'AgenProfileStore'])->name('agen.profile.store');
 
+    // Change password Route
     Route::get('/agen/change/password', [AgenServiceController::class, 'AgenChangePassword'])->name('agen.change.password');
     Route::post('/agen/password/update', [AgenServiceController::class, 'AgenPasswordUpdate'])->name('agen.password.update');
+
+
+    //package list agen
+    Route::get('/agen/all-package', [PackageServiceController::class, 'AllPackage'])->name('agen.all.package');
+
 });

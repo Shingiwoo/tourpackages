@@ -24,28 +24,33 @@
             </a>
         </li>
 
-        <!-- Manage Trip-->
+        <!-- Manage Package-->
         <li class="menu-header small">
-            <span class="menu-header-text" data-i18n="Manage Trip">Manage Trip</span>
+            <span class="menu-header-text" data-i18n="Manage Package">Manage Package</span>
         </li>
-        {{-- <li class="menu-item">
+        <li class="menu-item">
             <a href="" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons ti ti-user-pentagon"></i>
-                <div data-i18n="Agen">Agen</div>
+                <i class="menu-icon tf-icons ti ti-box"></i>
+                <div data-i18n="Package">Package</div>
             </a>
 
             <ul class="menu-sub">
                 <li class="menu-item">
+                    <a href="{{ route("agen.all.package") }}" class="menu-link">
+                        <div data-i18n="Package List">Package List</div>
+                    </a>
+                </li>
+                <li class="menu-item">
                     <a href="" class="menu-link">
-                        <div data-i18n="Agen List">Agen List</div>
+                        <div data-i18n="Book Package">Book Package</div>
                     </a>
                 </li>
             </ul>
         </li>
-        <!-- End Manage Agen-->
+        <!-- End Manage Package-->
 
         <!-- Packages -->
-        <li class="menu-header small">
+        {{-- <li class="menu-header small">
             <span class="menu-header-text" data-i18n="Packages">Packages</span>
         </li>
 

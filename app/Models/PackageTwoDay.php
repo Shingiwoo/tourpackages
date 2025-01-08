@@ -49,4 +49,16 @@ class PackageTwoDay extends Model
     {
         return static::where('agen_id', $agenId)->count();
     }
+
+    protected $attributes = [
+        'type' => 'twoday',
+    ];
+
+    protected $table = 'package_two_days';
+
+    // Accessor untuk 'type'
+    public function getTypeAttribute()
+    {
+        return 'twoday';
+    }
 }
