@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\Models\Permission;
 
 class AdminController extends Controller
 {
@@ -261,9 +260,6 @@ class AdminController extends Controller
             return redirect()->back()->withErrors('An error occurred while updating admin data.');
         }
     }
-
-
-
 
     public function DeleteAdmin($id)
     {

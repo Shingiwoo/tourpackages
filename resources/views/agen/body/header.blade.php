@@ -151,7 +151,7 @@
                                 <div class="d-flex">
                                     <div class="flex-shrink-0 me-3">
                                         <div class="avatar">
-                                            <img src="{{ asset('') }}assets/img/avatars/9.png" alt
+                                            <img src="{{ asset('assets/img/avatars/9.png') }}" alt
                                                 class="rounded-circle" />
                                         </div>
                                     </div>
@@ -293,8 +293,8 @@
                                     </div>
                                 </div>
                                 <div class="flex-grow-1">
-                                    <h6 class="mb-0">John Doe</h6>
-                                    <small class="text-muted">Admin</small>
+                                    <h6 class="mb-0">{{ $profileData->name }}</h6>
+                                    <small class="text-muted">{{ $profileData->username }}</small>
                                 </div>
                             </div>
                         </a>

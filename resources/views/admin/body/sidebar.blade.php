@@ -38,14 +38,14 @@
                 <ul class="menu-sub">
                     @if (Auth::user()->can('agen.list'))
                     <li class="menu-item">
-                        <a href="" class="menu-link">
+                        <a href="{{ route('all.agen') }}" class="menu-link">
                             <div data-i18n="Agen List">Agen List</div>
                         </a>
                     </li>
                     @endif
                     @if (Auth::user()->can('agen.add'))
                     <li class="menu-item">
-                        <a href="" class="menu-link">
+                        <a href="{{ route('add.agen') }}" class="menu-link">
                             <div data-i18n="Add Agen">Add Agen</div>
                         </a>
                     </li>

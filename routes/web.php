@@ -102,10 +102,17 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     });
 
     // Crew All Route
-    Route::controller(AgenFeeController::class)->group(function () {
+    Route::controller(AgenController::class)->group(function () {
 
         Route::get('/all/agen-fee', 'AllAgenFee')->name('all.agen.fee');
         Route::post('/update/agen-fee', 'UpdateAgenFee')->name('update.agen.fee');
+
+        Route::get('/all/agen', 'AllAgen')->name('all.agen');
+        Route::get('/add/agen', 'AddAgen')->name('add.agen');
+        Route::post('/store/agen', 'StoreAgen')->name('store.agen');
+        Route::get('/edit/agen/{id}', 'EditAgen')->name('edit.agen');
+        Route::patch('/update/agen/{id}', 'UpdateAgen')->name('update.agen');
+        Route::post('/delete/agen/{id}', 'DeleteAgen')->name('delete.agen');
     });
 
     // Facility all Route
