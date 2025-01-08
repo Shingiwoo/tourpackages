@@ -48,10 +48,6 @@ class PackageFourDay extends Model
         return static::where('agen_id', $agenId)->count();
     }
 
-    protected $attributes = [
-        'type' => 'fourday',
-    ];
-
     protected $table = 'package_four_days';
 
     // Accessor untuk 'type'

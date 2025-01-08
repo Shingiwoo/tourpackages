@@ -48,10 +48,6 @@ class PackageOneDay extends Model
         return static::where('agen_id', $agenId)->count();
     }
 
-    protected $attributes = [
-        'type' => 'oneday',
-    ];
-
     protected $table = 'package_one_days';
 
     // Accessor untuk 'type'

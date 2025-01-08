@@ -86,38 +86,84 @@
                         <div class="accordion-body">
                             <div class="mt-2">
                                 <div class="table-responsive text-nowrap">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th class="align-content-center text-center text-white">Vehicle</th>
-                                                <th class="align-content-center text-center text-white">User</th>
-                                                <th class="align-content-center text-center text-white">Price</th>
-                                                <th class="align-content-center text-center text-white">Wna Cost</th>
-                                            </tr>
-                                        </thead>
-                                        @php
-                                            // Asumsikan $package->prices->price_data sudah berisi JSON yang valid
-                                            $prices = json_decode($package->prices->price_data, true);
-                                        @endphp
-
-                                        <tbody>
-                                            @if (count($prices) > 0)
-                                                @foreach ($prices as $price)
-                                                    <tr>
-                                                        <td class="align-content-center text-center text-white">{{ $price['vehicle'] }}</td>
-                                                        <td class="align-content-center text-center text-white">{{ $price['user'] }}</td>
-                                                        <td class="align-content-center text-center text-white">Rp {{ number_format($price['price'], 0, ',', '.') }} /orang</td>
-                                                        <td class="align-content-center text-center text-white">Rp {{
-                                                            number_format($price['wnaCost'], 0, ',', '.') }} /orang</td>
-                                                    </tr>
-                                                @endforeach
-                                            @else
+                                    @if ($package->type == 'oneday')
+                                        <table class="table table-bordered">
+                                            <thead>
                                                 <tr>
-                                                    <td colspan="3" class="text-center">No price data available</td>
+                                                    <th class="align-content-center text-center text-white">Vehicle</th>
+                                                    <th class="align-content-center text-center text-white">User</th>
+                                                    <th class="align-content-center text-center text-white">Price</th>
+                                                    <th class="align-content-center text-center text-white">Wna Cost</th>
                                                 </tr>
-                                            @endif
-                                        </tbody>
-                                    </table>
+                                            </thead>
+                                            @php
+                                                // Asumsikan $package->prices->price_data sudah berisi JSON yang valid
+                                                $prices = json_decode($package->prices->price_data, true);
+                                            @endphp
+
+                                            <tbody>
+                                                @if (count($prices) > 0)
+                                                    @foreach ($prices as $price)
+                                                        <tr>
+                                                            <td class="align-content-center text-center text-white">{{ $price['vehicle'] }}</td>
+                                                            <td class="align-content-center text-center text-white">{{ $price['user'] }}</td>
+                                                            <td class="align-content-center text-center text-white">Rp {{ number_format($price['price'], 0, ',', '.') }} /orang</td>
+                                                            <td class="align-content-center text-center text-white">Rp {{
+                                                                number_format($price['wnaCost'], 0, ',', '.') }} /orang</td>
+                                                        </tr>
+                                                    @endforeach
+                                                @else
+                                                    <tr>
+                                                        <td colspan="3" class="text-center">No price data available</td>
+                                                    </tr>
+                                                @endif
+                                            </tbody>
+                                        </table>
+                                    @else
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th class="align-content-center text-center">Vehicle</th>
+                                                    <th class="align-content-center text-center">User</th>
+                                                    <th class="align-content-center text-center">Wna Cost</th>
+                                                    @php
+                                                        // Decode the JSON data
+                                                        $prices = json_decode($package->prices->price_data, true);
+
+                                                        // Extract accommodation types dynamically
+                                                        $accommodationTypes = [];
+                                                        if (is_array($prices) && count($prices) > 0) {
+                                                            $firstRow = $prices[0];
+                                                            $accommodationTypes = array_keys(array_filter($firstRow, function ($key) {
+                                                                return !in_array($key, ['vehicle', 'user', 'wnaCost']);
+                                                            }, ARRAY_FILTER_USE_KEY));
+                                                        }
+                                                    @endphp
+                                                    @foreach ($accommodationTypes as $type)
+                                                        <th class="align-content-center text-center">{{ ucwords(str_replace(['WithoutAccomodation', 'Guesthouse', 'Homestay', 'TwoStar', 'ThreeStar', 'FourStar', 'FiveStar'], ['Without Accommodation', 'Guesthouse', 'Homestay', 'Two Star', 'Three Star', 'Four Star', 'Five Star'], $type)) }}</th>
+                                                    @endforeach
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (is_array($prices) && count($prices) > 0)
+                                                    @foreach ($prices as $priceRow)
+                                                        <tr>
+                                                            <td class="align-content-center text-center">{{ $priceRow['vehicle'] }}</td>
+                                                            <td class="align-content-center text-center">{{ $priceRow['user'] }}</td>
+                                                            <td class="align-content-center text-center">{{ number_format($priceRow['wnaCost'], 0, ',', '.') }} /org</td>
+                                                            @foreach ($accommodationTypes as $type)
+                                                                <td class="align-content-center text-center">{{ number_format($priceRow[$type] ?? 0, 0, ',', '.') }} /org</td>
+                                                            @endforeach
+                                                        </tr>
+                                                    @endforeach
+                                                @else
+                                                    <tr>
+                                                        <td colspan="{{ 3 + count($accommodationTypes) }}" class="text-center">No price data available</td>
+                                                    </tr>
+                                                @endif
+                                            </tbody>
+                                        </table>
+                                    @endif
                                 </div>
                             </div>
                         </div>
