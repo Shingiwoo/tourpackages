@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Agen\Core;
 
+use App\Models\Regency;
+use App\Models\Facility;
+use App\Models\Destination;
 use Illuminate\Http\Request;
 use App\Models\PackageOneDay;
 use App\Models\PackageTwoDay;
@@ -18,10 +21,10 @@ class PackageServiceController extends Controller
     {
         $agen = Auth::user();
 
-        $packOneday = PackageOneDay::where('agen_id', $agen->id)->with(['destinations', 'prices'])->get();
-        $packTwoday = PackageTwoDay::where('agen_id', $agen->id)->with(['destinations', 'prices'])->get();
-        $packThreeday = PackageThreeDay::where('agen_id', $agen->id)->with(['destinations', 'prices'])->get();
-        $packFourday = PackageFourDay::where('agen_id', $agen->id)->with(['destinations', 'prices'])->get();
+        $packOneday = PackageOneDay::where('agen_id', $agen->id)->get();
+        $packTwoday = PackageTwoDay::where('agen_id', $agen->id)->get();
+        $packThreeday = PackageThreeDay::where('agen_id', $agen->id)->get();
+        $packFourday = PackageFourDay::where('agen_id', $agen->id)->get();
 
         $countOneday = PackageOneDay::countByAgen($agen->id);
         $countTwoday = PackageTwoDay::countByAgen($agen->id);
@@ -36,16 +39,34 @@ class PackageServiceController extends Controller
             ->merge($packFourday);
 
         // Paginate manual
-        $currentPage = Paginator::resolveCurrentPage();
-        $perPage = 100;
-        $paginatedPackages = new LengthAwarePaginator(
-            $allPackages->forPage($currentPage, $perPage),
-            $allPackages->count(),
-            $perPage,
-            $currentPage,
-            ['path' => Paginator::resolveCurrentPath()]
-        );
+            // $currentPage = Paginator::resolveCurrentPage();
+            // $perPage = 100;
+            // $paginatedPackages = new LengthAwarePaginator(
+            //     $allPackages->forPage($currentPage, $perPage),
+            //     $allPackages->count(),
+            //     $perPage,
+            //     $currentPage,
+            //     ['path' => Paginator::resolveCurrentPath()]
+        // );
 
-        return view('agen.package.all_package', compact('paginatedPackages', 'countOneday', 'countTwoday', 'countThreeday', 'countFourday'));
+        return view('agen.package.all_package', compact('allPackages', 'countOneday', 'countTwoday', 'countThreeday', 'countFourday'));
     }
+
+    public function PackageShow($id)
+    {
+        $agen = Auth::user();
+
+        // Cek di masing-masing tabel
+        $package = PackageOneDay::where('agen_id', $agen->id)->with(['destinations', 'prices', 'regency'])->find($id)
+            ?? PackageTwoDay::where('agen_id', $agen->id)->with(['destinations', 'prices', 'regency'])->find($id)
+            ?? PackageThreeDay::where('agen_id', $agen->id)->with(['destinations', 'prices', 'regency'])->find($id)
+            ?? PackageFourDay::where('agen_id', $agen->id)->with(['destinations', 'prices', 'regency'])->find($id);
+
+        if (!$package) {
+            abort(404, 'Paket tidak ditemukan');
+        }
+
+        return view('agen.package.show_package', compact('package'));
+    }
+
 }

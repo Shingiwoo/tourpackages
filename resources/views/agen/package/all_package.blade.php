@@ -93,6 +93,7 @@
                         <tr>
                             <th class="align-content-center text-center">Sl</th>
                             <th class="align-content-center text-center">Name</th>
+                            <th class="align-content-center text-center">City Or Regency</th>
                             <th class="align-content-center text-center">Duration</th>
                             <th class="align-content-center text-center">Status</th>
                             @if (Auth::user()->can('booking.action'))
@@ -101,20 +102,15 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($paginatedPackages as $key=> $package )
+                        @foreach ($allPackages as $key=> $package )
                         <tr>
                             <td class="align-content-center text-center">{{ $key+1 }}</td>
                             <td class="align-content-center text-center">{{ $package->name_package }}</td>
+                            <td class="align-content-center text-center">{{ $package->regency->name }}</td>
                             <td class="align-content-center text-center">
-                                @if($package->type == 'oneday')
-                                <span class="badge bg-info text-uppercase">{{ $package->type }}</span>
-                                @elseif ($package->type == 'twoday')
-                                <span class="badge bg-primary text-uppercase">{{ $package->type }}</span>
-                                @elseif ($package->type == 'threeday')
-                                <span class="badge bg-success text-uppercase">{{ $package->type }}</span>
-                                @else
-                                <span class="badge bg-danger text-uppercase">{{ $package->type }}</span>
-                                @endif
+                                <span class="badge bg-{{ $package->type === 'oneday' ? 'info' : ($package->type === 'twoday' ? 'primary' : ($package->type === 'threeday' ? 'success' : 'danger')) }} text-uppercase">
+                                    {{ $package->type }}
+                                </span>
                             </td>
                             <td class="align-content-center text-center">
                                 @if($package->status)
@@ -135,7 +131,7 @@
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             @if (Auth::user()->can('package.show'))
-                                            <li><a class="dropdown-item text-info" href=""><i class="ti ti-device-ipad-horizontal-search"></i> Show</a></li>
+                                            <li><a class="dropdown-item text-info" href="{{ route('package.show', $package->id) }}"><i class="ti ti-device-ipad-horizontal-search"></i> Show</a></li>
                                             @endif
                                             @if (Auth::user()->can('booking.add'))
                                             <li><a href="javascript:void(0)" class="dropdown-item text-success" data-id="" data-url=""> <i class="ti ti-shopping-cart-plus"></i> Booking

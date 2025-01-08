@@ -269,18 +269,27 @@ Route::get('/login', [AgenServiceController::class, 'AgenLogin'])->name('login')
 
 route::middleware(['auth','roles:agen'])->group(function(){
 
-    // Profile Route
-    Route::get('/agen/dashboard', [AgenServiceController::class, 'AgenDashboard'])->name('dashboard');
-    Route::get('/agen/logout', [AgenServiceController::class, 'AgenLogout'])->name('agen.logout');
-    Route::get('/agen/profile', [AgenServiceController::class, 'AgenProfile'])->name('agen.profile');
-    Route::post('/agen/profile/store', [AgenServiceController::class, 'AgenProfileStore'])->name('agen.profile.store');
+    Route::controller(AgenServiceController::class)->group(function () {
 
-    // Change password Route
-    Route::get('/agen/change/password', [AgenServiceController::class, 'AgenChangePassword'])->name('agen.change.password');
-    Route::post('/agen/password/update', [AgenServiceController::class, 'AgenPasswordUpdate'])->name('agen.password.update');
+        // Profile Route
+        Route::get('/agen/dashboard', 'AgenDashboard')->name('dashboard');
+        Route::get('/agen/logout', 'AgenLogout')->name('agen.logout');
+        Route::get('/agen/profile', 'AgenProfile')->name('agen.profile');
+        Route::post('/agen/profile/store', 'AgenProfileStore')->name('agen.profile.store');
 
+        // Change password Route
+        Route::get('/agen/change/password', 'AgenChangePassword')->name('agen.change.password');
+        Route::post('/agen/password/update', 'AgenPasswordUpdate')->name('agen.password.update');
+
+    });
 
     //package list agen
-    Route::get('/agen/all-package', [PackageServiceController::class, 'AllPackage'])->name('agen.all.package');
+    Route::controller(PackageServiceController::class)->group(function () {
+
+        Route::get('/agen/all-package', 'AllPackage')->name('agen.all.package');
+        Route::get('/show/package/{id}', 'PackageShow')->name('package.show');
+
+    });
+
 
 });
