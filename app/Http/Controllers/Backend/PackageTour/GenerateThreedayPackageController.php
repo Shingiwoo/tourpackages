@@ -426,6 +426,35 @@ class GenerateThreedayPackageController extends Controller
 
     private function calculateHotelCost($hotel, $participants)
     {
+        // Jika jenis hotel adalah Villa, Homestay, Cottage, atau Cabin
+        if (in_array($hotel->type, ['Villa', 'Homestay', 'Cottage', 'Cabin'])) {
+            $capacity = $hotel->capacity; // Kapasitas per unit
+            $extraBedPrice = $hotel->extrabed_price; // Harga extra bed
+
+            // Hitung unit penuh yang diperlukan
+            $numUnits = intdiv($participants, $capacity);
+
+            // Hitung peserta yang tersisa setelah unit penuh
+            $remainingParticipants = $participants % $capacity;
+
+            // Biaya untuk unit penuh
+            $totalCost = $numUnits * $hotel->price;
+
+            // Jika ada peserta tersisa, tambahkan biaya extra bed
+            if ($remainingParticipants > 0) {
+                // Tambahkan biaya 1 unit penuh untuk sisa peserta
+                $totalCost += $hotel->price * 2;
+
+                // Tambahkan biaya extra bed untuk peserta tersisa
+                if ($remainingParticipants <= 2) {
+                    $totalCost += ($remainingParticipants * $extraBedPrice * 2);
+                }
+            }
+
+            return $totalCost;
+        }
+
+        // Jika bukan jenis hotel yang memerlukan perhitungan kapasitas
         $numRooms = intdiv($participants, 2);
         $extraBedCost = 0;
 
@@ -434,7 +463,7 @@ class GenerateThreedayPackageController extends Controller
             $extraBedCost = $hotel->extrabed_price * 2;
         }
 
-        return ($hotel->price * $numRooms * 2 ) + $extraBedCost;
+        return ($hotel->price * $numRooms * 2) + $extraBedCost;
     }
 
     public function AllThreeDayPackagesAgen($id)

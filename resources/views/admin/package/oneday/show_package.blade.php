@@ -18,26 +18,26 @@
                         <div class="col-12 col-md-12 d-flex flex-column">
                             <div class="d-flex gap-1 align-items-center mb-3 flex-wrap">
                                 <div class="col-lg-12 mb-4 mb-xl-0">
-                                    <h6 class="fw-medium text-info">Destinations :</h6>
+                                    <h6 class="fw-medium text-info">*Destinasi* :</h6>
                                     <div class="demo-inline-spacing mt-4">
-                                        <ol class="list-group list-group-numbered">
+                                        <ol class="list-group">
                                             @forelse ($package->destinations as $desti)
-                                            <li class="list-group-item list-group-item-action waves-effect waves-light">{{ $desti->name }}</li>
+                                            <li class="list-group-item">- {{ $desti->name }}</li>
                                             @empty
-                                            <li class="list-group-item list-group-item-action waves-effect waves-light">No destinations available</li>
+                                            <li class="list-group-item">No destinations available</li>
                                             @endforelse
                                         </ol>
                                     </div>
                                 </div>
                             </div>
                             <div class="mb-2 mt-4">
-                                <h6 class="text-warning">Facility :</h6>
+                                <h6 class="text-warning">*Fasilitas* :</h6>
                                 <div class="demo-inline-spacing mt-4">
                                     <ol class="list-group">
                                         @forelse ($package->facilities as $facility)
-                                        <li class="list-group-item list-group-item-action waves-effect waves-light">{{ $facility->name }}</li>
+                                        <li class="list-group-item">- {{ $facility->name }}</li>
                                         @empty
-                                        <li class="list-group-item list-group-item-action waves-effect waves-light">No facilities available</li>
+                                        <li class="list-group-item">No facilities available</li>
                                         @endforelse
                                     </ol>
                                 </div>
