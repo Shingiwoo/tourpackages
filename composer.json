@@ -1,9 +1,10 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "Tour Package",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
-    "keywords": ["laravel", "framework"],
+    "description": "Calculation price for tour package, simple and easy user",
+    "keywords": ["laravel", "framework", "tour package"],
+    "version": "0.8.0",
     "license": "MIT",
     "require": {
         "php": "^8.2",
