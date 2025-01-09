@@ -55,8 +55,12 @@
                                 </div>
                                 <div class="col" id="capacity-container">
                                     <label class="form-label" for="capacity">Capacity</label>
-                                    <input type="number" class="form-control" id="capacity" placeholder="4" max="50" name="hotelCapacity" aria-label="Hotel Capacity" required />
+                                    <input type="number" class="form-control" id="capacity" placeholder="4" max="50"
+                                           name="hotelCapacity"
+                                           aria-label="Hotel Capacity"
+                                           value="{{ old('hotelCapacity', $hotel->capacity ?? '') }}" required />
                                 </div>
+
                             </div>
                             <div class="row mb-6">
                                 <div class="col">

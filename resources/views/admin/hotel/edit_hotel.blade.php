@@ -1,7 +1,6 @@
 @extends('admin.admin_dashboard')
 @section('admin')
 
-
 <!-- Content -->
 
 <div class="container-xxl flex-grow-1 container-p-y">
@@ -12,8 +11,8 @@
             <!-- Add Product -->
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
                 <div class="d-flex flex-column justify-content-center">
-                    <h4 class="mb-1">Add a new Hotel</h4>
-                    <p class="mb-0">Place name, to create a tour package</p>
+                    <h4 class="mb-1">Edit Hotel</h4>
+                    <p class="mb-0">Place name and detail, to create a tour package</p>
                 </div>
                 <div class="d-flex align-content-center flex-wrap gap-4">
                     <a href="{{ route('all.hotels') }}">
@@ -53,6 +52,14 @@
                                         <option value="WithoutAccomodation" {{ $hotel->type == 'WithoutAccomodation' ? 'selected' : '' }}>Without Accomodation</option>
                                     </select>
                                 </div>
+                                <div class="col" id="capacity-container">
+                                    <label class="form-label" for="capacity">Capacity</label>
+                                    <input type="number" class="form-control" id="capacity" placeholder="4" max="50"
+                                           name="hotelCapacity"
+                                           aria-label="Hotel Capacity"
+                                           value="{{ old('hotelCapacity', $hotel->capacity ?? '') }}" required />
+                                </div>
+
                             </div>
                             <div class="row mb-6">
                                 <div class="col">
