@@ -9,7 +9,7 @@ class Hotel extends Model
 {
     use HasFactory;
 
-    protected $fillable = [ 'regency_id', 'name', 'type', 'price', 'extrabed_price', 'status'];
+    protected $fillable = [ 'regency_id', 'name', 'type', 'capacity', 'price', 'extrabed_price', 'status'];
 
     /**
      * Relasi dengan regency (kabupaten/kota)

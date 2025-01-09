@@ -35,6 +35,7 @@ class HotelController extends Controller
             $validatedData = $request->validate([
                 'cityOrDistrict_id' => 'required|exists:regencies,id',
                 'NameHotel' => 'required|string|max:255',
+                'hotelCapacity' => 'required|string',
                 'statusHotel' => 'required|boolean',
                 'hotelType' => 'required|in:TwoStar,ThreeStar,FourStar,FiveStar,Villa,Homestay,Cottage,Cabin,Guesthouse,WithoutAccomodation',
                 'hotelPrice' => 'required|string',
@@ -55,6 +56,7 @@ class HotelController extends Controller
                 'regency_id' => $validatedData['cityOrDistrict_id'],
                 'name' => $validatedData['NameHotel'],
                 'type' => $validatedData['hotelType'],
+                'capacity' => $validatedData['hotelCapacity'],
                 'price' => $validatedData['hotelPrice'],
                 'extrabed_price' => $validatedData['hotelExtrabedPrice'],
                 'status' => $validatedData['statusHotel'],
@@ -104,6 +106,7 @@ class HotelController extends Controller
         $validatedData = $request->validate([
             'cityOrDistrict_id' => 'required|exists:regencies,id', // Validasi relasi dengan regencies
             'NameHotel' => 'required|string|max:255',
+            'hotelCapacity' => 'required|string',
             'statusHotel' => 'required|boolean',
             'hotelType' => 'required|in:TwoStar,ThreeStar,FourStar,FiveStar,Villa,Homestay,Cottage,Cabin,Guesthouse,WithoutAccomodation',
             'hotelPrice' => 'required|string',
@@ -120,6 +123,7 @@ class HotelController extends Controller
             'name' => $validatedData['NameHotel'],
             'status' => $validatedData['statusHotel'],
             'type' => $validatedData['hotelType'],
+            'capacity' => $validatedData['hotelCapacity'],
             'price' => $validatedData['hotelPrice'],
             'extrabed_price' => $validatedData['hotelExtrabedPrice'],
         ];
