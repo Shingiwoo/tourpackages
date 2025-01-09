@@ -109,26 +109,37 @@
                                             <th class="align-content-center text-center">User</th>
                                             <th class="align-content-center text-center">Wna Cost</th>
                                             @php
-                                                // Decode the JSON data
-                                                $prices = json_decode($package->prices->price_data, true);
+                                            // Decode the JSON data
+                                            $prices = json_decode($package->prices->price_data, true);
 
-                                                // Extract accommodation types dynamically
-                                                $accommodationTypes = [];
-                                                if (is_array($prices) && count($prices) > 0) {
-                                                    $firstRow = $prices[0];
-                                                    $accommodationTypes = array_keys(array_filter($firstRow, function ($key) {
-                                                        return !in_array($key, ['vehicle', 'user', 'wnaCost']);
-                                                    }, ARRAY_FILTER_USE_KEY));
-                                                }
+                                            // Extract accommodation types dynamically
+                                            $accommodationTypes = [];
+                                            if (is_array($prices) && count($prices) > 0) {
+                                            $firstRow = $prices[0];
+                                            $accommodationTypes = array_keys(array_filter($firstRow, function ($key) {
+                                            return !in_array($key, ['vehicle', 'user', 'wnaCost', 'mealCostPerPerson']);
+                                            }, ARRAY_FILTER_USE_KEY));
+                                            }
                                             @endphp
                                             @foreach ($accommodationTypes as $type)
-                                                <th class="align-content-center text-center">{{ ucwords(str_replace(['WithoutAccomodation', 'Guesthouse', 'Homestay', 'TwoStar', 'ThreeStar', 'FourStar', 'FiveStar'], ['Without Accommodation', 'Guesthouse', 'Homestay', 'Two Star', 'Three Star', 'Four Star', 'Five Star'], $type)) }}</th>
+                                            <th class="align-content-center text-center">{{
+                                                ucwords(str_replace(['WithoutAccomodation', 'Guesthouse', 'Homestay',
+                                                'TwoStar', 'ThreeStar', 'FourStar', 'FiveStar'], ['Without
+                                                Accommodation', 'Guesthouse', 'Homestay', 'Two Star', 'Three Star',
+                                                'Four Star', 'Five Star'], $type)) }}</th>
                                             @endforeach
                                         </tr>
                                     </thead>
+                                        @php
+                                            $pricesForTable = array_map(function ($priceRow) {
+                                            // Hapus kunci 'mealCostPerPerson' dari array
+                                            unset($priceRow['mealCostPerPerson']);
+                                            return $priceRow;
+                                            }, $prices);
+                                        @endphp
                                     <tbody>
-                                        @if (is_array($prices) && count($prices) > 0)
-                                            @foreach ($prices as $priceRow)
+                                        @if (is_array($pricesForTable) && count($pricesForTable) > 0)
+                                            @foreach ($pricesForTable as $priceRow)
                                                 <tr>
                                                     <td class="align-content-center text-center">{{ $priceRow['vehicle'] }}</td>
                                                     <td class="align-content-center text-center">{{ $priceRow['user'] }}</td>

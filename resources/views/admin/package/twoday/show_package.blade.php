@@ -52,14 +52,16 @@
                         <div class="row gap-4 gap-sm-0">
                             <div class="col-12 col-sm-6">
                                 <div class="d-flex gap-3 align-items-center">
-                                    <div class="badge rounded bg-label-info p-1"><i class="ti ti-chart-pie-2 ti-sm"></i></div>
+                                    <div class="badge rounded bg-label-info p-1"><i class="ti ti-chart-pie-2 ti-sm"></i>
+                                    </div>
                                     <h6 class="mb-0 fw-normal">Location</h6>
                                 </div>
                                 <h6 class="my-3 text-uppercase">{{ $package->regency->name ?? "No Data" }}</h6>
                             </div>
                             <div class="col-12 col-sm-6">
                                 <div class="d-flex gap-3 align-items-center">
-                                    <div class="badge rounded bg-label-danger p-1"><i class="ti ti-brand-paypal ti-sm"></i></div>
+                                    <div class="badge rounded bg-label-danger p-1"><i
+                                            class="ti ti-brand-paypal ti-sm"></i></div>
                                     <h6 class="mb-0 fw-normal">Status</h6>
                                 </div>
                                 <h6 class="my-3 text-uppercase">
@@ -80,8 +82,10 @@
         <div class="col-lg-3 col-12 invoice-actions">
             <div class="card mb-6">
                 <div class="card-body">
-                    <a href="{{ route('all.twoday.packages') }}" class="btn btn-label-primary w-100 mb-4"><i class="ti ti-arrow-big-left me-2"></i>Back</a>
-                    <a href="{{ route('edit.twoday.package', $package->id) }}" class="btn btn-label-warning w-100 mb-4"><i class="ti ti-edit me-2"></i>Edit</a>
+                    <a href="{{ route('all.twoday.packages') }}" class="btn btn-label-primary w-100 mb-4"><i
+                            class="ti ti-arrow-big-left me-2"></i>Back</a>
+                    <a href="{{ route('edit.twoday.package', $package->id) }}"
+                        class="btn btn-label-warning w-100 mb-4"><i class="ti ti-edit me-2"></i>Edit</a>
                 </div>
             </div>
         </div>
@@ -107,26 +111,37 @@
                                             <th class="align-content-center text-center">User</th>
                                             <th class="align-content-center text-center">Wna Cost</th>
                                             @php
-                                                // Decode the JSON data
-                                                $prices = json_decode($package->prices->price_data, true);
+                                            // Decode the JSON data
+                                            $prices = json_decode($package->prices->price_data, true);
 
-                                                // Extract accommodation types dynamically
-                                                $accommodationTypes = [];
-                                                if (is_array($prices) && count($prices) > 0) {
-                                                    $firstRow = $prices[0];
-                                                    $accommodationTypes = array_keys(array_filter($firstRow, function ($key) {
-                                                        return !in_array($key, ['vehicle', 'user', 'wnaCost']);
-                                                    }, ARRAY_FILTER_USE_KEY));
-                                                }
+                                            // Extract accommodation types dynamically
+                                            $accommodationTypes = [];
+                                            if (is_array($prices) && count($prices) > 0) {
+                                            $firstRow = $prices[0];
+                                            $accommodationTypes = array_keys(array_filter($firstRow, function ($key) {
+                                            return !in_array($key, ['vehicle', 'user', 'wnaCost', 'mealCostPerPerson']);
+                                            }, ARRAY_FILTER_USE_KEY));
+                                            }
                                             @endphp
                                             @foreach ($accommodationTypes as $type)
-                                                <th class="align-content-center text-center">{{ ucwords(str_replace(['WithoutAccomodation', 'Guesthouse', 'Homestay', 'TwoStar', 'ThreeStar', 'FourStar', 'FiveStar'], ['Without Accommodation', 'Guesthouse', 'Homestay', 'Two Star', 'Three Star', 'Four Star', 'Five Star'], $type)) }}</th>
+                                            <th class="align-content-center text-center">{{
+                                                ucwords(str_replace(['WithoutAccomodation', 'Guesthouse', 'Homestay',
+                                                'TwoStar', 'ThreeStar', 'FourStar', 'FiveStar'], ['Without
+                                                Accommodation', 'Guesthouse', 'Homestay', 'Two Star', 'Three Star',
+                                                'Four Star', 'Five Star'], $type)) }}</th>
                                             @endforeach
                                         </tr>
                                     </thead>
+                                        @php
+                                            $pricesForTable = array_map(function ($priceRow) {
+                                            // Hapus kunci 'mealCostPerPerson' dari array
+                                            unset($priceRow['mealCostPerPerson']);
+                                            return $priceRow;
+                                            }, $prices);
+                                        @endphp
                                     <tbody>
-                                        @if (is_array($prices) && count($prices) > 0)
-                                            @foreach ($prices as $priceRow)
+                                        @if (is_array($pricesForTable) && count($pricesForTable) > 0)
+                                            @foreach ($pricesForTable as $priceRow)
                                                 <tr>
                                                     <td class="align-content-center text-center">{{ $priceRow['vehicle'] }}</td>
                                                     <td class="align-content-center text-center">{{ $priceRow['user'] }}</td>
