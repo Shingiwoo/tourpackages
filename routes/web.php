@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\Hotel\HotelController;
 use App\Http\Controllers\Agen\Core\AgenServiceController;
 use App\Http\Controllers\Backend\AgenFee\AgenFeeController;
 use App\Http\Controllers\Backend\Vehicle\VehicleController;
+use App\Http\Controllers\Agen\Core\BookingServiceController;
 use App\Http\Controllers\Agen\Core\PackageServiceController;
 use App\Http\Controllers\Backend\Facility\FacilityController;
 use App\Http\Controllers\Backend\Permission\PermissionController;
@@ -155,7 +156,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/add/hotel', 'AddHotel')->name('add.hotel');
         Route::post('/hotel/store', 'StoreHotel')->name('hotel.store');
         Route::get('/edit/hotel/{id}', 'EditHotel')->name('edit.hotel');
-        Route::put('/hotel/update', 'UpdateHotel')->name('hotel.update');
+        Route::put('/hotel/update/{id}', 'UpdateHotel')->name('hotel.update');
         Route::delete('/delete/hotel/{id}', 'DeleteHotel')->name('delete.hotel');
     });
 
@@ -288,6 +289,13 @@ route::middleware(['auth','roles:agen'])->group(function(){
 
         Route::get('/agen/all-package', 'AllPackage')->name('agen.all.package');
         Route::get('/show/package/{id}', 'PackageShow')->name('package.show');
+
+    });
+
+    //package list agen
+    Route::controller(BookingServiceController::class)->group(function () {
+
+        Route::get('/agen/all-booking', 'AllBooking')->name('agen.booking');
 
     });
 
