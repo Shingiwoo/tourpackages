@@ -20,7 +20,7 @@
                                 <div class="col-lg-12 mb-4 mb-xl-0">
                                     <h6 class="fw-medium text-info">*Destinasi* :</h6>
                                     <div class="demo-inline-spacing mt-4">
-                                        <ol class="list-group list-group-numbered">
+                                        <ol class="list-group">
                                             @forelse ($package->destinations as $desti)
                                             <li class="list-group-item">- {{ $desti->name }}</li>
                                             @empty

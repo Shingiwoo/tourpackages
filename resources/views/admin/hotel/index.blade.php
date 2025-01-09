@@ -65,6 +65,7 @@
                             <th class="align-content-center text-center">Name</th>
                             <th class="align-content-center text-center">Price</th>
                             <th class="align-content-center text-center">Type</th>
+                            <th class="align-content-center text-center">Capacity</th>
                             <th class="align-content-center text-center">Status</th>
                             <th class="align-content-center text-center">Location</th>
                             @if (Auth::user()->can('hotels.action'))
@@ -79,6 +80,7 @@
                             <td class="align-content-center text-center">{{ $htl->name }}</td>
                             <td class="align-content-center text-center">Rp {{ number_format($htl->price, 0, ',', '.') }}</td>
                             <td class="align-content-center text-center">{{ $htl->type }}</td>
+                            <td class="align-content-center text-center">{{ $htl->capacity }}</td>
                             <td class="align-content-center text-center">
                                 @if($htl->status)
                                 <span class="badge bg-label-success rounded p-2"><i class="ti ti-bulb text-success "></i></span>
