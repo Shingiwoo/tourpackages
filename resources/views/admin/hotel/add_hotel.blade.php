@@ -9,7 +9,8 @@
         @csrf
         <div class="app-ecommerce">
             <!-- Add Product -->
-            <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
+            <div
+                class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
                 <div class="d-flex flex-column justify-content-center">
                     <h4 class="mb-1">Add a new Hotel</h4>
                     <p class="mb-0">Place name, to create a tour package</p>
@@ -52,11 +53,16 @@
                                         <option value="WithoutAccomodation">Without Accomodation</option>
                                     </select>
                                 </div>
+                                <div class="col" id="capacity-container">
+                                    <label class="form-label" for="capacity">Capacity</label>
+                                    <input type="number" class="form-control" id="capacity" placeholder="4" max="50" name="hotelCapacity" aria-label="Hotel Capacity" required />
+                                </div>
                             </div>
                             <div class="row mb-6">
                                 <div class="col">
                                     <label class="form-label" for="city_district">City / District</label>
-                                    <select required id="city_district" name="cityOrDistrict_id" class="select2 form-select" data-allow-clear="true">
+                                    <select required id="city_district" name="cityOrDistrict_id"
+                                        class="select2 form-select" data-allow-clear="true">
                                         <option value="">Select City / District</option>
                                         @foreach($regencies as $regency)
                                         <option value="{{ $regency->id }}">{{ $regency->name }}</option>
@@ -65,7 +71,8 @@
                                 </div>
                                 <div class="col">
                                     <label class="form-label" for="status_hotel">Status</label>
-                                    <select required id="status_hotel" name="statusHotel" class="select2 form-select" data-allow-clear="true">
+                                    <select required id="status_hotel" name="statusHotel" class="select2 form-select"
+                                        data-allow-clear="true">
                                         <option value="">Select Status</option>
                                         <option value="1">ACTIVE</option>
                                         <option value="0">INACTIVE</option>
@@ -86,11 +93,14 @@
                             <!-- Base Price -->
                             <div class="mb-6">
                                 <label class="form-label" for="hotel_price">Hotel Price</label>
-                                <input type="text" class="form-control numeral-mask" id="hotel_price" placeholder="500000" name="hotelPrice" aria-label="Hotel Price" required />
+                                <input type="text" class="form-control numeral-mask" id="hotel_price"
+                                    placeholder="500000" name="hotelPrice" aria-label="Hotel Price" required />
                             </div>
                             <div class="mb-6">
                                 <label class="form-label" for="extrabed_price">Extrabed Price</label>
-                                <input type="text" class="form-control numeral-mask2" id="extrabed_price" placeholder="500000" name="hotelExtrabedPrice" aria-label="Extrabed Price" required />
+                                <input type="text" class="form-control numeral-mask2" id="extrabed_price"
+                                    placeholder="500000" name="hotelExtrabedPrice" aria-label="Extrabed Price"
+                                    required />
                             </div>
                         </div>
                     </div>
@@ -101,5 +111,4 @@
     </form>
 </div>
 <!-- / Content -->
-
 @endsection

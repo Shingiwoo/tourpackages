@@ -190,6 +190,24 @@
             }).trigger('change'); // Panggil trigger untuk inisialisasi saat load
         });
     </script>
+    <script>
+    $(document).ready(function() {
+        $('#hotel_type').change(function() {
+            var selectedValue = $(this).val();
+            var capacityContainer = $('#capacity').closest('.col'); // Ambil container input capacity
+            var capacityInput = $('#capacity');
+
+            // Tentukan tipe yang memunculkan input
+            if (['Villa', 'Homestay', 'Cottage', 'Cabin'].includes(selectedValue)) {
+                capacityContainer.show(); // Tampilkan input capacity
+                capacityInput.val('');    // Kosongkan input agar dapat diisi oleh pengguna
+            } else {
+                capacityContainer.hide(); // Sembunyikan input capacity
+                capacityInput.val(2);     // Set nilai default ke 2
+            }
+        }).trigger('change'); // Panggil trigger untuk inisialisasi saat load
+    });
+</script>
 </body>
 
 </html>
