@@ -302,6 +302,7 @@ class GenerateFourdayPackageController extends Controller
                 'vehicle' => $vehicle->name,
                 'user' => $participants,
                 'wnaCost' => round(($totalCostWNA - $totalCostWNI) / $participants, 2),
+                'mealCostPerPerson' => round($mealCost / $participants, 2)
             ];
 
             if ($hotels->isNotEmpty()) {

@@ -293,6 +293,7 @@ class GenerateTwodayPackageController extends Controller
             // Biaya makanan
             $mealCost = $meals ? $meals->price * $meals->num_meals * ($participants + $crew->num_crew) : 0;
 
+
             // Biaya reservasi
             $reserveFee = $reserveFees->firstWhere(fn($r) => $participants >= $r->min_user && $participants <= $r->max_user);
             $reserveFeeCost = $reserveFee ? $reserveFee->price * $participants * 2 : 0;
@@ -302,6 +303,7 @@ class GenerateTwodayPackageController extends Controller
                 'vehicle' => $vehicle->name,
                 'user' => $participants,
                 'wnaCost' => round(($totalCostWNA - $totalCostWNI) / $participants, 2),
+                'mealCostPerPerson' => round($mealCost / $participants, 2)
             ];
 
             if ($hotels->isNotEmpty()) {
