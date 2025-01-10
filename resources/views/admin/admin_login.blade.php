@@ -95,7 +95,7 @@
               fill="#7367F0" />
           </svg>
         </span>
-        <span class="app-brand-text demo text-heading fw-bold">Tour Packages</span>
+        <span class="app-brand-text demo text-heading fw-bold">Login | Admin - Tour Package</span>
       </a>
       <!-- /Logo -->
       <div class="authentication-inner row m-0">
