@@ -107,6 +107,14 @@
                 </a>
             </li>
             @endif
+            @if (Auth::user()->can('package.generate'))
+            <li class="menu-item">
+                <a href="{{ route('all.custom.package') }}" class="menu-link">
+                    <i class="menu-icon tf-icons ti ti-adjustments-cog"></i>
+                    <div data-i18n="Custom Package">Custom Package</div>
+                </a>
+            </li>
+            @endif
 
             @if (Auth::user()->can('package.tour.menu'))
             <li class="menu-item">

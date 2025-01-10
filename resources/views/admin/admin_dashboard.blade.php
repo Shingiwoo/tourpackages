@@ -32,7 +32,7 @@
     <!-- Core CSS -->
 
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/theme-default.css') }}"
-        class="template-customizer-theme-css') }} "/>
+        class="template-customizer-theme-css') }} " />
 
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
 
@@ -43,9 +43,10 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/toastr/toastr.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/animate-css/animate.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }} "/>
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }} " />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
+    <link rel="stylesheet"
+        href="{{ asset('assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css') }}" />
 
 
@@ -190,24 +191,33 @@
             }).trigger('change'); // Panggil trigger untuk inisialisasi saat load
         });
     </script>
-    <script>
-    $(document).ready(function() {
-        $('#hotel_type').change(function() {
-            var selectedValue = $(this).val();
-            var capacityContainer = $('#capacity').closest('.col'); // Ambil container input capacity
-            var capacityInput = $('#capacity');
 
-            // Tentukan tipe yang memunculkan input
-            if (['Villa', 'Homestay', 'Cottage', 'Cabin'].includes(selectedValue)) {
-                capacityContainer.show(); // Tampilkan input capacity
-                capacityInput.val('');    // Kosongkan input agar dapat diisi oleh pengguna
-            } else {
-                capacityContainer.hide(); // Sembunyikan input capacity
-                capacityInput.val(2);     // Set nilai default ke 2
-            }
-        }).trigger('change'); // Panggil trigger untuk inisialisasi saat load
-    });
-</script>
+    <script>
+        $(document).ready(function() {
+            // Ambil old value menggunakan Blade dan konversi ke format JavaScript
+            var oldValue = "{{ old('hotelCapacity', $hotel->capacity ?? '') }}";
+
+            $('#hotel_type').change(function() {
+                var selectedValue = $(this).val();
+                var capacityContainer = $('#capacity').closest('.col'); // Ambil container input capacity
+                var capacityInput = $('#capacity');
+
+                // Tentukan tipe yang memunculkan input
+                if (['Villa', 'Homestay', 'Cottage', 'Cabin'].includes(selectedValue)) {
+                    capacityContainer.show(); // Tampilkan input capacity
+                    if (oldValue) {
+                        capacityInput.val(oldValue); // Tampilkan old value jika tersedia
+                    } else {
+                        capacityInput.val(''); // Kosongkan input agar dapat diisi oleh pengguna
+                    }
+                } else {
+                    capacityContainer.hide(); // Sembunyikan input capacity
+                    capacityInput.val(2); // Set nilai default ke 2
+                }
+            }).trigger('change'); // Panggil trigger untuk inisialisasi saat load
+        });
+    </script>
+
 </body>
 
 </html>
