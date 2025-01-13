@@ -14,6 +14,7 @@ use App\Http\Controllers\Backend\Vehicle\VehicleController;
 use App\Http\Controllers\Agen\Core\BookingServiceController;
 use App\Http\Controllers\Agen\Core\PackageServiceController;
 use App\Http\Controllers\Backend\Facility\FacilityController;
+use App\Http\Controllers\Backend\Custom\CustomPackageController;
 use App\Http\Controllers\Backend\Permission\PermissionController;
 use App\Http\Controllers\Backend\ReserveFee\ReserveFeeController;
 use App\Http\Controllers\Backend\ServiceFee\ServiceFeeController;
@@ -263,6 +264,11 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::delete('/delete/admin/{id}', 'DeleteAdmin')->name('delete.admin');
 
 
+    });
+
+    Route::controller(CustomPackageController::class)->group(function () {
+        Route::get('/all/custom-package', 'CustomDashboard')->name('all.custom.package');
+        Route::post('/store/custom-package', 'StoreData')->name('store.custom.package');
     });
 });
 
