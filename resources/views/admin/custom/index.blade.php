@@ -180,10 +180,21 @@
                             </table>
                         </div>
                         <div class="mt-2">
-                            <p>Jadi untuk biaya Perorang : <b>{{ number_format($prices['costPerPerson'], 0, ',', '.') }} /orang</b><br>
-                               Dengan minimal jumlah peserta {{ $prices['participants'] }} dewasa <br>
-                               Biaya Tambahkan WNA : <b>{{ number_format($prices['additionalCostWna'], 0, ',', '.') }}</b>
-                            </p>
+                            <h6 class="text-warning">Keterangan :</h6>
+                            <ul>
+                                <li>
+                                    Jadi untuk biaya Perorang : Rp <b>{{ number_format($prices['costPerPerson'], 0, ',', '.') }}</b> /orang
+                                </li>
+                                <li>
+                                    Dengan minimal jumlah peserta {{ $prices['participants'] }} dewasa
+                                </li>
+                                <li>
+                                    Biaya Tambahan untuk WNA : Rp <b>{{ number_format($prices['additionalCostWna'], 0, ',', '.') }}</b> /orang
+                                </li>
+                                <li>
+                                    Biaya untuk anak2 usia 3-10 tahun : Rp <b>{{ number_format($prices['childCost'], 0, ',', '.') }}</b> /anak
+                                </li>
+                            </ul>
                         </div>
                         @else
                         <p class="text-center">Tidak ada data custom package tersedia.</p>

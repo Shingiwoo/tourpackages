@@ -108,7 +108,7 @@ class CustomPackageController extends Controller
         $remainingCosts = $totalCost - $downPayment;
         $costPerPerson = $totalCost / $participants;
         $childCost = $costPerPerson * 0.40;
-        $additionalCostWna = $totalCostWNA - $totalCostWNI;
+        $additionalCostWna = ($totalCostWNA - $totalCostWNI) / $participants;
 
         return [
             'transportCost' => $transportCost,
