@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Backend\Facility;
 
-use App\Http\Controllers\Controller;
-use App\Models\Facility;
 use App\Models\Regency;
+use App\Models\Facility;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 
 class FacilityController extends Controller
 {
@@ -66,7 +67,7 @@ class FacilityController extends Controller
 
         // Validasi data input
         $validatedData = $request->validate([
-            'nameFacility' => 'required|unique:facilities,name',
+            'nameFacility' => 'required|string',
             'cityOrDistrict_id' => 'required|exists:regencies,id',
             'priceFacility' => 'required',
             'typeFacility' => 'required|in:flat,per_person,per_day,info,shuttle,doc,tl,event',
@@ -74,6 +75,8 @@ class FacilityController extends Controller
         ]);
 
         $validatedData['priceFacility'] = str_replace(',', '', $validatedData['priceFacility']);
+
+        Log::info('check validation data:', $validatedData);
 
         // Update data
         $validatedData = [
