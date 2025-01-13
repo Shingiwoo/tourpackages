@@ -96,19 +96,38 @@ class CustomPackageController extends Controller
     }
 
 
-    private function calculatePrices($vehicle, $hotelPrice, $otherFee, $DurationPackage, $night, $reservedFee, $selectedDestinations, $selectedFacilities, $capacityHotel, $participants)
-    {
+    private function calculatePrices(
+        $vehicle,
+        $hotelPrice,
+        $otherFee,
+        $DurationPackage,
+        $night,
+        $reservedFee,
+        $selectedDestinations,
+        $selectedFacilities,
+        $capacityHotel,
+        $participants
+    ) {
         $transportCost = $vehicle->price * $DurationPackage;
+
         [$totalCostWNI, $totalCostWNA, $parkingCost] = $this->calculateDestinationCosts($selectedDestinations, $participants, $vehicle);
+
         $totalFacilityCost = $this->calculateFacilityCosts($selectedFacilities, $participants, $DurationPackage);
+
         $groupCount = ceil($participants / $capacityHotel);
         $totalHotelCost = $hotelPrice * $groupCount * $night;
+
         $totalCost = $transportCost + $totalCostWNI + $parkingCost + $totalFacilityCost + $otherFee + $reservedFee + $totalHotelCost;
+
         $downPayment = $totalCost * 0.30;
         $remainingCosts = $totalCost - $downPayment;
         $costPerPerson = $totalCost / $participants;
         $childCost = $costPerPerson * 0.40;
         $additionalCostWna = ($totalCostWNA - $totalCostWNI) / $participants;
+
+        // Ambil nama destinasi dan fasilitas
+        $destinationNames = $selectedDestinations->pluck('name')->toArray();
+        $facilityNames = $selectedFacilities->pluck('name')->toArray();
 
         return [
             'transportCost' => $transportCost,
@@ -124,10 +143,11 @@ class CustomPackageController extends Controller
             'costPerPerson' => $costPerPerson,
             'childCost' => $childCost,
             'participants' => $participants,
-            'additionalCostWna'  => $additionalCostWna,
+            'additionalCostWna' => $additionalCostWna,
+            'destinationNames' => $destinationNames,
+            'facilityNames' => $facilityNames,
         ];
     }
-
 
     private function calculateDestinationCosts($destinations, $participants, $vehicle)
     {
