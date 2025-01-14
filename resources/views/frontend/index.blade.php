@@ -215,7 +215,7 @@
                             document.write(new Date().getFullYear());
                         </script>
                     </span>
-                    <a href="" target="_blank" class="fw-medium text-white text-white"> Tour Packages</a>
+                    <a href="" target="_blank" class="fw-medium text-white"> Tour Packages</a>
                 </div>
             </div>
         </div>
