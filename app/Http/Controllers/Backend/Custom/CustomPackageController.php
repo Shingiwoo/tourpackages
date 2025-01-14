@@ -36,6 +36,8 @@ class CustomPackageController extends Controller
             'DurationPackage' => 'required',
             'vehicleName' => 'required',
             'night' => 'required',
+            'mealCost' => 'required',
+            'totalMeal' => 'required',
             'otherFee' => 'required',
             'reservedFee' => 'required',
             'hotelPrice' => 'required',
@@ -44,6 +46,7 @@ class CustomPackageController extends Controller
         ]);
 
         $validatedData['otherFee'] = str_replace(',', '', $validatedData['otherFee']);
+        $validatedData['mealCost'] = str_replace(',', '', $validatedData['mealCost']);
         $validatedData['reservedFee'] = str_replace(',', '', $validatedData['reservedFee']);
         $validatedData['hotelPrice'] = str_replace(',', '', $validatedData['hotelPrice']);
 
@@ -58,6 +61,8 @@ class CustomPackageController extends Controller
         $reservedFee = $validatedData['reservedFee'];
         $capacityHotel = $validatedData['capacityHotel'];
         $participants = $validatedData['totalUser'];
+        $mealCost = $validatedData['mealCost'];
+        $totalMeal = $validatedData['totalMeal'];
 
         $vehicle = Vehicle::find($vehicleId);
         $selectedDestinations = Destination::whereIn('id', $destinationIds)->get();
@@ -71,6 +76,8 @@ class CustomPackageController extends Controller
             $DurationPackage,
             $night,
             $reservedFee,
+            $mealCost,
+            $totalMeal,
             $selectedDestinations,
             $selectedFacilities,
             $capacityHotel,
@@ -103,6 +110,8 @@ class CustomPackageController extends Controller
         $DurationPackage,
         $night,
         $reservedFee,
+        $mealCost,
+        $totalMeal,
         $selectedDestinations,
         $selectedFacilities,
         $capacityHotel,
@@ -116,8 +125,9 @@ class CustomPackageController extends Controller
 
         $groupCount = ceil($participants / $capacityHotel);
         $totalHotelCost = $hotelPrice * $groupCount * $night;
+        $totalMealCost = $mealCost * $totalMeal * $participants;
 
-        $totalCost = $transportCost + $totalCostWNI + $parkingCost + $totalFacilityCost + $otherFee + $reservedFee + $totalHotelCost;
+        $totalCost = $transportCost + $totalCostWNI + $parkingCost + $totalFacilityCost + $otherFee + $reservedFee + $totalHotelCost + $totalMealCost;
 
         $downPayment = $totalCost * 0.30;
         $remainingCosts = $totalCost - $downPayment;
@@ -136,8 +146,11 @@ class CustomPackageController extends Controller
             'hotelCost' => $totalHotelCost,
             'otherFee' => $otherFee,
             'reservedFee' => $reservedFee,
+            'totalMealCost' => $totalMealCost,
             'facilityCost' => $totalFacilityCost,
             'totalCost' => $totalCost,
+            'DurationPackage' => $DurationPackage,
+            'night' => $night,
             'downPayment' => $downPayment,
             'remainingCosts' => $remainingCosts,
             'costPerPerson' => $costPerPerson,
