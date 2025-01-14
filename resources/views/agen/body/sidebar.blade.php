@@ -24,7 +24,7 @@
             </a>
         </li>
 
-        <!-- Manage Package-->
+        <!-- All Package -->
         <li class="menu-header small">
             <span class="menu-header-text" data-i18n="Manage Package">Manage Package</span>
         </li>
@@ -40,179 +40,29 @@
                         <div data-i18n="Package List">Package List</div>
                     </a>
                 </li>
-                <li class="menu-item">
-                    <a href="" class="menu-link">
-                        <div data-i18n="Book Package">Book Package</div>
-                    </a>
-                </li>
             </ul>
         </li>
-        <!-- End Manage Package-->
+        <!-- End All Package -->
 
-        <!-- Packages -->
-        {{-- <li class="menu-header small">
-            <span class="menu-header-text" data-i18n="Packages">Packages</span>
+        <!-- Booking -->
+        <li class="menu-header small">
+            <span class="menu-header-text" data-i18n="Manage Booking">Manage Booking</span>
         </li>
-
-        <li  class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons ti ti-torii"></i>
-                <div data-i18n="Tour">Tour</div>
-            </a>
-            <!-- One Day -->
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a class="menu-link menu-toggle">
-                        <div data-i18n="Oneday">One Day</div>
-                    </a>
-                    <ul class="menu-sub">
-                        <li class="menu-item">
-                            <a href="{{ route('generate.package') }}" class="menu-link">
-                                <div data-i18n="Generate Tour">Generate Tour</div>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="{{ route('all.packages') }}" class="menu-link">
-                                <div data-i18n="Tour List">Tour List</div>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <!-- One Day End -->
-
-            <!-- Two Day -->
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a class="menu-link menu-toggle">
-                        <div data-i18n="Twoday">Two Day</div>
-                    </a>
-                    <ul class="menu-sub">
-                        <li class="menu-item">
-                            <a href="{{ route('generate.twoday.package') }}" class="menu-link">
-                                <div data-i18n="Generate Tour">Generate Tour</div>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="{{ route('all.twoday.packages') }}" class="menu-link">
-                                <div data-i18n="Tour List">Tour List</div>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <!-- Two Day End -->
-
-            <!-- Three Day -->
-            <ul class="menu-sub">
-                <li class="menu-item">
-                    <a class="menu-link menu-toggle">
-                        <div data-i18n="Threeday">Three Day</div>
-                    </a>
-                    <ul class="menu-sub">
-                        <li class="menu-item">
-                            <a href="{{ route('generate.threeday.package') }}" class="menu-link">
-                                <div data-i18n="Generate Tour">Generate Tour</div>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="{{ route('all.threeday.packages') }}" class="menu-link">
-                                <div data-i18n="Tour List">Tour List</div>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <!-- Three Day End -->
-        </li>
-
         <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link menu-toggle">
-                <i class="menu-icon tf-icons ti ti-settings-cog"></i>
-                <div data-i18n="Setting">Setting</div>
+            <a href="" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-shopping-cart-plus"></i>
+                <div data-i18n="Booking">Booking</div>
             </a>
+
             <ul class="menu-sub">
-                <!-- Destinations -->
                 <li class="menu-item">
-                    <a class="menu-link menu-toggle">
-                        <div data-i18n="Destinations">Destinations</div>
-                    </a>
-
-                    <ul class="menu-sub">
-                        <li class="menu-item">
-                            <a href="{{ route('all.destinations') }}" class="menu-link">
-                                <div data-i18n="Destinations List">Destinations List</div>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="{{ route('add.destination') }}" class="menu-link">
-                                <div data-i18n="Add Destination">Add Destination</div>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="{{ route('import.destinations') }}" class="menu-link">
-                                <div data-i18n="Import Destinations">Import Destinations</div>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <!-- End Destinations-->
-
-                <!-- Vehicle -->
-                <li class="menu-item">
-                    <a href="" class="menu-link menu-toggle">
-                        <i class="menu-icon tf-icons ti ti-car-garage"></i>
-                        <div data-i18n="Vehicles">Vehicles</div>
-                    </a>
-
-                    <ul class="menu-sub">
-                        <li class="menu-item">
-                            <a href="{{ route('all.vehicles') }}" class="menu-link">
-                                <div data-i18n="Vehicles List">Vehicles List</div>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="{{ route('add.vehicle') }}" class="menu-link">
-                                <div data-i18n="Add Vehicle">Add Vehicle</div>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <!-- End Vehicle-->
-
-                <!-- Hotel -->
-                <li class="menu-item">
-                    <a href="" class="menu-link menu-toggle">
-                        <i class="menu-icon tf-icons ti ti-building-skyscraper"></i>
-                        <div data-i18n="Hotels">Hotels</div>
-                    </a>
-
-                    <ul class="menu-sub">
-                        <li class="menu-item">
-                            <a href="{{ route('all.hotels') }}" class="menu-link">
-                                <div data-i18n="Hotels List">Hotels List</div>
-                            </a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="{{ route('add.hotel') }}" class="menu-link">
-                                <div data-i18n="Add hotel">Add Hotel</div>
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-                <!-- End Hotel-->
-
-                <!-- Other -->
-                <li class="menu-item">
-                    <a href="{{ route('all.service') }}" class="menu-link">
-                        <i class="menu-icon tf-icons ti ti-device-ipad-cog"></i>
-                        <div data-i18n="Service">Service</div>
+                    <a href="{{ route("agen.booking") }}" class="menu-link">
+                        <div data-i18n="Booking List">Booking List</div>
                     </a>
                 </li>
-                <!-- End Other -->
             </ul>
         </li>
-        <!-- Packages end --> --}}
+        <!-- End Booking -->
 
 
 
