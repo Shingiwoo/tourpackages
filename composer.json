@@ -1,6 +1,6 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "Tour Package",
+    "name": "laravel/tour-package",
     "type": "project",
     "description": "Calculation price for tour package, simple and easy user",
     "keywords": ["laravel", "framework", "tour package"],
@@ -9,6 +9,7 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^11.31",
+        "laravel/octane": "^2.6",
         "laravel/tinker": "^2.9",
         "maatwebsite/excel": "^3.1",
         "spatie/laravel-permission": "^6.10"

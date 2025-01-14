@@ -68,7 +68,7 @@
 
     <div class="authentication-wrapper authentication-cover">
       <!-- Logo -->
-      <a href="index.html" class="app-brand auth-cover-brand">
+      <a href="{{ url('/') }}" class="app-brand auth-cover-brand">
         <span class="app-brand-logo demo">
           <svg width="32" height="22" viewBox="0 0 32 22" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
