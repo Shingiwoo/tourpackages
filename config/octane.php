@@ -220,5 +220,7 @@ return [
     */
 
     'max_execution_time' => 30,
+    'max_requests' => 1000,
+    'workers' => 4,
 
 ];

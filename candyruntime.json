@@ -1,0 +1,17 @@
+{
+    "servers": [
+      {
+        "listen": "127.0.0.1:8001",
+        "root": "./public",
+        "middlewares": [
+          {
+            "path": "/",
+            "type": "php",
+            "options": {
+              "bootstrap": "./bootstrap/app.php"
+            }
+          }
+        ]
+      }
+    ]
+  }
