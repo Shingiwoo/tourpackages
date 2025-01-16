@@ -86,40 +86,16 @@ class BookingServiceController extends Controller
                 return back()->withErrors(['error' => 'Paket tidak ditemukan.']);
             }
 
-            $type = $selectedPackage->type; // Tipe paket: oneday, twoday, dll.
+            $type = $selectedPackage->type;
             $pricePerPerson = null;
-
-            // Debug log: Tampilkan data paket yang dipilih
-            Log::info('Paket yang dipilih:', [
-                'selectedPackage' => $selectedPackage,
-                'type' => $type,
-                'prices' => $selectedPackage->prices
-            ]);
 
             // Cek tipe paket dan tentukan harga
             if ($type === 'oneday') {
                 // Decode JSON data
                 $pricesArray = json_decode($selectedPackage->prices['price_data'], true);
 
-                // Debug log: Tampilkan data harga setelah decoding
-                Log::info('Decoded pricesArray:', ['pricesArray' => $pricesArray]);
-
-                if (!$pricesArray) {
-                    Log::error('Gagal mendekode price_data JSON.', ['price_data' => $selectedPackage->prices['price_data']]);
-                    return back()->withErrors(['error' => 'Gagal memproses data harga paket.']);
-                }
-
                 // Cari data harga berdasarkan jumlah pengguna
                 $priceData = collect($pricesArray)->firstWhere('user', (int)$validated['modalTotalUser']);
-
-                if (!$priceData) {
-                    Log::error('Jumlah pengguna tidak sesuai dengan paket.', [
-                        'type' => $type,
-                        'total_user' => $validated['modalTotalUser'],
-                        'pricesArray' => $pricesArray
-                    ]);
-                    return back()->withErrors(['error' => 'Jumlah pengguna tidak sesuai dengan paket.']);
-                }
 
                 // Ambil harga per orang
                 $pricePerPerson = $priceData['price'];
@@ -127,42 +103,14 @@ class BookingServiceController extends Controller
             } elseif (in_array($type, ['twoday', 'threeday', 'fourday'])) {
                 $pricesArray = json_decode($selectedPackage->prices['price_data'], true);
 
-                // Debug log: Tampilkan harga paket untuk tipe 2-4 hari
-                Log::info('Mencocokkan harga untuk pengguna dan tipe hotel:', [
-                    'pricesArray' => $pricesArray,
-                    'modalTotalUser' => $validated['modalTotalUser'],
-                    'modalHotelType' => $validated['modalHotelType']
-                ]);
-
                 $priceData = collect($pricesArray)->firstWhere('user', (int)$validated['modalTotalUser']);
 
-                if (!$priceData) {
-                    Log::error('Jumlah pengguna tidak sesuai dengan paket.', [
-                        'type' => $type,
-                        'total_user' => $validated['modalTotalUser']
-                    ]);
-                    return back()->withErrors(['error' => 'Jumlah pengguna tidak sesuai dengan paket.']);
-                }
-
                 $hotelType = $validated['modalHotelType'];
-
-                if (!isset($priceData[$hotelType])) {
-                    Log::error('Tipe hotel tidak valid.', [
-                        'hotelType' => $hotelType,
-                        'type' => $type
-                    ]);
-                    return back()->withErrors(['error' => 'Tipe hotel tidak valid.']);
-                }
 
                 $pricePerPerson = $priceData[$hotelType];
             } else {
                 Log::error('Tipe paket tidak valid.', ['type' => $type]);
                 return back()->withErrors(['error' => 'Tipe paket tidak valid.']);
-            }
-
-            if (!$pricePerPerson) {
-                Log::error('Gagal menghitung harga.', ['pricePerPerson' => $pricePerPerson]);
-                return back()->withErrors(['error' => 'Gagal menghitung harga.']);
             }
 
             // Hitung harga total
@@ -198,11 +146,6 @@ class BookingServiceController extends Controller
 
             // Update booking_list_id pada tabel bookings
             $booking->update(['booking_list_id' => $bookingList->id]);
-
-            Log::info('Booking berhasil dibuat.', [
-                'booking_id' => $booking->id,
-                'agen_id' => $agen->id,
-            ]);
 
             // Kirim notifikasi berhasil
             $notification = [
