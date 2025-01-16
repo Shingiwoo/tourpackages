@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('booking_lists', function (Blueprint $table) {
             $table->id();
-            $table->integer('agen_id');
             $table->integer('booking_id');
+            $table->integer('agen_id');
             $table->integer('package_id');
             $table->timestamps();
         });

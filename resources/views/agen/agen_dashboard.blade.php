@@ -32,7 +32,7 @@
     <!-- Core CSS -->
 
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/rtl/theme-default.css') }}"
-        class="template-customizer-theme-css') }} "/>
+        class="template-customizer-theme-css') }} " />
 
     <link rel="stylesheet" href="{{ asset('assets/css/demo.css') }}" />
 
@@ -43,10 +43,12 @@
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/toastr/toastr.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/animate-css/animate.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }} "/>
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/select2/select2.css') }} " />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}" />
-    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
+    <link rel="stylesheet"
+        href="{{ asset('assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css') }} " />
 
 
     <!-- Page CSS -->
@@ -126,6 +128,7 @@
     <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 
 
@@ -139,7 +142,8 @@
     <script src="{{ asset('assets/js/forms-selects.js') }}"></script>
     <script src="{{ asset('assets/js/ui-carousel.js') }}"></script>
     <script src="{{ asset('assets/js/modal-service-fee.js') }}"></script>
-    <script src="{{ asset('assets/js/forms-editors.js') }}"></script>
+    <script src="{{ asset('assets/js/forms-pickers.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/forms-editors.js') }}"></script> --}}
     <script>
         $(document).ready(function() {
             $('#example').DataTable();
@@ -167,6 +171,18 @@
                 break;
             }
         @endif
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const bookingButtons = document.querySelectorAll('.dropdown-item.text-success');
+
+            bookingButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const packageId = this.dataset.id; // Dapatkan ID paket
+                    document.getElementById('packageId').value = packageId; // Masukkan ke form
+                });
+            });
+        });
     </script>
 </body>
 

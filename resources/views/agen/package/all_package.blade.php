@@ -68,90 +68,133 @@
 
     <!-- Package List-->
     <div class="card">
-        <div class="card-datatable table-responsive pt-0">
-            <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+        <div class="pt-0">
+            <div class="dt-bootstrap5 no-footer">
                 <div class="card-header flex-column flex-md-row">
-                    <div class="head-label text-center">
+                    <div class="head-label">
                         <h5 class="card-title mb-0">Package List</h5>
                     </div>
-                    <div class="dt-action-buttons text-end pt-6 pt-md-0">
-                        <div class="dt-buttons btn-group flex-wrap">
-                            <div class="btn-group">
-                            @if (Auth::user()->can('booking.add'))
-                            <a href=""
-                                class="btn btn-secondary create-new btn-primary waves-effect waves-light" tabindex="0"
-                                aria-controls="DataTables_Table_0" type="button"> <span><i
-                                        class="ti ti-plus me-sm-1"></i> <span class="d-none d-sm-inline-block">Booking</span></span></a>
-                            @endif
-                            </div>
-                        </div>
-                    </div>
                 </div>
-                <div class="card-datatable text-nowrap">
-                <table id="example" class="datatables-ajax table" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th class="align-content-center text-center">Sl</th>
-                            <th class="align-content-center text-center">Name</th>
-                            <th class="align-content-center text-center">City Or Regency</th>
-                            <th class="align-content-center text-center">Duration</th>
-                            <th class="align-content-center text-center">Status</th>
-                            @if (Auth::user()->can('booking.action'))
-                            <th class="align-content-center">Action</th>
-                            @endif
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($allPackages as $key=> $package )
-                        <tr>
-                            <td class="align-content-center text-center">{{ $key+1 }}</td>
-                            <td class="align-content-center text-center">{{ $package->name_package }}</td>
-                            <td class="align-content-center text-center">{{ $package->regency->name }}</td>
-                            <td class="align-content-center text-center">
-                                <span class="badge bg-{{ $package->type === 'oneday' ? 'info' : ($package->type === 'twoday' ? 'primary' : ($package->type === 'threeday' ? 'success' : 'danger')) }} text-uppercase">
-                                    {{ $package->type }}
-                                </span>
-                            </td>
-                            <td class="align-content-center text-center">
-                                @if($package->status)
-                                    <i class="ti ti-rosette-discount-check text-success"></i>
-                                @else
-                                    <i class="ti ti-playstation-x text-danger"></i>
+                <div class="card-datatable table-responsive  text-nowrap">
+                    <table id="example" class="datatables-ajax table" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th class="align-content-center text-center">Sl</th>
+                                <th class="align-content-center text-center">Name</th>
+                                <th class="align-content-center text-center">City Or Regency</th>
+                                <th class="align-content-center text-center">Duration</th>
+                                <th class="align-content-center text-center">Status</th>
+                                @if (Auth::user()->can('booking.action'))
+                                <th class="align-content-center">Action</th>
                                 @endif
-                            </td>
-                            @if (Auth::user()->can('booking.action'))
-                            <td class="align-content-center">
-                                <!-- Icon Dropdown -->
-                                <div class="col-lg-3 col-sm-6 col-12">
-                                    <div class="btn-group">
-                                        <button type="button"
-                                            class="btn btn-primary btn-icon rounded-pill dropdown-toggle hide-arrow"
-                                            data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="ti ti-dots-vertical"></i>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end">
-                                            @if (Auth::user()->can('package.show'))
-                                            <li><a class="dropdown-item text-info" href="{{ route('package.show', $package->id) }}"><i class="ti ti-device-ipad-horizontal-search"></i> Show</a></li>
-                                            @endif
-                                            @if (Auth::user()->can('booking.add'))
-                                            <li><a href="javascript:void(0)" class="dropdown-item text-success" data-id="" data-url=""> <i class="ti ti-shopping-cart-plus"></i> Booking
-                                             </a></li>
-                                            @endif
-                                        </ul>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($allPackages as $key=> $package )
+                            <tr>
+                                <td class="align-content-center text-center">{{ $key+1 }}</td>
+                                <td class="align-content-center text-center">{{ $package->name_package }}</td>
+                                <td class="align-content-center text-center">{{ $package->regency->name }}</td>
+                                <td class="align-content-center text-center">
+                                    <span
+                                        class="badge bg-{{ $package->type === 'oneday' ? 'info' : ($package->type === 'twoday' ? 'primary' : ($package->type === 'threeday' ? 'success' : 'danger')) }} text-uppercase">
+                                        {{ $package->type }}
+                                    </span>
+                                </td>
+                                <td class="align-content-center text-center">
+                                    @if($package->status)
+                                    <i class="ti ti-rosette-discount-check text-success"></i>
+                                    @else
+                                    <i class="ti ti-playstation-x text-danger"></i>
+                                    @endif
+                                </td>
+                                @if (Auth::user()->can('booking.action'))
+                                <td class="align-content-center">
+                                    <!-- Icon Dropdown -->
+                                    <div class="col-lg-3 col-sm-6 col-12">
+                                        <div class="btn-group">
+                                            <button type="button"
+                                                class="btn btn-primary btn-icon rounded-pill dropdown-toggle hide-arrow"
+                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                <i class="ti ti-dots-vertical"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end">
+                                                @if (Auth::user()->can('package.show'))
+                                                <li><a class="dropdown-item text-info"
+                                                        href="{{ route('package.show', $package->id) }}"><i
+                                                            class="ti ti-device-ipad-horizontal-search"></i> Show</a>
+                                                </li>
+                                                @endif
+                                                @if (Auth::user()->can('booking.add'))
+                                                <li><a href="javascript:void(0)" class="dropdown-item text-success" data-bs-toggle="modal" data-id="{{ $package->id }}" data-bs-target="#bookingModal"> <i class="ti ti-shopping-cart-plus"></i>
+                                                        Booking
+                                                    </a></li>
+                                                @endif
+                                            </ul>
+                                        </div>
                                     </div>
-                                </div>
-                                <!--/ Icon Dropdown -->
-                            </td>
-                            @endif
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                                    <!--/ Icon Dropdown -->
+                                </td>
+                                @endif
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
     <!--/ Destinations List -->
+
+    <!-- Booking Modal -->
+    <div class="modal fade" id="bookingModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-simple modal-edit-user">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-center mb-6">
+                        <h4 class="mb-2">Booking Information</h4>
+                    </div>
+                    <form id="bookingModalForm" class="row g-6" method="POST" action="{{ route('booking.store') }}">
+                        @csrf
+                        <input type="hidden" name="package_id" id="packageId">
+                        <div class="col-12">
+                            <label class="form-label" for="modalClientName">Client Name</label>
+                            <input type="text" id="modalClientName" name="modalClientName" class="form-control"
+                                placeholder="johndoe007" required/>
+                        </div>
+                        <div class="col-md-4 col-6 mb-md-0 mb-6">
+                          <label for="bs-datepicker-autoclose" class="form-label">Start Date</label>
+                          <input type="text"  id="bs-datepicker-autoclose" placeholder="MM/DD/YYYY"
+                            class="form-control" name="modalStartDate" required/>
+                        </div>
+                        <div class="col-md-4 col-6 mb-md-0 mb-6">
+                          <label for="bs-datepicker-autoclose2" class="form-label">End Date</label>
+                          <input type="text"  id="bs-datepicker-autoclose2" placeholder="MM/DD/YYYY"
+                            class="form-control" name="modalEndDate" required/>
+                        </div>
+                        <div class="col-md-4 col-6">
+                            <label class="form-label" for="modalTotalUser">Total User</label>
+                            <input type="number" id="modalTotalUser" name="modalTotalUser"
+                                class="form-control" placeholder="12" required/>
+                        </div>
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-primary me-3">Submit</button>
+                            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
+                                aria-label="Close">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--/ Booking Modal -->
+
+
 </div>
+
+
 
 @endsection

@@ -9,10 +9,14 @@ class Booking extends Model
 {
     use HasFactory;
 
-    protected $fillable = [ 'code_booking', 'name_package', 'type', 'price', 'extrabed_price', 'status'];
+    protected $fillable = [
+        'booking_list_id', 'code_booking', 'start_date', 'end_date', 'name',
+        'type', 'total_user', 'price_person', 'total_price',
+        'down_paymet', 'remaining_costs', 'status'
+    ];
 
-    public function user()
+    public function bookingID()
     {
-        return $this->belongsTo(User::class, 'agen_id', 'id');
+        return $this->belongsTo(BookingList::class, 'booking_list_id', 'id');
     }
 }

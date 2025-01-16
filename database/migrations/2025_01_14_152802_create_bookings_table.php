@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
+            $table->integer('booking_list_id')->nullable();
             $table->string('code_booking', 255)->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->string('name')->nullable();
             $table->string('type')->nullable();
             $table->integer('total_user')->nullable();

@@ -38,17 +38,6 @@ class PackageServiceController extends Controller
             ->merge($packThreeday)
             ->merge($packFourday);
 
-        // Paginate manual
-            // $currentPage = Paginator::resolveCurrentPage();
-            // $perPage = 100;
-            // $paginatedPackages = new LengthAwarePaginator(
-            //     $allPackages->forPage($currentPage, $perPage),
-            //     $allPackages->count(),
-            //     $perPage,
-            //     $currentPage,
-            //     ['path' => Paginator::resolveCurrentPath()]
-        // );
-
         return view('agen.package.all_package', compact('allPackages', 'countOneday', 'countTwoday', 'countThreeday', 'countFourday'));
     }
 

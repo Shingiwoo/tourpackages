@@ -302,6 +302,7 @@ route::middleware(['auth','roles:agen'])->group(function(){
     Route::controller(BookingServiceController::class)->group(function () {
 
         Route::get('/agen/all-booking', 'AllBooking')->name('agen.booking');
+        Route::post('/booking/store', 'StoreBooking')->name('booking.store');
 
     });
 

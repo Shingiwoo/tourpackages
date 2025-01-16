@@ -52,21 +52,21 @@
                         </div>
                         <div class="col-md-3 col-6">
                           <div class="d-flex align-items-center">
-                            <div class="badge rounded bg-label-info me-4 p-2"><i class="ti ti-brand-booking ti-lg"></i></div>
-                            <div class="card-info">
-                              <h5 class="mb-0">8.549k</h5>
-                              <small>Booked</small>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="col-md-3 col-6">
-                          <div class="d-flex align-items-center">
                             <div class="badge rounded bg-label-danger me-4 p-2">
                               <i class="ti ti-refresh-alert ti-lg"></i>
                             </div>
                             <div class="card-info">
                               <h5 class="mb-0">1.423k</h5>
                               <small>Pending</small>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                          <div class="d-flex align-items-center">
+                            <div class="badge rounded bg-label-info me-4 p-2"><i class="ti ti-brand-booking ti-lg"></i></div>
+                            <div class="card-info">
+                              <h5 class="mb-0">8.549k</h5>
+                              <small>Booked</small>
                             </div>
                           </div>
                         </div>
