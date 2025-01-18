@@ -94,3 +94,19 @@ $(document).ready(function() {
         }
     }).trigger('change');
 });
+
+// Form booking Page
+$(document).ready(function () {
+    $("#modal_packageType")
+        .change(function () {
+            var selectedValue = $(this).val();
+            var hotelContainer = $("#hotel_type_container");
+
+            if (selectedValue === "oneday") {
+                hotelContainer.hide();
+            } else {
+                hotelContainer.show();
+            }
+        })
+        .trigger("change"); // Panggil trigger untuk inisialisasi saat load
+});

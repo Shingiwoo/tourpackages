@@ -77,10 +77,10 @@
 
             <!-- Price List Package  -->
             <div class="accordion mt-4" id="accordionExample">
-                <div class="accordion-item card text-white">
+                <div class="accordion-item card text-info">
                     <h2 class="accordion-header d-flex align-items-center">
                         <button type="button" class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#accordionWithIcon-2" aria-expanded="false">
-                           <h5 class="text-white text-uppercase"><i class="me-2 mb-1 ti ti-receipt-2"></i> Price List</h5>
+                           <h5 class="text-info text-uppercase"><i class="me-2 mb-1 ti ti-receipt-2"></i> Price List</h5>
                         </button>
                     </h2>
                     <div id="accordionWithIcon-2" class="accordion-collapse collapse">
@@ -90,10 +90,10 @@
                                     <table class="table table-bordered">
                                         <thead>
                                             <tr>
-                                                <th class="align-content-center text-center text-white">Vehicle</th>
-                                                <th class="align-content-center text-center text-white">User</th>
-                                                <th class="align-content-center text-center text-white">Price</th>
-                                                <th class="align-content-center text-center text-white">Wna Cost</th>
+                                                <th class="align-content-center text-center text-warning">Vehicle</th>
+                                                <th class="align-content-center text-center text-warning">User</th>
+                                                <th class="align-content-center text-center text-warning">Price</th>
+                                                <th class="align-content-center text-center text-warning">Wna Cost</th>
                                             </tr>
                                         </thead>
                                         @php
@@ -105,10 +105,10 @@
                                             @if (count($prices) > 0)
                                                 @foreach ($prices as $price)
                                                     <tr>
-                                                        <td class="align-content-center text-center text-white">{{ $price['vehicle'] }}</td>
-                                                        <td class="align-content-center text-center text-white">{{ $price['user'] }}</td>
-                                                        <td class="align-content-center text-center text-white">Rp {{ number_format($price['price'], 0, ',', '.') }} /orang</td>
-                                                        <td class="align-content-center text-center text-white">Rp {{
+                                                        <td class="align-content-center text-center text-info">{{ $price['vehicle'] }}</td>
+                                                        <td class="align-content-center text-center text-warning">{{ $price['user'] }}</td>
+                                                        <td class="align-content-center text-center text-info">Rp {{ number_format($price['price'], 0, ',', '.') }} /orang</td>
+                                                        <td class="align-content-center text-center text-info">Rp {{
                                                             number_format($price['wnaCost'], 0, ',', '.') }} /orang</td>
                                                     </tr>
                                                 @endforeach

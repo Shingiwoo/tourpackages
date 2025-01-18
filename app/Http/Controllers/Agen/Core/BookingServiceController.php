@@ -13,6 +13,10 @@ use App\Models\PackageFourDay;
 use App\Models\PackageThreeDay;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\PackageFourPrice;
+use App\Models\PackagePrice;
+use App\Models\PackageThreePrice;
+use App\Models\PackageTwoPrice;
 use Illuminate\Support\Facades\Auth;
 
 class BookingServiceController extends Controller
@@ -50,24 +54,6 @@ class BookingServiceController extends Controller
     public function StoreBooking(Request $request)
     {
         try {
-            $agen = Auth::user();
-
-            // Menggabungkan semua paket berdasarkan agen
-            $packOneday = PackageOneDay::where('agen_id', $agen->id)
-                ->with(['destinations', 'prices', 'regency'])->get();
-            $packTwoday = PackageTwoDay::where('agen_id', $agen->id)
-                ->with(['destinations', 'prices', 'regency'])->get();
-            $packThreeday = PackageThreeDay::where('agen_id', $agen->id)
-                ->with(['destinations', 'prices', 'regency'])->get();
-            $packFourday = PackageFourDay::where('agen_id', $agen->id)
-                ->with(['destinations', 'prices', 'regency'])->get();
-
-            $allPackages = collect()
-                ->merge($packOneday)
-                ->merge($packTwoday)
-                ->merge($packThreeday)
-                ->merge($packFourday);
-
             // Validasi data
             $validated = $request->validate([
                 'package_id' => 'required|integer',
@@ -75,42 +61,174 @@ class BookingServiceController extends Controller
                 'modalStartDate' => 'required|date_format:m/d/Y',
                 'modalEndDate' => 'required|date_format:m/d/Y',
                 'modalTotalUser' => 'required|integer|min:1',
+                'modalPackageType' => 'nullable|string',
                 'modalHotelType' => 'nullable|string', // Untuk paket 2-4 hari
             ]);
 
-            // Cari paket berdasarkan ID
-            $selectedPackage = $allPackages->firstWhere('id', $validated['package_id']);
+            Log::info('Cek Validasi:', $validated);
 
-            if (!$selectedPackage) {
-                Log::error('Paket tidak ditemukan.', ['package_id' => $validated['package_id']]);
-                return back()->withErrors(['error' => 'Paket tidak ditemukan.']);
-            }
-
-            $type = $selectedPackage->type;
+            $agen = Auth::user();
+            $packageID = $validated['package_id'];
+            $type = $validated['modalPackageType'];
             $pricePerPerson = null;
 
-            // Cek tipe paket dan tentukan harga
+            // log: Tampilkan data paket yang dipilih
+            Log::info('Paket yang dipilih:', [
+                'type' => $type,
+            ]);
+
             if ($type === 'oneday') {
-                // Decode JSON data
-                $pricesArray = json_decode($selectedPackage->prices['price_data'], true);
+                $packOneday = PackageOneDay::where('agen_id', $agen->id)
+                    ->with(['destinations', 'prices', 'regency'])->get();
 
-                // Cari data harga berdasarkan jumlah pengguna
-                $priceData = collect($pricesArray)->firstWhere('user', (int)$validated['modalTotalUser']);
+                $selectedPackage = $packOneday->firstWhere('id', (int)$packageID);
 
-                // Ambil harga per orang
-                $pricePerPerson = $priceData['price'];
+                if ($selectedPackage && (int)$selectedPackage->prices->package_one_day_id === (int)$packageID) {
 
-            } elseif (in_array($type, ['twoday', 'threeday', 'fourday'])) {
-                $pricesArray = json_decode($selectedPackage->prices['price_data'], true);
+                    $pricesArray = json_decode($selectedPackage->prices['price_data'], true);
 
-                $priceData = collect($pricesArray)->firstWhere('user', (int)$validated['modalTotalUser']);
+                    //Log: Tampilkan data harga setelah decoding
+                    Log::info('Decoded pricesArray:', ['pricesArray' => $pricesArray]);
 
-                $hotelType = $validated['modalHotelType'];
+                    if (!$pricesArray) {
+                        Log::error('Gagal mendekode price_data JSON.', ['price_data' => $selectedPackage->prices['price_data']]);
+                        return back()->withErrors(['error' => 'Gagal memproses data harga paket.']);
+                    }
 
-                $pricePerPerson = $priceData[$hotelType];
-            } else {
-                Log::error('Tipe paket tidak valid.', ['type' => $type]);
-                return back()->withErrors(['error' => 'Tipe paket tidak valid.']);
+                    $priceData = collect($pricesArray)->firstWhere('user', (int)$validated['modalTotalUser']);
+
+                    if (!$priceData) {
+                        Log::error('Jumlah pengguna tidak sesuai dengan paket.', [
+                            'type' => $type,
+                            'total_user' => $validated['modalTotalUser'],
+                            'pricesArray' => $pricesArray
+                        ]);
+                        return back()->withErrors(['error' => 'Jumlah pengguna tidak sesuai dengan paket.']);
+                    }
+
+                    $pricePerPerson = $priceData['price'] ?? null;
+
+                } else  {
+                    Log::error('Paket tidak ditemukan.', ['package_id' => $packageID]);
+                    return back()->withErrors(['error' => 'Paket tidak ditemukan.']);
+                }
+
+            } elseif ($type === 'twoday') {
+
+                $packTwoday = PackageTwoDay::where('agen_id', $agen->id)
+                    ->with(['destinations', 'prices', 'regency'])->get();
+
+                $selectedPackage = $packTwoday->firstWhere('id', (int)$packageID);
+
+                if ($selectedPackage && (int)$selectedPackage->prices->package_two_day_id === (int)$packageID) {
+
+                    $pricesArray = json_decode($selectedPackage->prices['price_data'], true);
+
+                    // Log: Tampilkan harga paket untuk tipe 2-4 hari
+                    Log::info('Mencocokkan harga untuk pengguna dan tipe hotel:', [
+                        'pricesArray' => $pricesArray,
+                        'modalTotalUser' => $validated['modalTotalUser'],
+                        'modalHotelType' => $validated['modalHotelType']
+                    ]);
+
+                    $priceData = collect($pricesArray)->firstWhere('user', (int)$validated['modalTotalUser']);
+
+                    if (!$priceData) {
+                        Log::error('Jumlah pengguna tidak sesuai dengan paket.', [
+                            'type' => $type,
+                            'total_user' => $validated['modalTotalUser']
+                        ]);
+                        return back()->withErrors(['error' => 'Jumlah pengguna tidak sesuai dengan paket.']);
+                    }
+
+                    $pricePerPerson = $priceData[$validated['modalHotelType']] ?? null;
+
+                } else  {
+                    Log::error('Paket tidak ditemukan.', ['package_id' => $packageID]);
+                    return back()->withErrors(['error' => 'Paket tidak ditemukan.']);
+                }
+
+            } elseif ($type === 'threeday') {
+
+                $packThreeday = PackageThreeDay::where('agen_id', $agen->id)
+                    ->with(['destinations', 'prices', 'regency'])->get();
+
+                    $selectedPackage = $packThreeday->firstWhere('id', (int)$packageID);
+
+                if ($selectedPackage && (int)$selectedPackage->prices->package_one_day_id === (int)$packageID) {
+
+
+                    $pricesArray = json_decode($selectedPackage->prices['price_data'], true);
+
+                    // Log: Tampilkan harga paket untuk tipe 2-4 hari
+                    Log::info('Mencocokkan harga untuk pengguna dan tipe hotel:', [
+                        'pricesArray' => $pricesArray,
+                        'modalTotalUser' => $validated['modalTotalUser'],
+                        'modalHotelType' => $validated['modalHotelType']
+                    ]);
+
+                    $priceData = collect($pricesArray)->firstWhere('user', (int)$validated['modalTotalUser']);
+
+                    if (!$priceData) {
+                        Log::error('Jumlah pengguna tidak sesuai dengan paket.', [
+                            'type' => $type,
+                            'total_user' => $validated['modalTotalUser']
+                        ]);
+                        return back()->withErrors(['error' => 'Jumlah pengguna tidak sesuai dengan paket.']);
+                    }
+
+                    $pricePerPerson = $priceData[$validated['modalHotelType']] ?? null;
+
+                } else  {
+                    Log::error('Paket tidak ditemukan.', ['package_id' => $packageID]);
+                    return back()->withErrors(['error' => 'Paket tidak ditemukan.']);
+                }
+
+            }  elseif ($type === 'fourday') {
+
+                $packFourday = PackageFourDay::where('agen_id', $agen->id)
+                    ->with(['destinations', 'prices', 'regency'])->get();
+
+                    $selectedPackage = $packFourday->where('id', $packageID);
+
+                if ($selectedPackage && $selectedPackage->prices->package_one_day_id === $packageID) {
+
+                    $pricesArray = json_decode($selectedPackage->prices['price_data'], true);
+
+                    // Log: Tampilkan harga paket untuk tipe 2-4 hari
+                    Log::info('Mencocokkan harga untuk pengguna dan tipe hotel:', [
+                        'pricesArray' => $pricesArray,
+                        'modalTotalUser' => $validated['modalTotalUser'],
+                        'modalHotelType' => $validated['modalHotelType']
+                    ]);
+
+                    $priceData = collect($pricesArray)->firstWhere('user', (int)$validated['modalTotalUser']);
+
+                    if (!$priceData) {
+                        Log::error('Jumlah pengguna tidak sesuai dengan paket.', [
+                            'type' => $type,
+                            'total_user' => $validated['modalTotalUser']
+                        ]);
+                        return back()->withErrors(['error' => 'Jumlah pengguna tidak sesuai dengan paket.']);
+                    }
+
+                    $pricePerPerson = $priceData[$validated['modalHotelType']] ?? null;
+
+                } else  {
+                    Log::error('Paket tidak ditemukan.', ['package_id' => $packageID]);
+                    return back()->withErrors(['error' => 'Paket tidak ditemukan.']);
+                }
+            }
+
+            if (!$pricePerPerson || !is_numeric($pricePerPerson)) {
+                Log::error('Harga per orang tidak ditemukan atau tidak valid.', [
+                    'type' => $type,
+                    'validated' => $validated,
+                    'pricesArray' => $pricesArray,
+                    'priceData' => $priceData,
+                    'pricePerPerson' => $pricePerPerson,
+                ]);
+                return back()->withErrors(['error' => 'Harga tidak ditemukan atau tidak valid.']);
             }
 
             // Hitung harga total
@@ -166,8 +284,4 @@ class BookingServiceController extends Controller
             return back()->withErrors(['error' => 'Terjadi kesalahan, silakan coba lagi.']);
         }
     }
-
-
-
-
 }

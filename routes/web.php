@@ -294,7 +294,7 @@ route::middleware(['auth','roles:agen'])->group(function(){
     Route::controller(PackageServiceController::class)->group(function () {
 
         Route::get('/agen/all-package', 'AllPackage')->name('agen.all.package');
-        Route::get('/show/package/{id}', 'PackageShow')->name('package.show');
+        Route::get('/show/package/{id}/{type}', 'PackageShow')->name('package.show');
 
     });
 

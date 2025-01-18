@@ -91,6 +91,7 @@
                         </thead>
                         <tbody>
                             @foreach ($allPackages as $key=> $package )
+
                             <tr>
                                 <td class="align-content-center text-center">{{ $key+1 }}</td>
                                 <td class="align-content-center text-center">{{ $package->name_package }}</td>
@@ -121,7 +122,7 @@
                                             <ul class="dropdown-menu dropdown-menu-end">
                                                 @if (Auth::user()->can('package.show'))
                                                 <li><a class="dropdown-item text-info"
-                                                        href="{{ route('package.show', $package->id) }}"><i
+                                                    href="{{ route('package.show', ['id' => $package->id, 'type' => $package->type]) }}"><i
                                                             class="ti ti-device-ipad-horizontal-search"></i> Show</a>
                                                 </li>
                                                 @endif
@@ -157,26 +158,58 @@
                     </div>
                     <form id="bookingModalForm" class="row g-6" method="POST" action="{{ route('booking.store') }}">
                         @csrf
-                        <input type="hidden" name="package_id" id="packageId">
-                        <div class="col-12">
-                            <label class="form-label" for="modalClientName">Client Name</label>
-                            <input type="text" id="modalClientName" name="modalClientName" class="form-control"
-                                placeholder="johndoe007" required/>
+                        <div class="row mb-4">
+                            <input type="hidden" name="package_id" id="packageId">
+                            <div class="col-12 mb-4">
+                                <label class="form-label" for="modalClientName">Client Name</label>
+                                <input type="text" id="modalClientName" name="modalClientName" class="form-control"
+                                    placeholder="johndoe007" required/>
+                            </div>
                         </div>
-                        <div class="col-md-4 col-6 mb-md-0 mb-6">
-                          <label for="bs-datepicker-autoclose" class="form-label">Start Date</label>
-                          <input type="text"  id="bs-datepicker-autoclose" placeholder="MM/DD/YYYY"
-                            class="form-control" name="modalStartDate" required/>
+                        <div class="row mb-4">
+                            <div class="col mb-4">
+                                <label class="form-label" for="modalTotalUser">Total User</label>
+                                <input type="number" id="modalTotalUser" name="modalTotalUser"
+                                    class="form-control" placeholder="12" required/>
+                            </div>
+                            <div class="col mb-4">
+                                <label for="modal_packageType" class="form-label">Package Type</label>
+                                <select id="modal_packageType" class="select2 form-select" data-allow-clear="true" name="modalPackageType" required>
+                                  <option value="">Select Type</option>
+                                  <option value="oneday" >1 Day</option>
+                                  <option value="twoday">2 Day</option>
+                                  <option value="threeday">3 Day</option>
+                                  <option value="fourday">4 day</option>
+                                </select>
+                            </div>
+                            <div class="col mb-4" id="hotel_type_container">
+                                <label for="modal_hotelType" class="form-label">Hotel Type</label>
+                                <select id="modal_hotelType" name="modalHotelType" class="select2 form-select" data-allow-clear="true"  required aria-hidden="true">
+                                    <option value="">Select Type</option>
+                                    <option value="TwoStar">Bintang 2</option>
+                                    <option value="ThreeStar">Bintang 3</option>
+                                    <option value="FourStar">Bintang 4</option>
+                                    <option value="FiveStar">Bintang 5</option>
+                                    <option value="Villa">Villa</option>
+                                    <option value="Homestay">Homestay</option>
+                                    <option value="Cottage">Cottage</option>
+                                    <option value="Cabin">Cabin</option>
+                                    <option value="Guesthouse">Guesthouse</option>
+                                    <option value="WithoutAccomodation">Without Accomodation</option>
+                                </select>
+                            </div>
                         </div>
-                        <div class="col-md-4 col-6 mb-md-0 mb-6">
-                          <label for="bs-datepicker-autoclose2" class="form-label">End Date</label>
-                          <input type="text"  id="bs-datepicker-autoclose2" placeholder="MM/DD/YYYY"
-                            class="form-control" name="modalEndDate" required/>
-                        </div>
-                        <div class="col-md-4 col-6">
-                            <label class="form-label" for="modalTotalUser">Total User</label>
-                            <input type="number" id="modalTotalUser" name="modalTotalUser"
-                                class="form-control" placeholder="12" required/>
+                        <div class="row mb-4">
+                            <div class="col mb-4">
+                              <label for="bs-datepicker-autoclose" class="form-label">Start Date</label>
+                              <input type="text"  id="bs-datepicker-autoclose" placeholder="MM/DD/YYYY"
+                                class="form-control" name="modalStartDate" required/>
+                            </div>
+                            <div class="col mb-4">
+                              <label for="bs-datepicker-autoclose2" class="form-label">End Date</label>
+                              <input type="text"  id="bs-datepicker-autoclose2" placeholder="MM/DD/YYYY"
+                                class="form-control" name="modalEndDate" required/>
+                            </div>
                         </div>
                         <div class="col-12 text-center">
                             <button type="submit" class="btn btn-primary me-3">Submit</button>
@@ -191,8 +224,6 @@
         </div>
     </div>
     <!--/ Booking Modal -->
-
-
 </div>
 
 

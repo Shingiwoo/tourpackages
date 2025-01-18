@@ -2,18 +2,12 @@
 
 namespace App\Http\Controllers\Agen\Core;
 
-use App\Models\Regency;
-use App\Models\Facility;
-use App\Models\Destination;
-use Illuminate\Http\Request;
 use App\Models\PackageOneDay;
 use App\Models\PackageTwoDay;
 use App\Models\PackageFourDay;
 use App\Models\PackageThreeDay;
 use App\Http\Controllers\Controller;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class PackageServiceController extends Controller
 {
@@ -41,21 +35,53 @@ class PackageServiceController extends Controller
         return view('agen.package.all_package', compact('allPackages', 'countOneday', 'countTwoday', 'countThreeday', 'countFourday'));
     }
 
-    public function PackageShow($id)
+    public function PackageShow($id, $type)
     {
         $agen = Auth::user();
+        $package = null;
 
-        // Cek di masing-masing tabel
-        $package = PackageOneDay::where('agen_id', $agen->id)->with(['destinations', 'prices', 'regency'])->where('id', $id)->first()
-            ?? PackageTwoDay::where('agen_id', $agen->id)->with(['destinations', 'prices', 'regency'])->where('id', $id)->first()
-            ?? PackageThreeDay::where('agen_id', $agen->id)->with(['destinations', 'prices', 'regency'])->where('id', $id)->first()
-            ?? PackageFourDay::where('agen_id', $agen->id)->with(['destinations', 'prices', 'regency'])->where('id', $id)->first();
+        // Periksa tipe dan cari di tabel yang sesuai
+        switch ($type) {
+            case 'oneday':
+                $package = PackageOneDay::where('agen_id', $agen->id)
+                    ->with(['destinations', 'prices', 'regency'])
+                    ->where('id', $id)
+                    ->first();
+                break;
 
+            case 'twoday':
+                $package = PackageTwoDay::where('agen_id', $agen->id)
+                    ->with(['destinations', 'prices', 'regency'])
+                    ->where('id', $id)
+                    ->first();
+                break;
+
+            case 'threeday':
+                $package = PackageThreeDay::where('agen_id', $agen->id)
+                    ->with(['destinations', 'prices', 'regency'])
+                    ->where('id', $id)
+                    ->first();
+                break;
+
+            case 'fourday':
+                $package = PackageFourDay::where('agen_id', $agen->id)
+                    ->with(['destinations', 'prices', 'regency'])
+                    ->where('id', $id)
+                    ->first();
+                break;
+
+            default:
+                // Abort jika tipe tidak valid
+                abort(404, 'Tipe paket tidak valid');
+        }
+
+        // Abort jika paket tidak ditemukan
         if (!$package) {
             abort(404, 'Paket tidak ditemukan');
         }
 
         return view('agen.package.show_package', compact('package'));
     }
+
 
 }

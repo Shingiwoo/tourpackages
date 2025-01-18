@@ -63,15 +63,8 @@
                             <div class="row g-6">
                                 <div class="col mb-4">
                                     <label class="form-label" for="duration_package">Duration</label>
-                                    <select required id="duration_package" name="DurationPackage"
-                                        class="select2 form-select" data-allow-clear="true">
-                                        <option value="">Select Duration</option>
-                                        <option value="1">One Day</option>
-                                        <option value="2">Two Days</option>
-                                        <option value="3">Three Days</option>
-                                        <option value="4">Four Days</option>
-                                        <option value="5">Four Days</option>
-                                    </select>
+                                    <input type="number" class="form-control" id="duration_package" placeholder="5" max="10"
+                                    name="DurationPackage" aria-label="Duration" required />
                                 </div>
                                 <div class="col mb-4">
                                     <label class="form-label" for="totalUser">Total User</label>
@@ -127,14 +120,8 @@
                                 </div>
                                 <div class="col-sm-12 col-md-4 mb-4">
                                     <label class="form-label" for="night">Night</label>
-                                    <select required id="night" name="night" class="select2 form-select"
-                                        data-allow-clear="true">
-                                        <option value="0" selected>0</option>
-                                        <option value="1">1 Night</option>
-                                        <option value="2">2 Night</option>
-                                        <option value="3">3 Night</option>
-                                        <option value="4">4 Night</option>
-                                    </select>
+                                    <input type="number" class="form-control" id="night" placeholder="5"
+                                        max="50" name="night" aria-label="Night" required />
                                 </div>
                                 <div class="col-sm-12 col-md-4 mb-4">
                                     <label class="form-label" for="capacityHotel">Capacity</label>

@@ -143,6 +143,8 @@
     <script src="{{ asset('assets/js/ui-carousel.js') }}"></script>
     <script src="{{ asset('assets/js/modal-service-fee.js') }}"></script>
     <script src="{{ asset('assets/js/forms-pickers.js') }}"></script>
+    <script src="{{ asset('assets/js/form-agen-data.js') }}"></script>
+    <script src="{{ asset('assets/js/form-modal-booking.js') }}"></script>
     {{-- <script src="{{ asset('assets/js/forms-editors.js') }}"></script> --}}
     <script>
         $(document).ready(function() {
@@ -171,18 +173,6 @@
                 break;
             }
         @endif
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const bookingButtons = document.querySelectorAll('.dropdown-item.text-success');
-
-            bookingButtons.forEach(button => {
-                button.addEventListener('click', function () {
-                    const packageId = this.dataset.id; // Dapatkan ID paket
-                    document.getElementById('packageId').value = packageId; // Masukkan ke form
-                });
-            });
-        });
     </script>
 </body>
 
