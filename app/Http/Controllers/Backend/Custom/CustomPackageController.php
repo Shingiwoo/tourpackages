@@ -8,6 +8,7 @@ use App\Models\Vehicle;
 use App\Models\Facility;
 use App\Models\Destination;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 
 class CustomPackageController extends Controller
@@ -27,6 +28,7 @@ class CustomPackageController extends Controller
 
     public function StoreData(Request $request)
     {
+        Log::info('Mulai Menghitung Custom Paket!');
         // Validasi data input
         $validatedData = $request->validate([
             'facilities' => 'required|array',
@@ -44,6 +46,8 @@ class CustomPackageController extends Controller
             'capacityHotel' => 'required',
             'totalUser' => 'required',
         ]);
+
+        Log::info('Cek Validasi:', $validatedData);
 
         $validatedData['otherFee'] = str_replace(',', '', $validatedData['otherFee']);
         $validatedData['mealCost'] = str_replace(',', '', $validatedData['mealCost']);
@@ -83,6 +87,8 @@ class CustomPackageController extends Controller
             $capacityHotel,
             $participants
         );
+
+        Log::info('Cek Prices data :', $prices);
 
         // Simpan data ke tabel customs
         $customData = Custom::first(); // Ambil data pertama

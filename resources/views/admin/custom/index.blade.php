@@ -27,8 +27,7 @@
                             <div class="row g-6">
                                 <div class="col mb-4">
                                     <label class="form-label" for="destinations">Destination</label>
-                                    <select id="destinations" name="destinations[]" class="select2 form-select"
-                                        multiple>
+                                    <select id="destinations" name="destinations[]" class="select2 form-select" multiple required>
                                         @foreach ($destinations as $destination)
                                         <option value="{{ $destination->id }}">{{ $destination->name }}</option>
                                         @endforeach
@@ -37,7 +36,7 @@
                             </div>
                             <div class="row mb-4">
                                 <label class="form-label" for="vehicle">Vehicle</label>
-                                <select id="vehicle" name="vehicleName" class="select2 form-select" multiple>
+                                <select id="vehicle" name="vehicleName" class="select2 form-select" multiple required>
                                     @foreach ($vehicles as $vehicle)
                                     <option value="{{ $vehicle->id }}">{{ $vehicle->name }} | Kapasitas: {{
                                         $vehicle->capacity_min
@@ -49,7 +48,7 @@
                             <div class="row mb-4">
                                 <div class="col">
                                     <label class="form-label" for="facility">Facility</label>
-                                    <select id="facility" name="facilities[]" class="select2 form-select" multiple>
+                                    <select id="facility" name="facilities[]" class="select2 form-select" multiple required>
                                         @foreach ($facilities as $facility)
                                         <option value="{{ $facility->id }}">{{ $facility->name }} | Type: {{
                                             $facility->type }}
