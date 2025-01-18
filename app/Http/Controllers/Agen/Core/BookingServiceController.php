@@ -87,29 +87,12 @@ class BookingServiceController extends Controller
 
                     $pricesArray = json_decode($selectedPackage->prices['price_data'], true);
 
-                    //Log: Tampilkan data harga setelah decoding
-                    Log::info('Decoded pricesArray:', ['pricesArray' => $pricesArray]);
-
-                    if (!$pricesArray) {
-                        Log::error('Gagal mendekode price_data JSON.', ['price_data' => $selectedPackage->prices['price_data']]);
-                        return back()->withErrors(['error' => 'Gagal memproses data harga paket.']);
-                    }
-
                     $priceData = collect($pricesArray)->firstWhere('user', (int)$validated['modalTotalUser']);
-
-                    if (!$priceData) {
-                        Log::error('Jumlah pengguna tidak sesuai dengan paket.', [
-                            'type' => $type,
-                            'total_user' => $validated['modalTotalUser'],
-                            'pricesArray' => $pricesArray
-                        ]);
-                        return back()->withErrors(['error' => 'Jumlah pengguna tidak sesuai dengan paket.']);
-                    }
 
                     $pricePerPerson = $priceData['price'] ?? null;
 
                 } else  {
-                    Log::error('Paket tidak ditemukan.', ['package_id' => $packageID]);
+                    Log::error('Paket tidak ditemukan.', ['oneday package_id' => $packageID]);
                     return back()->withErrors(['error' => 'Paket tidak ditemukan.']);
                 }
 
@@ -124,27 +107,12 @@ class BookingServiceController extends Controller
 
                     $pricesArray = json_decode($selectedPackage->prices['price_data'], true);
 
-                    // Log: Tampilkan harga paket untuk tipe 2-4 hari
-                    Log::info('Mencocokkan harga untuk pengguna dan tipe hotel:', [
-                        'pricesArray' => $pricesArray,
-                        'modalTotalUser' => $validated['modalTotalUser'],
-                        'modalHotelType' => $validated['modalHotelType']
-                    ]);
-
                     $priceData = collect($pricesArray)->firstWhere('user', (int)$validated['modalTotalUser']);
-
-                    if (!$priceData) {
-                        Log::error('Jumlah pengguna tidak sesuai dengan paket.', [
-                            'type' => $type,
-                            'total_user' => $validated['modalTotalUser']
-                        ]);
-                        return back()->withErrors(['error' => 'Jumlah pengguna tidak sesuai dengan paket.']);
-                    }
 
                     $pricePerPerson = $priceData[$validated['modalHotelType']] ?? null;
 
                 } else  {
-                    Log::error('Paket tidak ditemukan.', ['package_id' => $packageID]);
+                    Log::error('Paket tidak ditemukan.', ['twoday package_id' => $packageID]);
                     return back()->withErrors(['error' => 'Paket tidak ditemukan.']);
                 }
 
@@ -157,30 +125,15 @@ class BookingServiceController extends Controller
 
                 if ($selectedPackage && (int)$selectedPackage->prices->package_one_day_id === (int)$packageID) {
 
-
                     $pricesArray = json_decode($selectedPackage->prices['price_data'], true);
 
-                    // Log: Tampilkan harga paket untuk tipe 2-4 hari
-                    Log::info('Mencocokkan harga untuk pengguna dan tipe hotel:', [
-                        'pricesArray' => $pricesArray,
-                        'modalTotalUser' => $validated['modalTotalUser'],
-                        'modalHotelType' => $validated['modalHotelType']
-                    ]);
 
                     $priceData = collect($pricesArray)->firstWhere('user', (int)$validated['modalTotalUser']);
-
-                    if (!$priceData) {
-                        Log::error('Jumlah pengguna tidak sesuai dengan paket.', [
-                            'type' => $type,
-                            'total_user' => $validated['modalTotalUser']
-                        ]);
-                        return back()->withErrors(['error' => 'Jumlah pengguna tidak sesuai dengan paket.']);
-                    }
 
                     $pricePerPerson = $priceData[$validated['modalHotelType']] ?? null;
 
                 } else  {
-                    Log::error('Paket tidak ditemukan.', ['package_id' => $packageID]);
+                    Log::error('Paket tidak ditemukan.', ['threeday package_id' => $packageID]);
                     return back()->withErrors(['error' => 'Paket tidak ditemukan.']);
                 }
 
@@ -195,27 +148,12 @@ class BookingServiceController extends Controller
 
                     $pricesArray = json_decode($selectedPackage->prices['price_data'], true);
 
-                    // Log: Tampilkan harga paket untuk tipe 2-4 hari
-                    Log::info('Mencocokkan harga untuk pengguna dan tipe hotel:', [
-                        'pricesArray' => $pricesArray,
-                        'modalTotalUser' => $validated['modalTotalUser'],
-                        'modalHotelType' => $validated['modalHotelType']
-                    ]);
-
                     $priceData = collect($pricesArray)->firstWhere('user', (int)$validated['modalTotalUser']);
-
-                    if (!$priceData) {
-                        Log::error('Jumlah pengguna tidak sesuai dengan paket.', [
-                            'type' => $type,
-                            'total_user' => $validated['modalTotalUser']
-                        ]);
-                        return back()->withErrors(['error' => 'Jumlah pengguna tidak sesuai dengan paket.']);
-                    }
 
                     $pricePerPerson = $priceData[$validated['modalHotelType']] ?? null;
 
                 } else  {
-                    Log::error('Paket tidak ditemukan.', ['package_id' => $packageID]);
+                    Log::error('Paket tidak ditemukan.', ['fourday package_id' => $packageID]);
                     return back()->withErrors(['error' => 'Paket tidak ditemukan.']);
                 }
             }
