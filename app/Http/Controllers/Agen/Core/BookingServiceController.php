@@ -123,7 +123,7 @@ class BookingServiceController extends Controller
 
                     $selectedPackage = $packThreeday->firstWhere('id', (int)$packageID);
 
-                if ($selectedPackage && (int)$selectedPackage->prices->package_one_day_id === (int)$packageID) {
+                if ($selectedPackage && (int)$selectedPackage->prices->package_three_day_id === (int)$packageID) {
 
                     $pricesArray = json_decode($selectedPackage->prices['price_data'], true);
 
@@ -142,9 +142,9 @@ class BookingServiceController extends Controller
                 $packFourday = PackageFourDay::where('agen_id', $agen->id)
                     ->with(['destinations', 'prices', 'regency'])->get();
 
-                    $selectedPackage = $packFourday->where('id', $packageID);
+                    $selectedPackage = $packFourday->firstWhere('id', (int)$packageID);
 
-                if ($selectedPackage && $selectedPackage->prices->package_one_day_id === $packageID) {
+                if ($selectedPackage && (int)$selectedPackage->prices->package_four_day_id === (int)$packageID) {
 
                     $pricesArray = json_decode($selectedPackage->prices['price_data'], true);
 
