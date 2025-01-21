@@ -9,7 +9,6 @@ use App\Http\Controllers\Backend\Role\RoleController;
 use App\Http\Controllers\Backend\Admin\AdminController;
 use App\Http\Controllers\Backend\Hotel\HotelController;
 use App\Http\Controllers\Agen\Core\AgenServiceController;
-use App\Http\Controllers\Backend\AgenFee\AgenFeeController;
 use App\Http\Controllers\Backend\Vehicle\VehicleController;
 use App\Http\Controllers\Agen\Core\BookingServiceController;
 use App\Http\Controllers\Agen\Core\PackageServiceController;
@@ -26,7 +25,7 @@ use App\Http\Controllers\Backend\PackageTour\GenerateFourdayPackageController;
 use App\Http\Controllers\Backend\PackageTour\GenerateThreedayPackageController;
 
 Route::get('/', function () {
-    return view('frontend/index');
+    return view('frontend.index');
 });
 
 Route::get('/admin/dashboard', [AdminController::class, 'index'])
@@ -267,8 +266,10 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     });
 
     Route::controller(CustomPackageController::class)->group(function () {
-        Route::get('/all/custom-package', 'CustomDashboard')->name('all.custom.package');
+        Route::get('/calculate/custom-package', 'CustomDashboard')->name('calculate.custom.package');
         Route::post('/store/custom-package', 'StoreData')->name('store.custom.package');
+        Route::post('/store/custom-save', 'CustomSave')->name('save.custom.package');
+        Route::get('/index/custom-package', 'IndexCustom')->name('all.custom.package');
     });
 });
 

@@ -109,7 +109,7 @@
             @endif
             @if (Auth::user()->can('package.generate'))
             <li class="menu-item">
-                <a href="{{ route('all.custom.package') }}" class="menu-link">
+                <a href="{{ route('calculate.custom.package') }}" class="menu-link">
                     <i class="menu-icon tf-icons ti ti-adjustments-cog"></i>
                     <div data-i18n="Custom Package">Custom Package</div>
                 </a>

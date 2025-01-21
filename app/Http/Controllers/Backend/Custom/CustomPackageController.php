@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Custom;
 
+use App\Models\User;
 use App\Models\Custom;
 use App\Models\Regency;
 use App\Models\Vehicle;
@@ -19,11 +20,12 @@ class CustomPackageController extends Controller
         $regencies = Regency::all();
         $vehicles = Vehicle::all();
         $facilities = Facility::all();
+        $allagens = User::where('role', 'agen')->get();
 
         $customPackage = Custom::first(); // Ambil data pertama
         $prices = $customPackage ? json_decode($customPackage->custompackage, true) : null;
 
-        return view('admin.custom.index', compact('destinations', 'regencies', 'vehicles', 'facilities','prices'));
+        return view('admin.custom.calculate', compact('destinations', 'regencies', 'vehicles', 'facilities','prices', 'allagens'));
     }
 
     public function StoreData(Request $request)
@@ -105,7 +107,7 @@ class CustomPackageController extends Controller
         ];
 
         // Redirect ke halaman destinasi dengan notifikasi
-        return redirect()->route('all.custom.package')->with($notification);
+        return redirect()->route('calculate.custom.package')->with($notification);
     }
 
 
@@ -304,4 +306,97 @@ class CustomPackageController extends Controller
 
         return $totalFacilityCost;
     }
+
+    public function CustomSave(Request $request)
+    {
+        Log::info('Starting to save custom package!');
+
+        // Validasi input
+        $validatedData = $request->validate([
+            'saveCustAgen' => 'exists:users,id',
+            'saveCustName' => 'required|string',
+            'saveCustType' => 'required|string',
+        ]);
+
+        // Ambil data dari model Custom dengan ID 1
+        $existingCustomData = Custom::find(1);
+
+        if (!$existingCustomData) {
+            return redirect()->route('calculate.custom.package')->with([
+                'message' => 'Data Custom dengan ID 1 tidak ditemukan!',
+                'alert-type' => 'error',
+            ]);
+        }
+
+        // Decode JSON data dari model Custom dengan ID 1
+        $decodedData = json_decode($existingCustomData->custompackage, true);
+
+        if (!$decodedData) {
+            return redirect()->route('calculate.custom.package')->with([
+                'message' => 'Gagal membaca data JSON pada Custom ID 1!',
+                'alert-type' => 'error',
+            ]);
+        }
+
+        // Tambahkan data baru dari form
+        $newData = [
+            'transportCost' => $decodedData['transportCost'] ?? 0,
+            'parkingCost' => $decodedData['parkingCost'] ?? 0,
+            'ticketCost' => $decodedData['ticketCost'] ?? 0,
+            'hotelCost' => $decodedData['hotelCost'] ?? 0,
+            'otherFee' => $decodedData['otherFee'] ?? "0",
+            'reservedFee' => $decodedData['reservedFee'] ?? "0",
+            'totalMealCost' => $decodedData['totalMealCost'] ?? 0,
+            'facilityCost' => $decodedData['facilityCost'] ?? 0,
+            'totalCost' => $decodedData['totalCost'] ?? 0,
+            'DurationPackage' => $decodedData['DurationPackage'] ?? "0",
+            'night' => $decodedData['night'] ?? "0",
+            'downPayment' => $decodedData['downPayment'] ?? 0,
+            'remainingCosts' => $decodedData['remainingCosts'] ?? 0,
+            'costPerPerson' => $decodedData['costPerPerson'] ?? 0,
+            'childCost' => $decodedData['childCost'] ?? 0,
+            'participants' => $decodedData['participants'] ?? "0",
+            'additionalCostWna' => $decodedData['additionalCostWna'] ?? 0,
+            'destinationNames' => $decodedData['destinationNames'] ?? [],
+            'facilityNames' => $decodedData['facilityNames'] ?? [],
+            'agen_id' => $validatedData['saveCustAgen'],
+            'package_name' => $validatedData['saveCustName'],
+            'package_type' => $validatedData['saveCustType'],
+        ];
+
+        // Simpan data baru dengan ID baru
+        Custom::create([
+            'custompackage' => json_encode($newData),
+        ]);
+
+        // Kirim notifikasi berhasil
+        $notification = [
+            'message' => 'Data Custom berhasil disimpan!',
+            'alert-type' => 'success',
+        ];
+
+        // Redirect ke halaman destinasi dengan notifikasi
+        return redirect()->route('calculate.custom.package')->with($notification);
+    }
+
+    public function IndexCustom()
+    {
+        // Ambil data agen
+        $allagens = User::where('role', 'agen')->get();
+
+        // Ambil semua data Custom kecuali ID 1
+        $allCustPackages = Custom::where('id', '!=', 1)->get();
+
+        // Siapkan data Custom dengan username agen dan ID
+        $customData = $allCustPackages->map(function ($custom) use ($allagens) {
+            $customPackage = json_decode($custom->custompackage, true);
+            $agen = $allagens->firstWhere('id', $customPackage['agen_id'] ?? null);
+            $customPackage['agen_name'] = $agen ? $agen->username : 'Unknown Agen';
+            $customPackage['id'] = $custom->id; // Tambahkan ID Custom
+            return $customPackage;
+        });
+
+        return view('admin.custom.index', compact('customData', 'allagens'));
+    }
+
 }

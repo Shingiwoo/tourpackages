@@ -4,305 +4,66 @@
 <!-- Content wrapper -->
 <div class="content-wrapper">
     <!-- Content -->
-
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4 class="mb-1">Custom Package</h4>
-
-        <p class="mb-4">
-            Menghitung dengan cepat harga paket wisata mulai 1 hari - 4 hari <br>
-            sesuai dengan biaya dan detail yang isikan.
-        </p>
-        <div class="row g-6">
-            <div class="col-xxl-4 col-lg-6">
-                <div class="card h-100">
-                    <div class="card-header d-flex align-items-center justify-content-between">
-                        <div class="card-title mb-0">
-                            <h5 class="m-0 me-2">Detail Custom Package</h5>
-                        </div>
-                    </div>
-                    <form action="{{ route('store.custom.package') }}" method="POST">
-                        @csrf
-                        <div class="card-body" style="position: relative;">
-                            <h6>1. Destinasi, Fasilitas & Kendaraan</h6>
-                            <div class="row g-6">
-                                <div class="col mb-4">
-                                    <label class="form-label" for="destinations">Destination</label>
-                                    <select id="destinations" name="destinations[]" class="select2 form-select" multiple required>
-                                        @foreach ($destinations as $destination)
-                                        <option value="{{ $destination->id }}">{{ $destination->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="row mb-4">
-                                <label class="form-label" for="vehicle">Vehicle</label>
-                                <select id="vehicle" name="vehicleName" class="select2 form-select" multiple required>
-                                    @foreach ($vehicles as $vehicle)
-                                    <option value="{{ $vehicle->id }}">{{ $vehicle->name }} | Kapasitas: {{
-                                        $vehicle->capacity_min
-                                        }}-{{ $vehicle->capacity_max }} Org | {{ $vehicle->regency->name }}
-                                    </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="row mb-4">
-                                <div class="col">
-                                    <label class="form-label" for="facility">Facility</label>
-                                    <select id="facility" name="facilities[]" class="select2 form-select" multiple required>
-                                        @foreach ($facilities as $facility)
-                                        <option value="{{ $facility->id }}">{{ $facility->name }} | Type: {{
-                                            $facility->type }}
-                                        </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <hr class="my-6 mx-n4">
-                            <h6>2. Detail Info</h6>
-                            <div class="row g-6">
-                                <div class="col mb-4">
-                                    <label class="form-label" for="duration_package">Duration</label>
-                                    <input type="number" class="form-control" id="duration_package" placeholder="5" max="10"
-                                    name="DurationPackage" aria-label="Duration" required />
-                                </div>
-                                <div class="col mb-4">
-                                    <label class="form-label" for="totalUser">Total User</label>
-                                    <input type="number" class="form-control" id="totalUser" placeholder="5" max="999"
-                                        name="totalUser" aria-label="Total User" required />
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col mb-4">
-                                    <label class="form-label" for="otherFee">Other Fee</label>
-                                    <input type="text" id="otherFee" class="form-control numeral-mask"
-                                        placeholder="500000" name="otherFee" aria-label="Other Fee" required />
-                                </div>
-                                <div class="col mb-4">
-                                    <label class="form-label" for="reservedFee">Reserved Fee</label>
-                                    <input type="text" id="reservedFee" class="form-control numeral-mask2"
-                                        placeholder="500000" name="reservedFee" aria-label="Reserved Fee" required />
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-sm-12 col-md-6 mb-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="IncludeMakan"
-                                            id="IncludeMakan">
-                                        <label class="form-check-label" for="IncludeMakan"> Include Makan </label>
+        <h4>All List Custom Data</h4>
+        <div class="card mt-4">
+            <div class="card-datatable table-responsive pt-0">
+                <table id="example" class="datatables-ajax table" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th class="align-content-center text-center">#</th>
+                            <th class="align-content-center text-center">Name</th>
+                            <th class="align-content-center text-center">Agen</th>
+                            <th class="align-content-center text-center">Duration</th>
+                            <th class="align-content-center text-center">Total User</th>
+                            <th class="align-content-center text-center">Price Perperson</th>
+                            <th class="align-content-center">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($customData as $key => $data)
+                        <tr>
+                            <td class="align-content-center text-center">{{ $key + 1 }}</td>
+                            <td class="align-content-center text-center">{{ $data['package_name'] }}</td>
+                            <td class="align-content-center text-center">{{ $data['agen_name'] }}</td>
+                            <td class="align-content-center text-center">{{ $data['DurationPackage'] }} Days</td>
+                            <td class="align-content-center text-center">{{ $data['participants'] }}</td>
+                            <td class="align-content-center text-center">Rp {{ number_format($data['costPerPerson'], 0,
+                                ',', '.') }}</td>
+                            <td class="align-content-center">
+                                <!-- Icon Dropdown -->
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="btn-group">
+                                        <button type="button"
+                                            class="btn btn-primary btn-icon rounded-pill dropdown-toggle hide-arrow"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="ti ti-dots-vertical"></i>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-end">
+                                            @if (Auth::user()->can('package.show'))
+                                            <li><a class="dropdown-item text-warning" href="javascript:void(0)" data-id="{{ $data['id'] }}"><i class="ti ti-eye"></i>Show</a></li>
+                                            @endif
+                                            @if (Auth::user()->can('booking.add'))
+                                            <li><a href="javascript:void(0)" class="dropdown-item text-success"> <i class="ti ti-shopping-cart-plus"></i> Booking
+                                            </a></li>
+                                            @endif
+                                        </ul>
                                     </div>
                                 </div>
-                                <div class="col-sm-12 col-md-6 mb-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="IncludeHotel"
-                                            id="IncludeHotel">
-                                        <label class="form-check-label" for="IncludeHotel"> Include Hotel </label>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row" id="meal-row">
-                                <div class="col-sm-12 col-md-6 mb-4">
-                                    <label class="form-label" for="mealCost">Meal Cost</label>
-                                    <input type="text" id="mealCost" class="form-control numeral-mask4"
-                                        placeholder="500000" name="mealCost" aria-label="Meal Cost" required />
-                                </div>
-                                <div class="col-sm-12 col-md-6 mb-4">
-                                    <label class="form-label" for="totalMeal">Total Meal</label>
-                                    <input type="number" class="form-control" id="totalMeal" placeholder="5" max="50"
-                                        name="totalMeal" aria-label="Total Meal" required />
-                                </div>
-                            </div>
-                            <div class="row" id="hotel-row">
-                                <div class="col-sm-12 col-md-4 mb-4">
-                                    <label class="form-label" for="hotelPrice">Hotel</label>
-                                    <input type="text" id="hotelPrice" class="form-control numeral-mask3"
-                                        placeholder="500000" name="hotelPrice" aria-label="Hotel" required />
-                                </div>
-                                <div class="col-sm-12 col-md-4 mb-4">
-                                    <label class="form-label" for="night">Night</label>
-                                    <input type="number" class="form-control" id="night" placeholder="5"
-                                        max="50" name="night" aria-label="Night" required />
-                                </div>
-                                <div class="col-sm-12 col-md-4 mb-4">
-                                    <label class="form-label" for="capacityHotel">Capacity</label>
-                                    <input type="number" class="form-control" id="capacityHotel" placeholder="5"
-                                        max="50" name="capacityHotel" aria-label="Capacity Hotel" required />
-                                </div>
-                            </div>
-                            <hr class="my-6 mx-n4">
-                            <div class="row mt-2">
-                                <div class="col text-end">
-                                    <button type="submit" class="btn btn-primary">Calculate</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="col-xxl-4 col-lg-6">
-                <div class="card h-100">
-                    <div class="card-header d-flex align-items-center justify-content-between">
-                        <div class="card-title mb-0">
-                            <h5 class="m-0 me-2">Hasil Perhitungan :</h5>
-                        </div>
-                    </div>
-                    <div class="card-body" style="position: relative;">
-                        <div class="card-datatable table-responsive">
-                            @if($prices)
-                            <div class="card-datatable text-nowrap">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th class="fw-medium mx-2 text-center" style="width: 40%">Detail</th>
-                                            <th class="fw-medium mx-2 text-center">Total Harga</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <th><i class="ti ti-car ti-lg mx-2"></i>Transport</th>
-                                            <td class="text-end">Rp {{ number_format($prices['transportCost'], 0, ',', '.')
-                                                }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th><i class="ti ti-parking-circle ti-lg mx-2"></i>Biaya Parkir</th>
-                                            <td class="text-end">Rp {{ number_format($prices['parkingCost'], 0, ',', '.') }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th><i class="ti ti-ticket ti-lg mx-2"></i>Tiket Masuk</th>
-                                            <td class="text-end">Rp {{ number_format($prices['ticketCost'], 0, ',', '.') }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th><i class="ti ti-soup ti-lg mx-2"></i>Biaya Makan</th>
-                                            <td class="text-end">Rp {{ number_format($prices['totalMealCost'], 0, ',', '.') }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th><i class="ti ti-building-skyscraper ti-lg mx-2"></i>Penginapan</th>
-                                            <td class="text-end">Rp {{ number_format($prices['hotelCost'], 0, ',', '.') }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th><i class="ti ti-devices-dollar ti-lg mx-2"></i>Biaya Lain</th>
-                                            <td class="text-end">Rp {{ number_format($prices['otherFee'], 0, ',', '.') }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th><i class="ti ti-clock-dollar ti-lg mx-2"></i>Biaya Jasa</th>
-                                            <td class="text-end">Rp {{ number_format($prices['reservedFee'], 0, ',', '.') }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th><i class="ti ti-home-infinity ti-lg mx-2"></i>Fasilitas</th>
-                                            <td class="text-end">Rp {{ number_format($prices['facilityCost'], 0, ',', '.')
-                                                }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th><i class="ti ti-receipt ti-lg mx-2"></i><strong>Total Biaya</strong></th>
-                                            <td class="text-end"><strong>Rp {{ number_format($prices['totalCost'], 0, ',',
-                                                    '.') }}</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <th><i class="ti ti-cash-register ti-lg mx-2"></i><strong>Down Payment</strong></th>
-                                            <td class="text-end"><strong>Rp {{ number_format($prices['downPayment'], 0, ',',
-                                                    '.') }}</strong></td>
-                                        </tr>
-                                        <tr>
-                                            <th><i class="ti ti-cash ti-lg mx-2"></i><strong>Sisa Biaya</strong></th>
-                                            <td class="text-end"><strong>Rp {{ number_format($prices['remainingCosts'], 0,
-                                                    ',', '.') }}</strong></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="mt-6">
-                                <h6 class="text-warning">Keterangan :</h6>
-                                <ul>
-                                    <li class="mb-1">
-                                        Jadi untuk biaya Perorang : Rp <b>{{ number_format($prices['costPerPerson'], 0, ',',
-                                            '.') }}</b>
-                                    </li>
-                                    <li class="mb-1">
-                                        Dengan minimal jumlah peserta <b>{{ $prices['participants'] }}</b> dewasa
-                                    </li>
-                                    <li class="mb-1">
-                                        Biaya Tambahan untuk WNA : Rp <b>{{ number_format($prices['additionalCostWna'], 0,
-                                            ',', '.') }}</b> /orang
-                                    </li>
-                                    <li class="mb-1">
-                                        Biaya untuk anak2 usia 3-10 tahun : Rp <b>{{ number_format($prices['childCost'], 0,
-                                            ',', '.') }}</b> /anak
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="row">
-                                <div class="col text-end">
-                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                                        data-bs-target="#detailCustomPack">
-                                        View Detail
-                                    </button>
-                                </div>
-                            </div>
-
-                            @else
-                            <p class="text-center">Tidak ada data custom package tersedia.</p>
-                            @endif
-                        </div>
-                    </div>
-                </div>
+                                <!--/ Icon Dropdown -->
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="7" class="text-center">No Custom Packages Found</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
     <!-- End Content -->
-
-    <!-- Costum Pack Modal -->
-    <div class="modal fade" id="detailCustomPack" tabindex="-1">
-        <div class="modal-dialog modal-lg modal-simple modal-add-new-address">
-            <div class="modal-content">
-                @if($prices)
-                <div class="modal-body">
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    <div class="text-center mb-6">
-                        <h4 class="address-title mb-2">Custom Package</h4>
-                        <p class="address-subtitle">Trip Detail for {{ $prices['DurationPackage'] }} day {{ $prices['night'] }} night</p>
-                    </div>
-                    <div class="row mb-4">
-                        <h5 class="text-warning mb-2">*Destinasi* :</h5>
-                        <div class="col">
-                            <div class="demo-inline-spacing mt-4">
-                                <ol class="list-group">
-                                    @forelse ($prices['destinationNames'] as $name)
-                                    <li class="list-group-item">- {{ $name }}</li>
-                                    @empty
-                                    <li class="list-group-item">No destinations available</li>
-                                    @endforelse
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row mb-4">
-                        <h5 class="text-warning mb-2">*Fasilitas* :</h5>
-                        <div class="col">
-                            <div class="demo-inline-spacing mt-4">
-                                <ol class="list-group">
-                                    @forelse ($prices['facilityNames'] as $name)
-                                    <li class="list-group-item">- {{ $name }}</li>
-                                    @empty
-                                    <li class="list-group-item">No destinations available</li>
-                                    @endforelse
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                @else
-                <p class="text-center">Tidak ada data custom package tersedia.</p>
-                @endif
-            </div>
-
-        </div>
-    </div>
-    <!--/ Costum Pack Modal -->
 </div>
 
 
