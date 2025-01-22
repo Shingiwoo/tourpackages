@@ -399,4 +399,19 @@ class CustomPackageController extends Controller
         return view('admin.custom.index', compact('customData', 'allagens'));
     }
 
+    public function getCustomPackage($id)
+    {
+        $custom = Custom::find($id);
+
+        if (!$custom) {
+            return response()->json(['success' => false, 'message' => 'Data not found']);
+        }
+
+        $prices = json_decode($custom->custompackage, true);
+
+        return response()->json([
+            'success' => true,
+            'prices' => $prices,
+        ]);
+    }
 }

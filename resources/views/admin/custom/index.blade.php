@@ -41,7 +41,10 @@
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             @if (Auth::user()->can('package.show'))
-                                            <li><a class="dropdown-item text-warning" href="javascript:void(0)" data-id="{{ $data['id'] }}"><i class="ti ti-eye"></i>Show</a></li>
+                                            <li><a type="button" class="dropdown-item text-info" data-id="{{ $data['id'] }}"
+                                                data-bs-toggle="modal" data-bs-target="#showData">
+                                                <i class="ti ti-eye"></i> Show
+                                            </a></li>
                                             @endif
                                             @if (Auth::user()->can('booking.add'))
                                             <li><a href="javascript:void(0)" class="dropdown-item text-success"> <i class="ti ti-shopping-cart-plus"></i> Booking
@@ -66,5 +69,80 @@
     <!-- End Content -->
 </div>
 
+<!-- Custom Save Modal -->
+<div class="modal fade" id="showData" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-simple modal-edit-user">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="address-title mb-2">Custom Package: <span class="package-name"></span></h4>
+                    <p class="address-subtitle">Trip Detail for <span class="duration"></span> day(s) <span class="night"></span> night(s)</p>
+                </div>
+                <div class="row mb-4">
+                    <h5 class="text-warning mb-2">*Destinasi* :</h5>
+                    <div class="col">
+                        <div class="demo-inline-spacing mt-4">
+                            <ol class="list-group destinations">
+                                <!-- Destinations will be dynamically populated -->
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <h5 class="text-warning mb-2">*Fasilitas* :</h5>
+                    <div class="col">
+                        <div class="demo-inline-spacing mt-4">
+                            <ol class="list-group facilities">
+                                <!-- Facilities will be dynamically populated -->
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-datatable table-responsive text-nowrap">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="fw-medium mx-2 text-center" style="width: 40%">Detail</th>
+                                <th class="fw-medium mx-2 text-center">Harga</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <th><i class="ti ti-receipt ti-lg mx-2"></i><strong>Biaya Perorang</strong></th>
+                                <td class="text-end perperso-cost">Rp -</td>
+                            </tr>
+                            <tr>
+                                <th><i class="ti ti-user ti-lg mx-2"></i><strong>Total User</strong></th>
+                                <td class="text-end total-user">0 orang</td>
+                            </tr>
+                            <tr>
+                                <th><i class="ti ti-receipt ti-lg mx-2"></i><strong>Total Biaya</strong></th>
+                                <td class="text-end total-cost">Rp -</td>
+                            </tr>
+                            <tr>
+                                <th><i class="ti ti-cash-register ti-lg mx-2"></i><strong>Down Payment</strong></th>
+                                <td class="text-end down-payment">Rp -</td>
+                            </tr>
+                            <tr>
+                                <th><i class="ti ti-cash ti-lg mx-2"></i><strong>Sisa Biaya</strong></th>
+                                <td class="text-end remaining-costs">Rp -</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row mt-4">
+                        <h6 class="text-warning mb-2">*Keterangan:* </h6>
+                        <ul>
+                            <li>Biaya Anak-anak: <strong class="child-cost">Rp -</strong></li>
+                            <li>Biaya Tambahan WNA: <strong class="additional-cost-wna">Rp -</strong></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
+
+<!--/ Custom Save Modal -->
 @endsection

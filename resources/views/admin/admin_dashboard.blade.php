@@ -171,6 +171,55 @@
         @endif
     </script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('[data-bs-toggle="modal"]').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const customId = this.getAttribute('data-id');
+                    fetch(`/get-custom-package/${customId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                const prices = data.prices;
+
+                                document.querySelector('#showData .package-name').textContent = prices.package_name;
+                                document.querySelector('#showData .duration').textContent = prices.DurationPackage;
+                                document.querySelector('#showData .night').textContent = prices.night;
+
+                                const destinationList = document.querySelector('#showData .list-group.destinations');
+                                destinationList.innerHTML = '';
+                                prices.destinationNames.forEach(name => {
+                                    destinationList.innerHTML += `<li class="list-group-item">- ${name}</li>`;
+                                });
+
+                                const facilityList = document.querySelector('#showData .list-group.facilities');
+                                facilityList.innerHTML = '';
+                                prices.facilityNames.forEach(name => {
+                                    facilityList.innerHTML += `<li class="list-group-item">- ${name}</li>`;
+                                });
+
+                                document.querySelector('#showData .perperso-cost').textContent =
+                                    `Rp ${prices.costPerPerson.toLocaleString('id-ID')}`;
+                                document.querySelector('#showData .total-user').textContent = `${prices.participants} orang`;
+                                document.querySelector('#showData .total-cost').textContent =
+                                    `Rp ${prices.totalCost.toLocaleString('id-ID')}`;
+                                document.querySelector('#showData .down-payment').textContent =
+                                    `Rp ${prices.downPayment.toLocaleString('id-ID')}`;
+                                document.querySelector('#showData .remaining-costs').textContent =
+                                    `Rp ${prices.remainingCosts.toLocaleString('id-ID')}`;
+
+                                document.querySelector('#showData .child-cost').textContent =
+                                    `Rp ${prices.childCost.toLocaleString('id-ID')}`;
+                                document.querySelector('#showData .additional-cost-wna').textContent =
+                                    `Rp ${prices.additionalCostWna.toLocaleString('id-ID')}`;
+                            }
+                        });
+                });
+            });
+        });
+    </script>
+
+
 
 </body>
 

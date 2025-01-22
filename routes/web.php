@@ -270,6 +270,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::post('/store/custom-package', 'StoreData')->name('store.custom.package');
         Route::post('/store/custom-save', 'CustomSave')->name('save.custom.package');
         Route::get('/index/custom-package', 'IndexCustom')->name('all.custom.package');
+        Route::get('/get-custom-package/{id}', 'getCustomPackage');
     });
 });
 
