@@ -316,6 +316,8 @@ class CustomPackageController extends Controller
             'saveCustAgen' => 'exists:users,id',
             'saveCustName' => 'required|string',
             'saveCustType' => 'required|string',
+            'saveStatus' => 'required|string',
+            'regency' => 'exists:regencies,id',
         ]);
 
         // Ambil data dari model Custom dengan ID 1
@@ -360,6 +362,8 @@ class CustomPackageController extends Controller
             'destinationNames' => $decodedData['destinationNames'] ?? [],
             'facilityNames' => $decodedData['facilityNames'] ?? [],
             'agen_id' => $validatedData['saveCustAgen'],
+            'regency_id' => $validatedData['regency'],
+            'status' => $validatedData['saveStatus'],
             'package_name' => $validatedData['saveCustName'],
             'package_type' => $validatedData['saveCustType'],
         ];
@@ -376,7 +380,7 @@ class CustomPackageController extends Controller
         ];
 
         // Redirect ke halaman destinasi dengan notifikasi
-        return redirect()->route('calculate.custom.package')->with($notification);
+        return redirect()->route('all.custom.package')->with($notification);
     }
 
     public function IndexCustom()

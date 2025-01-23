@@ -5,7 +5,16 @@
 <div class="content-wrapper">
     <!-- Content -->
     <div class="container-xxl flex-grow-1 container-p-y">
-        <h4>All List Custom Data</h4>
+        <div
+            class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
+            <div class="d-flex flex-column justify-content-center">
+                <h4 class="mb-1">List Custom Package</h4>
+                <p class="mb-0">Special saved packages can be ordered</p>
+            </div>
+            <div class="d-flex align-content-center flex-wrap gap-4">
+                <a href="{{ route('calculate.custom.package') }}" class="btn btn-primary">Create</a>
+            </div>
+        </div>
         <div class="card mt-4">
             <div class="card-datatable table-responsive pt-0">
                 <table id="example" class="datatables-ajax table" style="width:100%">
@@ -41,14 +50,16 @@
                                         </button>
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             @if (Auth::user()->can('package.show'))
-                                            <li><a type="button" class="dropdown-item text-info" data-id="{{ $data['id'] }}"
-                                                data-bs-toggle="modal" data-bs-target="#showData">
-                                                <i class="ti ti-eye"></i> Show
-                                            </a></li>
+                                            <li><a type="button" class="dropdown-item text-info"
+                                                    data-id="{{ $data['id'] }}" data-bs-toggle="modal"
+                                                    data-bs-target="#showData">
+                                                    <i class="ti ti-eye"></i> Show
+                                                </a></li>
                                             @endif
                                             @if (Auth::user()->can('booking.add'))
-                                            <li><a href="javascript:void(0)" class="dropdown-item text-success"> <i class="ti ti-shopping-cart-plus"></i> Booking
-                                            </a></li>
+                                            <li><a href="javascript:void(0)" class="dropdown-item text-success"> <i
+                                                        class="ti ti-shopping-cart-plus"></i> Booking
+                                                </a></li>
                                             @endif
                                         </ul>
                                     </div>
@@ -76,8 +87,9 @@
             <div class="modal-body">
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 <div class="text-center mb-6">
-                    <h4 class="address-title mb-2">Custom Package: <span class="package-name"></span></h4>
-                    <p class="address-subtitle">Trip Detail for <span class="duration"></span> day(s) <span class="night"></span> night(s)</p>
+                    <h4 class="address-title mb-2">Custom Package : <br><span class="package-name"></span></h4>
+                    <p class="address-subtitle">Trip Detail for <span class="duration"></span> day(s) <span
+                            class="night"></span> night(s)</p>
                 </div>
                 <div class="row mb-4">
                     <h5 class="text-warning mb-2">*Destinasi* :</h5>
@@ -131,10 +143,10 @@
                         </tbody>
                     </table>
                     <div class="row mt-4">
-                        <h6 class="text-warning mb-2">*Keterangan:* </h6>
+                        <h6 class="text-warning mb-2">*Keterangan* : </h6>
                         <ul>
-                            <li>Biaya Anak-anak: <strong class="child-cost">Rp -</strong></li>
-                            <li>Biaya Tambahan WNA: <strong class="additional-cost-wna">Rp -</strong></li>
+                            <li class="mb-2">Biaya Anak-anak: <strong class="child-cost">Rp -</strong> <br><span class="st-italic fs-6 text-info">Dengan usia 4 - 10 tahun, 11 tahun keatas biaya penuh</span></li>
+                            <li>Biaya Tambahan WNA: <strong class="additional-cost-wna">Rp -</strong><br><span class="fst-italic fs-6 text-info">Untuk WNA dikenakan biaya tambahan /orang</span></li>
                         </ul>
                     </div>
                 </div>

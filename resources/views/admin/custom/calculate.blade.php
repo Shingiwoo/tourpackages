@@ -6,20 +6,14 @@
     <!-- Content -->
 
     <div class="container-xxl flex-grow-1 container-p-y">
-        <div class="row">
-            <div class="col-md-9">
-                <h4 class="mb-1">Custom Package</h4>
-
-                <p class="mb-4">
-                    Menghitung dengan cepat harga paket wisata mulai 1 hari - 4 hari <br>
-                    sesuai dengan biaya dan detail yang isikan.
-                </p>
+        <div
+            class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
+            <div class="d-flex flex-column justify-content-center">
+                <h4 class="mb-1">Create Custom Package</h4>
+                <p class="mb-0">Quickly calculate the price of a tour package from 1 day - 4 days, <br> according to the costs and details entered.</p>
             </div>
-            <div class="col-md-3">
-                <div class="d-flex align-content-center flex-wrap gap-4">
-                <a href="{{ route('all.custom.package') }}" class="btn btn-primary"> All Custom Pack
-                </a>
-                </div>
+            <div class="d-flex align-content-center flex-wrap gap-4">
+                <a href="{{ route('all.custom.package') }}" class="btn btn-primary">View All</a>
             </div>
         </div>
         <div class="row g-6">
@@ -351,21 +345,35 @@
                     </div>
                     <form id="customSaveForm" class="row g-6" action="{{ route('save.custom.package') }}" method="POST">
                         @csrf
-                        <div class="col-12 col-md-6">
-                            <label class="form-label" for="saveCustAgen">Status</label>
-                            <select id="saveCustAgen" name="saveCustAgen" class="select2 form-select"
-                                aria-label="Agen Name" required>
-                                @foreach ($allagens as $agen )
-                                    <option value="{{ $agen->id }}">{{ $agen->username }}</option>
-                                @endforeach
-                            </select>
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <label class="form-label" for="saveCustName">Package Name</label>
+                                <input type="text" id="saveCustName" name="saveCustName"
+                                    class="form-control" placeholder="CUST-1D" required/>
+                            </div>
                         </div>
-                        <div class="col-12 col-md-6">
-                            <label class="form-label" for="saveCustName">Package Name</label>
-                            <input type="text" id="saveCustName" name="saveCustName"
-                                class="form-control" placeholder="CUST-1D" required/>
+                        <div class="row">
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="saveCustAgen">Status</label>
+                                <select id="saveCustAgen" name="saveCustAgen" class="select2 form-select"
+                                    aria-label="Agen Name" required>
+                                    @foreach ($allagens as $agen )
+                                        <option value="{{ $agen->id }}">{{ $agen->username }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label" for="regency">Location</label>
+                                <select id="regency" name="regency" class="select2 form-select" required>
+                                    @foreach ($regencies as $regency)
+                                    <option value="{{ $regency->id }}">{{ $regency->name }}
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
                         <input type="text" id="saveCustType" name="saveCustType" value="custom" hidden/>
+                        <input type="text" id="saveStatus" name="saveStatus" value="active" hidden/>
                         <div class="col-12 text-center">
                             <button type="submit" class="btn btn-primary me-3">Submit</button>
                             <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"

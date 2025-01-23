@@ -90,15 +90,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($allPackages as $key=> $package )
-
+                            @foreach ($allPackages as $key => $package)
                             <tr>
-                                <td class="align-content-center text-center">{{ $key+1 }}</td>
+                                <td class="align-content-center text-center">{{ $key + 1 }}</td>
                                 <td class="align-content-center text-center">{{ $package->name_package }}</td>
-                                <td class="align-content-center text-center">{{ $package->regency->name }}</td>
+                                <td class="align-content-center text-center">
+                                    {{ $package->regency->name ?? 'Unknown' }}
+                                </td>
                                 <td class="align-content-center text-center">
                                     <span
-                                        class="badge bg-{{ $package->type === 'oneday' ? 'info' : ($package->type === 'twoday' ? 'primary' : ($package->type === 'threeday' ? 'success' : 'danger')) }} text-uppercase">
+                                        class="badge bg-{{ $package->type === 'oneday' ? 'info' : ($package->type === 'twoday' ? 'primary' : ($package->type === 'threeday' ? 'success' : ($package->type === 'fourday' ? 'danger' : 'secondary'))) }} text-uppercase">
                                         {{ $package->type }}
                                     </span>
                                 </td>
