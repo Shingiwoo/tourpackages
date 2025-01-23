@@ -1,29 +1,46 @@
-// Form Booking All Package
-document.addEventListener('DOMContentLoaded', function () {
-    const bookingButtons = document.querySelectorAll('.dropdown-item.text-success');
+$(document).ready(function() {
+    // Fungsi untuk menangani perubahan pada tipe paket
+    function handlePackageTypeChange(inputValue) {
+        const hotelContainer = $("#hotel_type_container");
+        const hotelTypeInput = $("#modal_hotelType");
+        const totalUserContainer = $("#total_user_container");
+        const totalUserInput = $("#modalTotalUser");
 
-    bookingButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const packageId = this.dataset.id; // Dapatkan ID paket
-            document.getElementById('packageId').value = packageId; // Masukkan ke form
-        });
+        // Reset semua elemen terlebih dahulu
+        hotelContainer.hide();
+        hotelTypeInput.prop("required", false).prop("disabled", true);
+        totalUserContainer.hide();
+        totalUserInput.prop("required", false).prop("disabled", true);
+
+        // Tampilkan dan aktifkan elemen sesuai dengan tipe paket
+        if (inputValue === "oneday") {
+            totalUserContainer.show();
+            totalUserInput.prop("required", true).prop("disabled", false);
+        } else if (inputValue === "custom") {
+            // Tidak melakukan apapun, semua elemen tetap tersembunyi
+        } else {
+            hotelContainer.show();
+            hotelTypeInput.prop("required", true).prop("disabled", false);
+            totalUserContainer.show();
+            totalUserInput.prop("required", true).prop("disabled", false);
+        }
+    }
+
+    // Event handler untuk perubahan pada #modal_packageType
+    $("#modal_packageType").change(function() {
+        const selectedValue = $(this).val();
+        handlePackageTypeChange(selectedValue);
     });
-});
 
-// Form Show Package
-document.addEventListener('DOMContentLoaded', function () {
-    const bookingButtons = document.querySelectorAll('.btn.btn-label-success');
+    // Trigger perubahan saat halaman dimuat
+    $("#modal_packageType").trigger("change");
 
-    bookingButtons.forEach(button => {
-        button.addEventListener('click', function () {
-            const packageId = this.dataset.id; // Ambil nilai ID paket dari atribut data-id
-            const packageType = this.dataset.type; // Ambil nilai tipe paket dari atribut data-type
+    // Event handler ketika modal booking muncul
+    $('#bookingModal').on('shown.bs.modal', function(e) {
+        const button = $(e.relatedTarget);
+        const packageType = button.data('type');
 
-            // Set nilai input hidden untuk package ID
-            document.getElementById('package_Id').value = packageId;
-
-            // Set nilai input text untuk package type
-            document.getElementById('modalShow_packageType').value = packageType;
-        });
+        // Set nilai pada #modal_packageType jika diperlukan
+        $('#modal_packageType').val(packageType).trigger('change');
     });
 });

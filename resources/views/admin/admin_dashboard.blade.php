@@ -142,6 +142,8 @@
     <script src="{{ asset('assets/js/ui-carousel.js') }}"></script>
     <script src="{{ asset('assets/js/modal-service-fee.js') }}"></script>
     <script src="{{ asset('assets/js/form-data.js') }}"></script>
+    <script src="{{ asset('assets/js/form-modal-booking.js') }}"></script>
+    <script src="{{ asset('assets/js/form-data-booking.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('#example').DataTable();

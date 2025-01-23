@@ -289,7 +289,7 @@
                             class="ti ti-arrow-big-left me-2"></i> Back</a>
                     @if (Auth::user()->can('booking.add'))
                     <a href="javascript:void(0)" class="btn btn-label-success w-100 mb-4 me-2" data-bs-toggle="modal"
-                        data-id="{{ $package->id }}" data-type="{{ $package->type }}" data-bs-target="#bookingModal"> <i
+                        data-id="{{ $package->id }}" data-bs-target="#bookingModal"> <i
                             class="ti ti-shopping-cart-plus"></i> Booking</a>
                     @endif
                 </div>
@@ -299,77 +299,83 @@
     </div>
 </div>
 
-<!-- Booking Modal -->
-<div class="modal fade" id="bookingModal" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-simple modal-edit-user">
-        <div class="modal-content">
-            <div class="modal-body">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                <div class="text-center mb-6">
-                    <h4 class="mb-2">Booking Information</h4>
+    <!-- Booking Modal -->
+    <div class="modal fade" id="bookingModal" tabindex="-1">
+        <div class="modal-dialog modal-lg modal-simple modal-edit-user">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="text-center mb-6">
+                        <h4 class="mb-2">Booking Information</h4>
+                    </div>
+                    <form id="bookingModalForm" class="row g-6" method="POST" action="{{ route('booking.store') }}">
+                        @csrf
+                        <div class="row mb-4">
+                            <input type="hidden" name="package_id" id="packageId">
+                            <div class="col-12 mb-4">
+                                <label class="form-label" for="modalClientName">Client Name</label>
+                                <input type="text" id="modalClientName" name="modalClientName" class="form-control"
+                                    placeholder="johndoe007" required/>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col mb-4">
+                                <label for="modal_packageType" class="form-label">Package Type</label>
+                                <select id="modal_packageType" class="select2 form-select" data-allow-clear="true" name="modalPackageType" required>
+                                  <option value="">Select Type</option>
+                                  <option value="oneday" >1 Day</option>
+                                  <option value="twoday">2 Day</option>
+                                  <option value="threeday">3 Day</option>
+                                  <option value="fourday">4 day</option>
+                                  <option value="custom">Custom</option>
+                                </select>
+                            </div>
+                            <div class="col mb-4" id="total_user_container">
+                                <label class="form-label" for="modalTotalUser">Total User</label>
+                                <input type="number" id="modalTotalUser" name="modalTotalUser"
+                                    class="form-control" required/>
+                            </div>
+                            <div class="col mb-4" id="hotel_type_container">
+                                <label for="modal_hotelType" class="form-label">Hotel Type</label>
+                                <select id="modal_hotelType" name="modalHotelType" class="select2 form-select" data-allow-clear="true"  required aria-hidden="true">
+                                    <option value="">Select Type</option>
+                                    <option value="TwoStar">Bintang 2</option>
+                                    <option value="ThreeStar">Bintang 3</option>
+                                    <option value="FourStar">Bintang 4</option>
+                                    <option value="FiveStar">Bintang 5</option>
+                                    <option value="Villa">Villa</option>
+                                    <option value="Homestay">Homestay</option>
+                                    <option value="Cottage">Cottage</option>
+                                    <option value="Cabin">Cabin</option>
+                                    <option value="Guesthouse">Guesthouse</option>
+                                    <option value="WithoutAccomodation">Without Accomodation</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col mb-4">
+                              <label for="bs-datepicker-autoclose" class="form-label">Start Date</label>
+                              <input type="text"  id="bs-datepicker-autoclose" placeholder="MM/DD/YYYY"
+                                class="form-control" name="modalStartDate" required/>
+                            </div>
+                            <div class="col mb-4">
+                              <label for="bs-datepicker-autoclose2" class="form-label">End Date</label>
+                              <input type="text"  id="bs-datepicker-autoclose2" placeholder="MM/DD/YYYY"
+                                class="form-control" name="modalEndDate" required/>
+                            </div>
+                        </div>
+                        <div class="col-12 text-center">
+                            <button type="submit" class="btn btn-primary me-3">Submit</button>
+                            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
+                                aria-label="Close">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
                 </div>
-                <form id="bookingModalForm" class="row g-6" method="POST" action="{{ route('booking.store') }}">
-                    @csrf
-                    <div class="row mb-4">
-                        <input type="hidden" name="package_id" id="package_Id">
-                        <div class="col-12 mb-4">
-                            <label class="form-label" for="modalClientName">Client Name</label>
-                            <input type="text" id="modalClientName" name="modalClientName" class="form-control"
-                                placeholder="johndoe007" required />
-                        </div>
-                    </div>
-                    <div class="row mb-4">
-                        <div class="col mb-6">
-                            <label class="form-label" for="modalTotalUser">Total User</label>
-                            <input type="number" id="modalTotalUser" name="modalTotalUser" class="form-control"
-                                placeholder="12" required />
-                        </div>
-                        <div class="col mb-4">
-                            <label for="modalShow_packageType" class="form-label">Package Type</label>
-                            <input type="text" id="modalShow_packageType" name="modalPackageType" value=""
-                                class="form-control" placeholder="oneday" required readonly />
-                        </div>
-                        <div class="col mb-4" id="hotel_type_container" style="display: none;">
-                            <label for="modal_hotelType" class="form-label">Hotel Type</label>
-                            <select id="modal_hotelType" name="modalHotelType" class="select2 form-select"
-                                data-allow-clear="true" required>
-                                <option value="">Select Type</option>
-                                <option value="TwoStar">Bintang 2</option>
-                                <option value="ThreeStar">Bintang 3</option>
-                                <option value="FourStar">Bintang 4</option>
-                                <option value="FiveStar">Bintang 5</option>
-                                <option value="Villa">Villa</option>
-                                <option value="Homestay">Homestay</option>
-                                <option value="Cottage">Cottage</option>
-                                <option value="Cabin">Cabin</option>
-                                <option value="Guesthouse">Guesthouse</option>
-                                <option value="WithoutAccomodation">Without Accommodation</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row mb-4">
-                        <div class="col mb-4">
-                            <label for="bs-datepicker-autoclose" class="form-label">Start Date</label>
-                            <input type="text" id="bs-datepicker-autoclose" placeholder="MM/DD/YYYY"
-                                class="form-control" name="modalStartDate" required />
-                        </div>
-                        <div class="col mb-4">
-                            <label for="bs-datepicker-autoclose2" class="form-label">End Date</label>
-                            <input type="text" id="bs-datepicker-autoclose2" placeholder="MM/DD/YYYY"
-                                class="form-control" name="modalEndDate" required />
-                        </div>
-                    </div>
-                    <div class="col-12 text-center">
-                        <button type="submit" class="btn btn-primary me-3">Submit</button>
-                        <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">
-                            Cancel
-                        </button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
-</div>
-<!--/ Booking Modal -->
+    <!--/ Booking Modal -->
 
 @endsection

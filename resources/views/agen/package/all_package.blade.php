@@ -169,11 +169,6 @@
                         </div>
                         <div class="row mb-4">
                             <div class="col mb-4">
-                                <label class="form-label" for="modalTotalUser">Total User</label>
-                                <input type="number" id="modalTotalUser" name="modalTotalUser"
-                                    class="form-control" placeholder="12" required/>
-                            </div>
-                            <div class="col mb-4">
                                 <label for="modal_packageType" class="form-label">Package Type</label>
                                 <select id="modal_packageType" class="select2 form-select" data-allow-clear="true" name="modalPackageType" required>
                                   <option value="">Select Type</option>
@@ -181,7 +176,13 @@
                                   <option value="twoday">2 Day</option>
                                   <option value="threeday">3 Day</option>
                                   <option value="fourday">4 day</option>
+                                  <option value="custom">Custom</option>
                                 </select>
+                            </div>
+                            <div class="col mb-4" id="total_user_container">
+                                <label class="form-label" for="modalTotalUser">Total User</label>
+                                <input type="number" id="modalTotalUser" name="modalTotalUser"
+                                    class="form-control" required/>
                             </div>
                             <div class="col mb-4" id="hotel_type_container">
                                 <label for="modal_hotelType" class="form-label">Hotel Type</label>
