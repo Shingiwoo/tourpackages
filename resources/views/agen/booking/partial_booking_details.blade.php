@@ -12,7 +12,11 @@
                     </tr>
                     <tr>
                         <th>Type Trip :</th>
-                        <td>{{ $booking->type }}</td>
+                        <td><span class="badge bg-primary bg-glow text-uppercase">{{ $booking->type }}</span></td>
+                    </tr>
+                    <tr>
+                        <th>Status :</th>
+                        <td><span class="badge bg-info bg-glow text-uppercase">{{ $booking->status }}</span></td>
                     </tr>
                     <tr>
                         <th>Client Name :</th>
@@ -72,16 +76,20 @@
                 </tr>
             </tbody>
         </table>
+        @php
+            $kidsCost = $booking->price_person * 0.3;
+            $wnaCost = $booking->price_person * 0.44;
+        @endphp
         <div class="row mt-4">
             <h6 class="text-warning mb-2">*Keterangan* : </h6>
             <ul>
                 <li class="mb-2">Biaya Anak-anak: <strong class="child-cost">Rp
-                        -</strong>
+                    {{ number_format($kidsCost, 0, ',', '.') }}</strong>
                     <br><span class="st-italic fs-6 text-info">Dengan usia 4 - 10 tahun, 11
                         tahun keatas biaya penuh</span>
                 </li>
                 <li>Biaya Tambahan WNA: <strong class="additional-cost-wna">Rp
-                        -</strong><br><span
+                        {{ number_format($wnaCost, 0, ',', '.') }}</strong><br><span
                         class="fst-italic fs-6 text-info">Untuk WNA
                         dikenakan biaya tambahan /orang</span></li>
             </ul>

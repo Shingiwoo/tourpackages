@@ -40,7 +40,7 @@
                                             <i class="ti ti-refresh-alert ti-lg"></i>
                                         </div>
                                         <div class="card-info">
-                                            <h5 class="mb-0">5</h5>
+                                            <h5 class="mb-0">{{ $pendingStatus }}</h5>
                                             <small>Pending</small>
                                         </div>
                                     </div>
@@ -50,7 +50,7 @@
                                         <div class="badge rounded bg-label-info me-4 p-2"><i
                                                 class="ti ti-brand-booking ti-lg"></i></div>
                                         <div class="card-info">
-                                            <h5 class="mb-0">10</h5>
+                                            <h5 class="mb-0">{{ $bookedStatus }}</h5>
                                             <small>Booked</small>
                                         </div>
                                     </div>
@@ -58,11 +58,11 @@
                                 <div class="col-md-3 col-6">
                                     <div class="d-flex align-items-center">
                                         <div class="badge rounded bg-label-primary me-4 p-2">
-                                            <i class="ti ti-packages ti-lg"></i>
+                                            <i class="ti ti-cash-register ti-lg"></i>
                                         </div>
                                         <div class="card-info">
-                                            <h5 class="mb-0">20</h5>
-                                            <small>On-Trip</small>
+                                            <h5 class="mb-0">{{ $paidStatus }}</h5>
+                                            <small>Paid</small>
                                         </div>
                                     </div>
                                 </div>
@@ -72,7 +72,7 @@
                                             <i class="ti ti-rosette-discount-check ti-lg"></i>
                                         </div>
                                         <div class="card-info">
-                                            <h5 class="mb-0">4</h5>
+                                            <h5 class="mb-0">{{ $finishedStatus }}</h5>
                                             <small>Finished</small>
                                         </div>
                                     </div>
@@ -84,6 +84,8 @@
             </div>
             <!--/ Statistics -->
         </div>
+
+        <!-- list Data -->
         <div class="row mb-4 g-4">
             <!-- Ajax Sourced Server-side -->
             <div class="card">
@@ -113,12 +115,14 @@
                                         {{ \Carbon\Carbon::parse($booking->start_date)->format('d/m/Y') }}</td>
                                     <td class="align-content-center text-center">
                                         {{ \Carbon\Carbon::parse($booking->end_date)->format('d/m/Y') }}</td>
-                                    <td class="align-content-center text-center">{{ $booking->status }}</td>
+                                    <td class="align-content-center text-center"><span
+                                            class="badge bg-info bg-glow text-uppercase">{{ $booking->status }}</span></td>
                                     <td class="align-content-center">
-                                        <button type="button" class="btn btn-icon btn-info waves-effect waves-light"
-    data-id="{{ $booking->id }}" data-bs-toggle="modal" data-bs-target="#showBookData">
-    <span class="ti ti-search ti-md"></span>
-</button>
+                                        <button type="button" class="btn btn-icon btn-warning waves-effect waves-light"
+                                            data-id="{{ $booking->id }}" data-bs-toggle="modal"
+                                            data-bs-target="#showBookData">
+                                            <span class="ti ti-search ti-md"></span>
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach

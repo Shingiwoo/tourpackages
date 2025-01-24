@@ -27,7 +27,23 @@ class BookingServiceController extends Controller
             $query->where('agen_id', $agen->id);
         })->get();
 
-        return view('agen.booking.all_booking', compact('bookings'));
+        $pendingStatus = Booking::whereHas('bookingList', function ($query) use ($agen) {
+            $query->where('agen_id', $agen->id);
+        })->where('status', 'pending')->count();
+
+        $bookedStatus = Booking::whereHas('bookingList', function ($query) use ($agen) {
+            $query->where('agen_id', $agen->id);
+        })->where('status', 'booked')->count();
+
+        $paidStatus = Booking::whereHas('bookingList', function ($query) use ($agen) {
+            $query->where('agen_id', $agen->id);
+        })->where('status', 'paid')->count();
+
+        $finishedStatus = Booking::whereHas('bookingList', function ($query) use ($agen) {
+            $query->where('agen_id', $agen->id);
+        })->where('status', 'finished')->count();
+
+        return view('agen.booking.all_booking', compact('bookings', 'pendingStatus', 'bookedStatus', 'paidStatus', 'finishedStatus'));
     }
 
     public function AddBooking()

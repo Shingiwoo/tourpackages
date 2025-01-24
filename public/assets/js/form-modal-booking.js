@@ -45,7 +45,7 @@ $(document).ready(function () {
     });
 
     // Modal untuk detail booking
-    $('#example').on('click', '.btn-info', function () {
+    $('#example').on('click', '.btn-warning', function () {
         var id = $(this).data('id');
         $.ajax({
             url: '/booking/details/' + id,
