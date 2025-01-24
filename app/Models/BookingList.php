@@ -7,8 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class BookingList extends Model
 {
-
     use HasFactory;
+
     protected $fillable = ['booking_id', 'agen_id', 'package_id'];
 
+
+    public function bookings()
+    {
+        return $this->hasMany(Booking::class, 'booking_id', 'id');
+    }
 }
+

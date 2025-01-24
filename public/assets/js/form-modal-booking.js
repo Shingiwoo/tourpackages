@@ -1,4 +1,4 @@
-$(document).ready(function() {
+$(document).ready(function () {
     // Fungsi untuk menangani perubahan pada tipe paket
     function handlePackageTypeChange(inputValue) {
         const hotelContainer = $("#hotel_type_container");
@@ -27,7 +27,7 @@ $(document).ready(function() {
     }
 
     // Event handler untuk perubahan pada #modal_packageType
-    $("#modal_packageType").change(function() {
+    $("#modal_packageType").change(function () {
         const selectedValue = $(this).val();
         handlePackageTypeChange(selectedValue);
     });
@@ -36,11 +36,26 @@ $(document).ready(function() {
     $("#modal_packageType").trigger("change");
 
     // Event handler ketika modal booking muncul
-    $('#bookingModal').on('shown.bs.modal', function(e) {
+    $("#bookingModal").on("shown.bs.modal", function (e) {
         const button = $(e.relatedTarget);
-        const packageType = button.data('type');
+        const packageType = button.data("type");
 
         // Set nilai pada #modal_packageType jika diperlukan
-        $('#modal_packageType').val(packageType).trigger('change');
+        $("#modal_packageType").val(packageType).trigger("change");
+    });
+
+    // Modal untuk detail booking
+    $('#example').on('click', '.btn-info', function () {
+        var id = $(this).data('id');
+        $.ajax({
+            url: '/booking/details/' + id,
+            type: 'GET',
+            success: function (response) {
+                $('#showBookData .modal-body').html(response.html);
+            },
+            error: function () {
+                alert('Gagal memuat detail booking.');
+            },
+        });
     });
 });

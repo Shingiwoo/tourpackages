@@ -300,11 +300,12 @@ route::middleware(['auth','roles:agen'])->group(function(){
 
     });
 
-    //package list agen
+    //booking list
     Route::controller(BookingServiceController::class)->group(function () {
 
         Route::get('/agen/all-booking', 'AllBooking')->name('agen.booking');
         Route::post('/booking/store', 'StoreBooking')->name('booking.store');
+        Route::get('/booking/details/{id}','getBookingDetails');
 
     });
 

@@ -15,8 +15,9 @@ class Booking extends Model
         'down_paymet', 'remaining_costs', 'status'
     ];
 
-    public function bookingID()
+    public function bookingList()
     {
         return $this->belongsTo(BookingList::class, 'booking_list_id', 'id');
     }
 }
+

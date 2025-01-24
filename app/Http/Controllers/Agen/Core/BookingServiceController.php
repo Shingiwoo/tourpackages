@@ -22,7 +22,12 @@ class BookingServiceController extends Controller
     {
         $agen = Auth::user();
 
-        return view('agen.booking.all_booking');
+        // Ambil semua data booking berdasarkan agen_id
+        $bookings = Booking::whereHas('bookingList', function ($query) use ($agen) {
+            $query->where('agen_id', $agen->id);
+        })->get();
+
+        return view('agen.booking.all_booking', compact('bookings'));
     }
 
     public function AddBooking()
@@ -247,6 +252,23 @@ class BookingServiceController extends Controller
         // Untuk tipe oneday, cukup ambil harga langsung
         return $priceData['price'] ?? null;
     }
+
+    public function getBookingDetails($id)
+    {
+        // Ambil data Booking dengan relasi bookingList
+        $booking = Booking::with('bookingList')->find($id);
+
+        if (!$booking) {
+            return response()->json(['html' => '<p class="text-center text-danger">Data booking tidak ditemukan.</p>']);
+        }
+
+        // Render view partial_booking_details.blade.php dengan data booking
+        $html = view('agen.booking.partial_booking_details', compact('booking'))->render();
+
+        return response()->json(['html' => $html]);
+    }
+
+
 
 
 }
