@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Agen\Core;
 
 use App\Models\User;
+use App\Models\Custom;
+use App\Models\Booking;
 use Illuminate\Http\Request;
 use App\Models\PackageOneDay;
 use App\Models\PackageTwoDay;
@@ -24,11 +26,26 @@ class AgenServiceController extends Controller
         $agen = Auth::user();
 
         $totalPackage = PackageOneDay::countByAgen($agen->id)
-                        + PackageTwoDay::countByAgen($agen->id)
-                        + PackageThreeDay::countByAgen($agen->id)
-                        + PackageFourDay::countByAgen($agen->id);
+            + PackageTwoDay::countByAgen($agen->id)
+            + PackageThreeDay::countByAgen($agen->id)
+            + PackageFourDay::countByAgen($agen->id);
+            +Custom::whereRaw("JSON_EXTRACT(custompackage, '$.agen_id') = ?", [$agen->id])->count();
 
-        return view('agen.index', compact('agen','totalPackage'));
+
+        $pendingStatus = Booking::whereHas('bookingList', function ($query) use ($agen) {
+            $query->where('agen_id', $agen->id);
+        })->where('status', 'pending')->count();
+
+        $bookedStatus = Booking::whereHas('bookingList', function ($query) use ($agen) {
+            $query->where('agen_id', $agen->id);
+        })->where('status', 'booked')->count();
+
+        $finishedStatus = Booking::whereHas('bookingList', function ($query) use ($agen) {
+            $query->where('agen_id', $agen->id);
+        })->where('status', 'finished')->count();
+
+
+        return view('agen.index', compact('agen', 'totalPackage', 'pendingStatus', 'bookedStatus', 'finishedStatus'));
     }
 
     public function AgenLogout(Request $request)
@@ -51,7 +68,8 @@ class AgenServiceController extends Controller
         return view('agen.agen_profile_view', compact('profileData'));
     }
 
-    public function AgenProfileStore(Request $request) {
+    public function AgenProfileStore(Request $request)
+    {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'username' => 'required|string',
@@ -99,7 +117,8 @@ class AgenServiceController extends Controller
         return redirect()->back()->with($notification);
     }
 
-    public function AgenChangePassword(){
+    public function AgenChangePassword()
+    {
 
         $id = Auth::user()->id;
         $profileData = User::find($id);
@@ -107,7 +126,8 @@ class AgenServiceController extends Controller
         return view('agen.agen_change_password', compact('profileData'));
     }
 
-    public function AgenPasswordUpdate(Request $request){
+    public function AgenPasswordUpdate(Request $request)
+    {
 
         //Valiadtion
         $request->validate([

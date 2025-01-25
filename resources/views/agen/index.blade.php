@@ -1,7 +1,6 @@
 @extends('agen.agen_dashboard')
 @section('agen')
     <div class="container-xxl flex-grow-1 container-p-y">
-
         <!-- Topic and Instructors -->
         <div class="row mb-6 g-6">
             <!-- View sales -->
@@ -34,7 +33,6 @@
                 <div class="card h-100">
                   <div class="card-header d-flex justify-content-between">
                     <h5 class="card-title mb-0">Statistic</h5>
-                    <small class="text-muted">Updated 1 month ago</small>
                   </div>
                   <div class="card-body d-flex align-items-end">
                     <div class="w-100">
@@ -56,7 +54,7 @@
                               <i class="ti ti-refresh-alert ti-lg"></i>
                             </div>
                             <div class="card-info">
-                              <h5 class="mb-0">1.423k</h5>
+                              <h5 class="mb-0">{{ $pendingStatus }}</h5>
                               <small>Pending</small>
                             </div>
                           </div>
@@ -65,7 +63,7 @@
                           <div class="d-flex align-items-center">
                             <div class="badge rounded bg-label-info me-4 p-2"><i class="ti ti-brand-booking ti-lg"></i></div>
                             <div class="card-info">
-                              <h5 class="mb-0">8.549k</h5>
+                              <h5 class="mb-0">{{ $bookedStatus }}</h5>
                               <small>Booked</small>
                             </div>
                           </div>
@@ -76,7 +74,7 @@
                               <i class="ti ti-rosette-discount-check ti-lg"></i>
                             </div>
                             <div class="card-info">
-                              <h5 class="mb-0">$9745</h5>
+                              <h5 class="mb-0">{{ $finishedStatus }}</h5>
                               <small>Finished</small>
                             </div>
                           </div>
