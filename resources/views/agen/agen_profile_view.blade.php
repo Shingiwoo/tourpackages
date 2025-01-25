@@ -108,7 +108,7 @@
                     <small class="card-text text-uppercase text-muted small">Address</small>
                     <ul class="list-unstyled mb-0 mt-3 pt-1">
                         <li class="d-flex align-items-end mb-4">
-                            <i class="ti ti-map-pin-check ti-lg"></i> <span>{{ $profileData->address }}</span>
+                            <i class="ti ti-map-pin-check ti-lg"></i> <span class="text-capitalize fw-medium mx-2">{{ $profileData->address }}</span>
                         </li>
                     </ul>
                 </div>
