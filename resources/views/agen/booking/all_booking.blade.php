@@ -108,15 +108,18 @@
                             @foreach ($bookings as $key => $booking)
                                 <tr>
                                     <td class="align-content-center text-center">{{ $key + 1 }}</td>
-                                    <td class="align-content-center text-center">{{ $booking->code_booking }}</td>
-                                    <td class="align-content-center text-center">{{ $booking->name }}</td>
-                                    <td class="align-content-center text-center">{{ $booking->type }}</td>
+                                    <td class="align-content-center text-start">{{ $booking->code_booking }}</td>
+                                    <td class="align-content-center text-start"><span class="text-capitalize">{{ $booking->name }}</span></td>
+                                    <td class="align-content-center text-center"><span
+                                        class="badge bg-{{ $booking->type === 'oneday' ? 'info' : ($booking->type === 'twoday' ? 'primary' : ($booking->type === 'threeday' ? 'success' : ($booking->type === 'fourday' ? 'danger' : 'secondary'))) }} text-uppercase">
+                                        {{ $booking->type }}
+                                    </span></td>
                                     <td class="align-content-center text-center">
                                         {{ \Carbon\Carbon::parse($booking->start_date)->format('d/m/Y') }}</td>
                                     <td class="align-content-center text-center">
                                         {{ \Carbon\Carbon::parse($booking->end_date)->format('d/m/Y') }}</td>
                                     <td class="align-content-center text-center"><span
-                                            class="badge bg-info bg-glow text-uppercase">{{ $booking->status }}</span></td>
+                                            class="badge bg-{{ $booking->status === 'pending' ? 'danger' : ($booking->status === 'booked' ? 'info' : ($booking->status === 'paid' ? 'primary' : 'success'))}} bg-glow text-uppercase">{{ $booking->status }}</span></td>
                                     <td class="align-content-center">
                                         <button type="button" class="btn btn-icon btn-warning waves-effect waves-light"
                                             data-id="{{ $booking->id }}" data-bs-toggle="modal"
