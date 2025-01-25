@@ -92,8 +92,16 @@ class BookingServiceController extends Controller
             }
 
             $packageID = $validated['package_id'];
-            $type = $validated['modalPackageType'];
+            $type = $validated['modalPackageType'] ?? null; // Pastikan tipe paket ada
             $pricePerPerson = null;
+            $totalUser = $validated['modalTotalUser'] ?? 1; // Default 1 jika kosong
+            $downPayment = 0;
+            $remainingCosts = 0;
+
+            if (!$type) {
+                Log::error('Tipe paket tidak diberikan.', ['validated' => $validated]);
+                return back()->withErrors(['error' => 'Tipe paket tidak diberikan.']);
+            }
 
             if ($type === 'custom') {
                 // Cari custom package berdasarkan id
@@ -123,25 +131,78 @@ class BookingServiceController extends Controller
                 $remainingCosts = $customPackage['remainingCosts'];
 
             } else {
-                // Logika untuk paket lainnya tetap menggunakan getPackagePrice
-                $pricePerPerson = $this->getPackagePrice(
-                    $validated['type'],
-                    $agen->id,
-                    $validated['package_id'],
-                    $validated['total_user'],
-                    $validated['hotel_type'] ?? null
-                );
+                // Logika untuk paket lainnya (oneday, twoday, dll)
+                $packageModels = [
+                    'oneday' => PackageOneDay::class,
+                    'twoday' => PackageTwoDay::class,
+                    'threeday' => PackageThreeDay::class,
+                    'fourday' => PackageFourDay::class,
+                ];
+
+                if (!array_key_exists($type, $packageModels)) {
+                    Log::error('Tipe paket tidak valid.', ['type' => $type]);
+                    return back()->withErrors(['error' => 'Tipe paket tidak valid.']);
+                }
+
+                $packageModel = $packageModels[$type];
+                $package = $packageModel::where('agen_id', $agen->id)
+                    ->with(['destinations', 'prices', 'regency'])
+                    ->find($packageID);
+
+                if (!$package || !$package->prices) {
+                    Log::error('Paket tidak ditemukan atau tidak memiliki data harga.', [
+                        'package_id' => $packageID,
+                        'type' => $type,
+                    ]);
+                    return back()->withErrors(['error' => 'Paket tidak ditemukan atau tidak memiliki data harga.']);
+                }
+
+                $pricesArray = json_decode($package->prices['price_data'], true);
+                if (!is_array($pricesArray)) {
+                    Log::error('Format data harga tidak valid.', [
+                        'package_id' => $packageID,
+                        'type' => $type,
+                        'price_data' => $package->prices['price_data'],
+                    ]);
+                    return back()->withErrors(['error' => 'Data harga tidak valid.']);
+                }
+
+                $priceData = collect($pricesArray)->firstWhere('user', (int)$totalUser);
+                if (!$priceData) {
+                    Log::error('Harga untuk jumlah user tidak ditemukan.', [
+                        'package_id' => $packageID,
+                        'type' => $type,
+                        'total_user' => $totalUser,
+                    ]);
+                    return back()->withErrors(['error' => 'Harga untuk jumlah user tidak ditemukan.']);
+                }
+
+                if (in_array($type, ['twoday', 'threeday', 'fourday'])) {
+                    $hotelType = $validated['modalHotelType'] ?? null;
+                    if (!$hotelType || !isset($priceData[$hotelType])) {
+                        Log::error('Harga berdasarkan tipe hotel tidak ditemukan.', [
+                            'package_id' => $packageID,
+                            'type' => $type,
+                            'total_user' => $totalUser,
+                            'hotel_type' => $hotelType,
+                        ]);
+                        return back()->withErrors(['error' => 'Harga berdasarkan tipe hotel tidak ditemukan.']);
+                    }
+
+                    $pricePerPerson = $priceData[$hotelType];
+                } else {
+                    $pricePerPerson = $priceData['price'] ?? null;
+                }
 
                 if (!$pricePerPerson || !is_numeric($pricePerPerson)) {
-                    Log::error('Harga per orang tidak ditemukan atau tidak valid.', [
+                    Log::error('Harga tidak ditemukan atau tidak valid.', [
+                        'package_id' => $packageID,
                         'type' => $type,
-                        'validated' => $validated,
                     ]);
                     return back()->withErrors(['error' => 'Harga tidak ditemukan atau tidak valid.']);
                 }
 
-                $totalPrice = $pricePerPerson * $validated['modalTotalUser'];
-                $totalUser = $validated['modalTotalUser'];
+                $totalPrice = $pricePerPerson * $totalUser;
                 $downPayment = $totalPrice * 0.3; // 30% DP
                 $remainingCosts = $totalPrice * 0.7;
             }
@@ -197,77 +258,78 @@ class BookingServiceController extends Controller
         }
     }
 
+    // private function getPackagePrice($type, $agenId, $packageID, $totalUser, $hotelType = null)
+    // {
+    //     Log::info('Start getPackagePrice :');
 
-    private function getPackagePrice($type, $agenId, $packageID, $totalUser, $hotelType = null)
-    {
-        $packageModels = [
-            'oneday' => PackageOneDay::class,
-            'twoday' => PackageTwoDay::class,
-            'threeday' => PackageThreeDay::class,
-            'fourday' => PackageFourDay::class,
-        ];
+    //     $packageModels = [
+    //         'oneday' => PackageOneDay::class,
+    //         'twoday' => PackageTwoDay::class,
+    //         'threeday' => PackageThreeDay::class,
+    //         'fourday' => PackageFourDay::class,
+    //     ];
 
-        // Validasi tipe paket
-        if (!array_key_exists($type, $packageModels)) {
-            Log::error('Tipe paket tidak valid.', ['type' => $type]);
-            abort(404, 'Tipe paket tidak valid.');
-        }
+    //     // Validasi tipe paket
+    //     if (!array_key_exists($type, $packageModels)) {
+    //         Log::error('Tipe paket tidak valid.', ['type' => $type]);
+    //         abort(404, 'Tipe paket tidak valid.');
+    //     }
 
-        // Ambil model paket sesuai tipe
-        $packageModel = $packageModels[$type];
-        $package = $packageModel::where('agen_id', $agenId)
-            ->with(['destinations', 'prices', 'regency'])
-            ->find($packageID);
+    //     // Ambil model paket sesuai tipe
+    //     $packageModel = $packageModels[$type];
+    //     $package = $packageModel::where('agen_id', $agenId)
+    //         ->with(['destinations', 'prices', 'regency'])
+    //         ->find($packageID);
 
-        // Validasi jika paket tidak ditemukan
-        if (!$package || !$package->prices) {
-            Log::error('Paket tidak ditemukan atau tidak memiliki data harga.', [
-                'package_id' => $packageID,
-                'type' => $type,
-            ]);
-            abort(404, 'Paket tidak ditemukan atau tidak memiliki data harga.');
-        }
+    //     // Validasi jika paket tidak ditemukan
+    //     if (!$package || !$package->prices) {
+    //         Log::error('Paket tidak ditemukan atau tidak memiliki data harga.', [
+    //             'package_id' => $packageID,
+    //             'type' => $type,
+    //         ]);
+    //         abort(404, 'Paket tidak ditemukan atau tidak memiliki data harga.');
+    //     }
 
-        // Decode harga dari kolom JSON
-        $pricesArray = json_decode($package->prices['price_data'], true);
-        if (!is_array($pricesArray)) {
-            Log::error('Format data harga tidak valid.', [
-                'package_id' => $packageID,
-                'type' => $type,
-                'price_data' => $package->prices['price_data'],
-            ]);
-            abort(500, 'Data harga tidak valid.');
-        }
+    //     // Decode harga dari kolom JSON
+    //     $pricesArray = json_decode($package->prices['price_data'], true);
+    //     if (!is_array($pricesArray)) {
+    //         Log::error('Format data harga tidak valid.', [
+    //             'package_id' => $packageID,
+    //             'type' => $type,
+    //             'price_data' => $package->prices['price_data'],
+    //         ]);
+    //         abort(500, 'Data harga tidak valid.');
+    //     }
 
-        // Cari harga berdasarkan jumlah user
-        $priceData = collect($pricesArray)->firstWhere('user', (int)$totalUser);
-        if (!$priceData) {
-            Log::error('Harga untuk jumlah user tidak ditemukan.', [
-                'package_id' => $packageID,
-                'type' => $type,
-                'total_user' => $totalUser,
-            ]);
-            abort(404, 'Harga untuk jumlah user tidak ditemukan.');
-        }
+    //     // Cari harga berdasarkan jumlah user
+    //     $priceData = collect($pricesArray)->firstWhere('user', (int)$totalUser);
+    //     if (!$priceData) {
+    //         Log::error('Harga untuk jumlah user tidak ditemukan.', [
+    //             'package_id' => $packageID,
+    //             'type' => $type,
+    //             'total_user' => $totalUser,
+    //         ]);
+    //         abort(404, 'Harga untuk jumlah user tidak ditemukan.');
+    //     }
 
-        // Untuk tipe paket multi-day (twoday, threeday, fourday), harga tergantung hotelType
-        if (in_array($type, ['twoday', 'threeday', 'fourday'])) {
-            if (!$hotelType || !isset($priceData[$hotelType])) {
-                Log::error('Harga berdasarkan tipe hotel tidak ditemukan.', [
-                    'package_id' => $packageID,
-                    'type' => $type,
-                    'total_user' => $totalUser,
-                    'hotel_type' => $hotelType,
-                ]);
-                abort(404, 'Harga berdasarkan tipe hotel tidak ditemukan.');
-            }
+    //     // Untuk tipe paket multi-day (twoday, threeday, fourday), harga tergantung hotelType
+    //     if (in_array($type, ['twoday', 'threeday', 'fourday'])) {
+    //         if (!$hotelType || !isset($priceData[$hotelType])) {
+    //             Log::error('Harga berdasarkan tipe hotel tidak ditemukan.', [
+    //                 'package_id' => $packageID,
+    //                 'type' => $type,
+    //                 'total_user' => $totalUser,
+    //                 'hotel_type' => $hotelType,
+    //             ]);
+    //             abort(404, 'Harga berdasarkan tipe hotel tidak ditemukan.');
+    //         }
 
-            return $priceData[$hotelType];
-        }
+    //         return $priceData[$hotelType];
+    //     }
 
-        // Untuk tipe oneday, cukup ambil harga langsung
-        return $priceData['price'] ?? null;
-    }
+    //     // Untuk tipe oneday, cukup ambil harga langsung
+    //     return $priceData['price'] ?? null;
+    // }
 
     public function getBookingDetails($id)
     {
