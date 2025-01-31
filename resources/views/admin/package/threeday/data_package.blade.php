@@ -101,58 +101,80 @@
                                     <div class="mt-2">
                                         <div class="table-responsive text-nowrap">
                                             <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th class="align-content-center text-center">Vehicle</th>
-                                                        <th class="align-content-center text-center">User</th>
-                                                        <th class="align-content-center text-center">Wna Cost</th>
-                                                        @php
-                                                        // Decode the JSON data
-                                                        $prices = json_decode($package->prices->price_data, true);
+                                                @php
+                                                // Decode JSON dari database
+                                                $prices = json_decode($package->prices->price_data, true);
 
-                                                        // Extract accommodation types dynamically
-                                                        $accommodationTypes = [];
-                                                        if (is_array($prices) && count($prices) > 0) {
-                                                        $firstRow = $prices[0];
-                                                        $accommodationTypes = array_keys(array_filter($firstRow, function ($key) {
-                                                        return !in_array($key, ['vehicle', 'user', 'wnaCost', 'mealCostPerPerson']);
-                                                        }, ARRAY_FILTER_USE_KEY));
+                                                // Ambil daftar jenis akomodasi secara dinamis
+                                                $accommodationTypes = [];
+                                                if (is_array($prices) && count($prices) > 0) {
+                                                    foreach ($prices as $group) {
+                                                        if (!empty($group['data']) && is_array($group['data'])) {
+                                                            foreach ($group['data'] as $priceRow) {
+                                                                foreach ($priceRow as $key => $value) {
+                                                                    if (!in_array($key, ['vehicle', 'user', 'wnaCost', 'mealCostPerPerson', 'Price Type'])) {
+                                                                        $accommodationTypes[$key] = ucwords(str_replace(
+                                                                            ['WithoutAccomodation', 'Guesthouse', 'Homestay', 'TwoStar', 'ThreeStar', 'FourStar', 'FiveStar'],
+                                                                            ['Without Accommodation', 'Guesthouse', 'Homestay', 'Two Star', 'Three Star', 'Four Star', 'Five Star'],
+                                                                            $key
+                                                                        ));
+                                                                    }
+                                                                }
+                                                            }
                                                         }
+                                                    }
+                                                }
+                                                @endphp
+
+                                                @if (is_array($prices) && count($prices) > 0)
+                                                    @foreach ($prices as $group)
+                                                        @php
+                                                            $priceType = $group['Price Type'] ?? 'Unknown';
                                                         @endphp
-                                                        @foreach ($accommodationTypes as $type)
-                                                        <th class="align-content-center text-center">{{
-                                                            ucwords(str_replace(['WithoutAccomodation', 'Guesthouse', 'Homestay',
-                                                            'TwoStar', 'ThreeStar', 'FourStar', 'FiveStar'], ['Without
-                                                            Accommodation', 'Guesthouse', 'Homestay', 'Two Star', 'Three Star',
-                                                            'Four Star', 'Five Star'], $type)) }}</th>
-                                                        @endforeach
-                                                    </tr>
-                                                </thead>
-                                                    @php
-                                                        $pricesForTable = array_map(function ($priceRow) {
-                                                        // Hapus kunci 'mealCostPerPerson' dari array
-                                                        unset($priceRow['mealCostPerPerson']);
-                                                        return $priceRow;
-                                                        }, $prices);
-                                                    @endphp
-                                                <tbody>
-                                                    @if (is_array($pricesForTable) && count($pricesForTable) > 0)
-                                                        @foreach ($pricesForTable as $priceRow)
+
+                                                        <!-- Header Baru untuk Setiap Tipe Harga -->
+                                                        <thead class="align-content-center text-center">
                                                             <tr>
-                                                                <td class="align-content-center text-center">{{ $priceRow['vehicle'] }}</td>
-                                                                <td class="align-content-center text-center">{{ $priceRow['user'] }}</td>
-                                                                <td class="align-content-center text-center">{{ number_format($priceRow['wnaCost'], 0, ',', '.') }} /org</td>
+                                                                <th colspan="{{ 4 + count($accommodationTypes) }}" class="text-center">{{ $priceType }}</th>
+                                                            </tr>
+                                                            <tr>
+                                                                <th class="align-content-center text-center">Price Type</th>
+                                                                <th class="align-content-center text-center">Vehicle</th>
+                                                                <th class="align-content-center text-center">User</th>
+                                                                <th class="align-content-center text-center">WNA Cost</th>
                                                                 @foreach ($accommodationTypes as $type)
-                                                                    <td class="align-content-center text-center">{{ number_format($priceRow[$type] ?? 0, 0, ',', '.') }} /org</td>
+                                                                    <th class="align-content-center text-center">{{ $type }}</th>
                                                                 @endforeach
                                                             </tr>
-                                                        @endforeach
-                                                    @else
-                                                        <tr>
-                                                            <td colspan="{{ 3 + count($accommodationTypes) }}" class="text-center">No price data available</td>
-                                                        </tr>
-                                                    @endif
-                                                </tbody>
+                                                        </thead>
+
+                                                        <tbody>
+                                                            @if (!empty($group['data']) && is_array($group['data']))
+                                                                @foreach ($group['data'] as $index => $priceRow)
+                                                                    @if ($index !== 0) <!-- Melewati objek pertama yang hanya berisi "Price Type" -->
+                                                                        <tr>
+                                                                            <td class="align-content-center text-center">{{ $priceType }}</td>
+                                                                            <td class="align-content-center text-center">{{ $priceRow['vehicle'] ?? '-' }}</td>
+                                                                            <td class="align-content-center text-center">{{ $priceRow['user'] ?? '-' }}</td>
+                                                                            <td class="align-content-center text-center">{{ number_format($priceRow['wnaCost'] ?? 0, 0, ',', '.') }} /org</td>
+                                                                            @foreach ($accommodationTypes as $typeKey => $typeLabel)
+                                                                                <td class="align-content-center text-center">{{ number_format($priceRow[$typeKey] ?? 0, 0, ',', '.') }} /org</td>
+                                                                            @endforeach
+                                                                        </tr>
+                                                                    @endif
+                                                                @endforeach
+                                                            @else
+                                                                <tr>
+                                                                    <td colspan="{{ 4 + count($accommodationTypes) }}" class="text-center">No price data available</td>
+                                                                </tr>
+                                                            @endif
+                                                        </tbody>
+                                                    @endforeach
+                                                @else
+                                                    <tr>
+                                                        <td colspan="{{ 4 + count($accommodationTypes) }}" class="text-center">No price data available</td>
+                                                    </tr>
+                                                @endif
                                             </table>
                                         </div>
                                     </div>
