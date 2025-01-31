@@ -268,7 +268,7 @@ class GenerateThreedayPackageController extends Controller
         }
     }
 
-    private function calculatePrices($vehicles, $meals, $crewData, $serviceFee, $feeAgen, $reserveFees, $selectedDestinations, $selectedFacilities, $hotels, $regencyId) {
+    private function calculatePrices($vehicles, $meals, $crewData, $serviceFee, $feeAgen, $reserveFees, $selectedDestinations, $selectedFacilities, $hotels, $regencyId, $days = 3) {
         $pricesWithMeal = [["Price Type" => "Include Meal"]];
         $pricesWithoutMeal = [["Price Type" => "Exclude Meal"]];
 
@@ -278,13 +278,13 @@ class GenerateThreedayPackageController extends Controller
                 continue;
             }
 
-            $transportCost = $vehicle->price * 3;
+            $transportCost = $vehicle->price * $days;
             $crew = $crewData->firstWhere(fn($c) => $participants >= $c->min_participants && $participants <= $c->max_participants);
 
             [$totalCostWNI, $totalCostWNA, $parkingCost] = $this->calculateDestinationCosts($selectedDestinations, $participants, $vehicle);
             $totalFacilityCost = $this->calculateFacilityCosts($selectedFacilities, $participants);
             $reserveFee = $reserveFees->firstWhere(fn($r) => $participants >= $r->min_user && $participants <= $r->max_user);
-            $reserveFeeCost = $reserveFee ? $reserveFee->price * $participants * 3 : 0;
+            $reserveFeeCost = $reserveFee ? $reserveFee->price * $participants * $days : 0;
 
             foreach ([true, false] as $includeMeal) {
                 $mealCost = $meals ? $meals->price * $meals->num_meals * ($includeMeal ? ($participants + $crew->num_crew) : $crew->num_crew) : 0;
@@ -298,7 +298,7 @@ class GenerateThreedayPackageController extends Controller
                 if ($hotels->isNotEmpty()) {
                     foreach ($hotels as $hotel) {
                         $hotelCost = $this->calculateHotelCost($hotel, $participants);
-                        $totalCost = $totalCostWNI + $transportCost + ($feeAgen * $participants * 3) + $hotelCost + $mealCost + $reserveFeeCost + $parkingCost + $totalFacilityCost;
+                        $totalCost = $totalCostWNI + $transportCost + ($feeAgen * $participants * $days) + $hotelCost + $mealCost + $reserveFeeCost + $parkingCost + $totalFacilityCost;
                         $pricePerPerson = $totalCost / $participants;
                         $finalPrice = $pricePerPerson + ($pricePerPerson * $serviceFee);
                         $priceRow[$hotel->type] = round($finalPrice, 2);
@@ -424,47 +424,45 @@ class GenerateThreedayPackageController extends Controller
         return $totalFacilityCost;
     }
 
-    private function calculateHotelCost($hotel, $participants)
+    private function calculateHotelCost($hotel, $participants, $nights = 2)
     {
-        // Pastikan kapasitas tidak null atau 0 untuk mencegah error
-        $capacity = $hotel->capacity ?? 2; // Default kapasitas ke 1 jika null atau tidak tersedia
-        $extraBedPrice = $hotel->extrabed_price ?? 0; // Pastikan harga extra bed tidak null
+        $capacity = $hotel->capacity ?? 2;
+        $extraBedPrice = $hotel->extrabed_price ?? 0;
 
-        // Jika kapasitas masih 0, set ke 1 untuk menghindari division by zero
         if ($capacity <= 0) {
             Log::warning('Hotel capacity is zero or null, setting default to 2', ['hotel' => $hotel->name]);
             $capacity = 2;
         }
 
-        // Jika jenis hotel adalah Villa, Homestay, Cottage, atau Cabin
         if (in_array($hotel->type, ['Villa', 'Homestay', 'Cottage', 'Cabin'])) {
             $numUnits = intdiv($participants, $capacity);
             $remainingParticipants = $participants % $capacity;
             $totalCost = $numUnits * ($hotel->price ?? 0);
 
             if ($remainingParticipants > 0) {
-                // Tambahkan biaya 1 unit penuh untuk sisa peserta
-                $totalCost += ($hotel->price * 2 ?? 0);
-
-                // Tambahkan biaya extra bed jika peserta tersisa <= 2
                 if ($remainingParticipants <= 2) {
-                    $totalCost += ($remainingParticipants * $extraBedPrice * 2);
+                    $totalCost += ($remainingParticipants * $extraBedPrice);
+                } else {
+                    $totalCost += ($hotel->price ?? 0);
+                    $remainingParticipants -= $capacity; // Kurangkan kapasitas unit baru
+                    if ($remainingParticipants > 0) {
+                        $totalCost += ($remainingParticipants <= 2 ? $remainingParticipants * $extraBedPrice : 2 * $extraBedPrice); // Max 2 extra bed
+                    }
                 }
             }
 
-            return $totalCost;
+            return $totalCost * $nights;
         }
 
-        // Jika bukan jenis hotel yang memerlukan perhitungan kapasitas (hotel biasa)
         $numRooms = intdiv($participants, 2);
         $extraBedCost = 0;
 
         if ($participants % 2 !== 0) {
             $numRooms += 1;
-            $extraBedCost = $extraBedPrice * 2;
+            $extraBedCost = $extraBedPrice;
         }
 
-        return (($hotel->price ?? 0) * $numRooms * 2) + $extraBedCost;
+        return (($hotel->price ?? 0) * $numRooms + $extraBedCost) * $nights;
     }
 
     public function AllThreeDayPackagesAgen($id)
