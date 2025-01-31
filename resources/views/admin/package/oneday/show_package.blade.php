@@ -93,6 +93,7 @@
                                                 <th class="align-content-center text-center text-warning">Vehicle</th>
                                                 <th class="align-content-center text-center text-warning">User</th>
                                                 <th class="align-content-center text-center text-warning">Price</th>
+                                                <th class="align-content-center text-center text-warning">No Meal Price</th>
                                                 <th class="align-content-center text-center text-warning">Wna Cost</th>
                                             </tr>
                                         </thead>
@@ -108,6 +109,7 @@
                                                         <td class="align-content-center text-center text-info">{{ $price['vehicle'] }}</td>
                                                         <td class="align-content-center text-center text-warning">{{ $price['user'] }}</td>
                                                         <td class="align-content-center text-center text-info">Rp {{ number_format($price['price'], 0, ',', '.') }} /orang</td>
+                                                        <td class="align-content-center text-center text-info">Rp {{ number_format($price['nomeal'], 0, ',', '.') }} /orang</td>
                                                         <td class="align-content-center text-center text-info">Rp {{
                                                             number_format($price['wnaCost'], 0, ',', '.') }} /orang</td>
                                                     </tr>

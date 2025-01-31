@@ -358,15 +358,22 @@ class GeneratePackageController extends Controller
             // Hitung total biaya
             $priceDifference = ($totalCostWNA - $totalCostWNI) / $participants;
             $mealCost = $meals ? $meals->price * ($participants + ($crew->num_crew ?? 0)) : 0;
+            $mealCrew = $meals ? $meals->price * ($crew->num_crew ?? 0) : 0;
             $reserveFee = $reserveFees->firstWhere(fn($r) => $participants >= $r->min_user && $participants <= $r->max_user);
             $reserveFeeCost = $reserveFee ? $reserveFee->price * $participants : 0;
 
             $totalCost = $totalCostWNI + $transportCost + ($feeAgen * $participants) +
                 $mealCost + $reserveFeeCost + $parkingCost + $totalFacilityCost;
 
+            $totalNoMeal = $totalCostWNI + $transportCost + ($feeAgen * $participants) +
+                $mealCrew + $reserveFeeCost + $parkingCost + $totalFacilityCost;
+
+            $noMeal = $totalNoMeal / $participants;
             $pricePerPerson = $totalCost / $participants;
             $serviceFeeCost = $pricePerPerson * $serviceFee;
+
             $finalPrice = $pricePerPerson + $serviceFeeCost;
+            $noMealPrice = $noMeal + $serviceFeeCost;
 
             // Log::info('Cost data.', [
             //     'participants' => $participants,
@@ -388,6 +395,7 @@ class GeneratePackageController extends Controller
                 'vehicle' => $vehicle->name,
                 'user' => $participants,
                 'price' => round($finalPrice, 2),
+                'nomeal' => round($noMealPrice, 2),
                 'wnaCost' => $priceDifference,
             ];
         }
