@@ -80,17 +80,20 @@ $(document).ready(function() {
         var hotelPriceInput = $('#hotelPrice');
         var nightInput = $('#night');
         var capacityHotelInput = $('#capacityHotel');
+        var extraBedPriceInput = $('#extraBedPrice');
 
         if (isChecked) {
             hotelRow.show();
             hotelPriceInput.val('');
             nightInput.val('0');
             capacityHotelInput.val('');
+            extraBedPriceInput.val('');
         } else {
             hotelRow.hide();
             hotelPriceInput.val(0);
             nightInput.val(0);
             capacityHotelInput.val(1);
+            extraBedPriceInput.val(500);
         }
     }).trigger('change');
 });

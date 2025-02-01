@@ -45,6 +45,7 @@ class CustomPackageController extends Controller
             'otherFee' => 'required',
             'reservedFee' => 'required',
             'hotelPrice' => 'required',
+            'extraBedPrice' => 'required',
             'capacityHotel' => 'required',
             'totalUser' => 'required',
         ]);
@@ -66,6 +67,7 @@ class CustomPackageController extends Controller
         $night = $validatedData['night'];
         $reservedFee = $validatedData['reservedFee'];
         $capacityHotel = $validatedData['capacityHotel'];
+        $extraBedPrice = $validatedData['extraBedPrice'];
         $participants = $validatedData['totalUser'];
         $mealCost = $validatedData['mealCost'];
         $totalMeal = $validatedData['totalMeal'];
@@ -78,6 +80,7 @@ class CustomPackageController extends Controller
         $prices = $this->calculatePrices(
             $vehicle,
             $hotelPrice,
+            $extraBedPrice,
             $otherFee,
             $DurationPackage,
             $night,
@@ -114,6 +117,7 @@ class CustomPackageController extends Controller
     private function calculatePrices(
         $vehicle,
         $hotelPrice,
+        $extraBedPrice,
         $otherFee,
         $DurationPackage,
         $night,
@@ -131,8 +135,23 @@ class CustomPackageController extends Controller
 
         $totalFacilityCost = $this->calculateFacilityCosts($selectedFacilities, $participants, $DurationPackage);
 
-        $groupCount = ceil($participants / $capacityHotel);
-        $totalHotelCost = $hotelPrice * $groupCount * $night;
+        $numUnits = floor($participants / $capacityHotel);
+        $remainingParticipants = $participants % $capacityHotel;
+        $totalHotelCost = $hotelPrice * floor($numUnits) * $night;
+
+        if ($remainingParticipants > 0) {
+            if ($remainingParticipants <= 2) {
+                $totalHotelCost += ($remainingParticipants * $extraBedPrice * $night);
+            } else {
+                $totalHotelCost += ($hotelPrice ?? 0) * $night;
+                $remainingParticipants -= $capacityHotel;
+
+                if ($remainingParticipants > 0) {
+                    $totalHotelCost += ($remainingParticipants <= 2 ? $remainingParticipants * $extraBedPrice * $night : 2 * $extraBedPrice * $night);
+                }
+            }
+        }
+
         $totalMealCost = $mealCost * $totalMeal * $participants;
 
         $totalCost = $transportCost + $totalCostWNI + $parkingCost + $totalFacilityCost + $otherFee + $reservedFee + $totalHotelCost + $totalMealCost;
@@ -152,6 +171,7 @@ class CustomPackageController extends Controller
             'parkingCost' => $parkingCost,
             'ticketCost' => $totalCostWNI,
             'hotelCost' => $totalHotelCost,
+            'extraBedCost' => $extraBedPrice,
             'otherFee' => $otherFee,
             'reservedFee' => $reservedFee,
             'totalMealCost' => $totalMealCost,
