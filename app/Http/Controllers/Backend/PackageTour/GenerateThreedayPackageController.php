@@ -435,18 +435,25 @@ class GenerateThreedayPackageController extends Controller
         }
 
         if (in_array($hotel->type, ['Villa', 'Homestay', 'Cottage', 'Cabin'])) {
-            $numUnits = intdiv($participants, $capacity);
-            $remainingParticipants = $participants % $capacity;
-            $totalCost = $numUnits * ($hotel->price ?? 0);
+            // Perbaikan: Tangani kasus kapasitas > peserta
+            if ($capacity > $participants) {
+                $numUnits = 1;  // Hanya butuh 1 unit
+                $remainingParticipants = 0; // Tidak ada sisa peserta
+                $totalCost = ($hotel->price ?? 0); // Biaya 1 unit
+            } else {
+                $numUnits = intdiv($participants, $capacity);
+                $remainingParticipants = $participants % $capacity;
+                $totalCost = $numUnits * ($hotel->price ?? 0);
 
-            if ($remainingParticipants > 0) {
-                if ($remainingParticipants <= 2) {
-                    $totalCost += ($remainingParticipants * $extraBedPrice);
-                } else {
-                    $totalCost += ($hotel->price ?? 0);
-                    $remainingParticipants -= $capacity; // Kurangkan kapasitas unit baru
-                    if ($remainingParticipants > 0) {
-                        $totalCost += ($remainingParticipants <= 2 ? $remainingParticipants * $extraBedPrice : 2 * $extraBedPrice); // Max 2 extra bed
+                if ($remainingParticipants > 0) {
+                    if ($remainingParticipants <= 2) {
+                        $totalCost += ($remainingParticipants * $extraBedPrice);
+                    } else {
+                        $totalCost += ($hotel->price ?? 0);
+                        $remainingParticipants -= $capacity;
+                        if ($remainingParticipants > 0) {
+                            $totalCost += ($remainingParticipants <= 2 ? $remainingParticipants * $extraBedPrice : 2 * $extraBedPrice);
+                        }
                     }
                 }
             }
