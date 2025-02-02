@@ -137,7 +137,16 @@ class CustomPackageController extends Controller
 
         $numUnits = floor($participants / $capacityHotel);
         $remainingParticipants = $participants % $capacityHotel;
-        $totalHotelCost = $hotelPrice * floor($numUnits) * $night;
+
+        // Perbaikan: Tangani kasus kapasitas > peserta
+        if ($capacityHotel > $participants) {
+            $numUnits = 1;
+            $remainingParticipants = 0;
+            $totalHotelCost = $hotelPrice * $numUnits * $night; // Biaya 1 unit
+        } else {
+            $totalHotelCost = $hotelPrice * $numUnits * $night; // Biaya unit seperti biasa
+        }
+
 
         if ($remainingParticipants > 0) {
             if ($remainingParticipants <= 2) {
