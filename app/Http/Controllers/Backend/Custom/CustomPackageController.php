@@ -301,17 +301,11 @@ class CustomPackageController extends Controller
                     break;
 
                 case 'doc':
-                    // Hitung biaya doc jika peserta dalam rentang 20-55
-                    if ($participants >= 20 && $participants <= 55) {
-                        $facDocCost += $facility->price * $DurationPackage;
-                    }
+                    $facDocCost += $facility->price * $DurationPackage;
                     break;
 
                 case 'tl':
-                    // Hitung biaya guide jika peserta dalam rentang 20-55
-                    if ($participants >= 20 && $participants <= 55) {
-                        $guideCost += $groupCount * $facility->price * $DurationPackage;
-                    }
+                    $guideCost += $groupCount * $facility->price * $DurationPackage;
                     break;
 
                 case 'per_person':
