@@ -45,6 +45,7 @@ class CustomPackageController extends Controller
             'otherFee' => 'required',
             'reservedFee' => 'required',
             'hotelPrice' => 'required',
+            'extraBedPrice' => 'required',
             'capacityHotel' => 'required',
             'totalUser' => 'required',
         ]);
@@ -66,6 +67,7 @@ class CustomPackageController extends Controller
         $night = $validatedData['night'];
         $reservedFee = $validatedData['reservedFee'];
         $capacityHotel = $validatedData['capacityHotel'];
+        $extraBedPrice = $validatedData['extraBedPrice'];
         $participants = $validatedData['totalUser'];
         $mealCost = $validatedData['mealCost'];
         $totalMeal = $validatedData['totalMeal'];
@@ -78,6 +80,7 @@ class CustomPackageController extends Controller
         $prices = $this->calculatePrices(
             $vehicle,
             $hotelPrice,
+            $extraBedPrice,
             $otherFee,
             $DurationPackage,
             $night,
@@ -114,6 +117,7 @@ class CustomPackageController extends Controller
     private function calculatePrices(
         $vehicle,
         $hotelPrice,
+        $extraBedPrice,
         $otherFee,
         $DurationPackage,
         $night,
@@ -131,8 +135,32 @@ class CustomPackageController extends Controller
 
         $totalFacilityCost = $this->calculateFacilityCosts($selectedFacilities, $participants, $DurationPackage);
 
-        $groupCount = ceil($participants / $capacityHotel);
-        $totalHotelCost = $hotelPrice * $groupCount * $night;
+        $numUnits = floor($participants / $capacityHotel);
+        $remainingParticipants = $participants % $capacityHotel;
+
+        // Perbaikan: Tangani kasus kapasitas > peserta
+        if ($capacityHotel > $participants) {
+            $numUnits = 1;
+            $remainingParticipants = 0;
+            $totalHotelCost = $hotelPrice * $numUnits * $night; // Biaya 1 unit
+        } else {
+            $totalHotelCost = $hotelPrice * $numUnits * $night; // Biaya unit seperti biasa
+        }
+
+
+        if ($remainingParticipants > 0) {
+            if ($remainingParticipants <= 2) {
+                $totalHotelCost += ($remainingParticipants * $extraBedPrice * $night);
+            } else {
+                $totalHotelCost += ($hotelPrice ?? 0) * $night;
+                $remainingParticipants -= $capacityHotel;
+
+                if ($remainingParticipants > 0) {
+                    $totalHotelCost += ($remainingParticipants <= 2 ? $remainingParticipants * $extraBedPrice * $night : 2 * $extraBedPrice * $night);
+                }
+            }
+        }
+
         $totalMealCost = $mealCost * $totalMeal * $participants;
 
         $totalCost = $transportCost + $totalCostWNI + $parkingCost + $totalFacilityCost + $otherFee + $reservedFee + $totalHotelCost + $totalMealCost;
@@ -152,6 +180,7 @@ class CustomPackageController extends Controller
             'parkingCost' => $parkingCost,
             'ticketCost' => $totalCostWNI,
             'hotelCost' => $totalHotelCost,
+            'extraBedCost' => $extraBedPrice,
             'otherFee' => $otherFee,
             'reservedFee' => $reservedFee,
             'totalMealCost' => $totalMealCost,
@@ -272,17 +301,11 @@ class CustomPackageController extends Controller
                     break;
 
                 case 'doc':
-                    // Hitung biaya doc jika peserta dalam rentang 20-55
-                    if ($participants >= 20 && $participants <= 55) {
-                        $facDocCost += $facility->price * $DurationPackage;
-                    }
+                    $facDocCost += $facility->price * $DurationPackage;
                     break;
 
                 case 'tl':
-                    // Hitung biaya guide jika peserta dalam rentang 20-55
-                    if ($participants >= 20 && $participants <= 55) {
-                        $guideCost += $groupCount * $facility->price * $DurationPackage;
-                    }
+                    $guideCost += $groupCount * $facility->price * $DurationPackage;
                     break;
 
                 case 'per_person':

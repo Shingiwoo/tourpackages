@@ -43,7 +43,7 @@ class BookingServiceController extends Controller
             $query->where('agen_id', $agen->id);
         })->where('status', 'finished')->count();
 
-        return view('agen.booking.all_booking', compact('bookings', 'pendingStatus', 'bookedStatus', 'paidStatus', 'finishedStatus'));
+        return view('agen.booking.all_booking', compact('bookings', 'pendingStatus', 'bookedStatus', 'paidStatus', 'finishedStatus', 'agen'));
     }
 
     public function AddBooking()

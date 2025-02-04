@@ -118,20 +118,25 @@
                                 </div>
                             </div>
                             <div class="row" id="hotel-row">
-                                <div class="col-sm-12 col-md-4 mb-4">
+                                <div class="col-sm-12 col-md-6 mb-4">
                                     <label class="form-label" for="hotelPrice">Hotel</label>
                                     <input type="text" id="hotelPrice" class="form-control numeral-mask3"
                                         placeholder="500000" name="hotelPrice" aria-label="Hotel" required />
                                 </div>
-                                <div class="col-sm-12 col-md-4 mb-4">
+                                <div class="col-sm-12 col-md-6 mb-4">
                                     <label class="form-label" for="night">Night</label>
                                     <input type="number" class="form-control" id="night" placeholder="5" max="50"
                                         name="night" aria-label="Night" required />
                                 </div>
-                                <div class="col-sm-12 col-md-4 mb-4">
+                                <div class="col-sm-12 col-md-6 mb-4">
                                     <label class="form-label" for="capacityHotel">Capacity</label>
                                     <input type="number" class="form-control" id="capacityHotel" placeholder="5"
                                         max="50" name="capacityHotel" aria-label="Capacity Hotel" required />
+                                </div>
+                                <div class="col-sm-12 col-md-6 mb-4">
+                                    <label class="form-label" for="extraBedPrice">Extra Bed</label>
+                                    <input type="text" id="extraBedPrice" class="form-control numeral-mask4"
+                                        placeholder="150000" name="extraBedPrice" aria-label="Extra Bed" required />
                                 </div>
                             </div>
                             <hr class="my-6 mx-n4">
