@@ -9,6 +9,7 @@ use App\Http\Controllers\Backend\Role\RoleController;
 use App\Http\Controllers\Backend\Admin\AdminController;
 use App\Http\Controllers\Backend\Hotel\HotelController;
 use App\Http\Controllers\Agen\Core\AgenServiceController;
+use App\Http\Controllers\Backend\Booking\BookingController;
 use App\Http\Controllers\Backend\Vehicle\VehicleController;
 use App\Http\Controllers\Agen\Core\BookingServiceController;
 use App\Http\Controllers\Agen\Core\PackageServiceController;
@@ -271,6 +272,13 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::post('/store/custom-save', 'CustomSave')->name('save.custom.package');
         Route::get('/index/custom-package', 'IndexCustom')->name('all.custom.package');
         Route::get('/get-custom-package/{id}', 'getCustomPackage');
+    });
+
+    // Booking all Route
+    Route::controller(BookingController::class)->group(function () {
+
+        Route::get('/all/bookings', 'Index')->name('all.bookings');
+        // Route::get('/add/bookings', 'AddVehicle')->name('add.vehicle');
     });
 });
 

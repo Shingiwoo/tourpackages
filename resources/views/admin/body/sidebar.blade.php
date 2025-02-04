@@ -76,7 +76,7 @@
                 <ul class="menu-sub">
                     @if (Auth::user()->can('booking.list'))
                     <li class="menu-item">
-                        <a href="" class="menu-link">
+                        <a href="{{ route('all.bookings') }}" class="menu-link">
                             <div data-i18n="All Booking">All Booking</div>
                         </a>
                     </li>
