@@ -123,6 +123,11 @@
                                                         href="{{ route('edit.fourday.package', $pack->id) }}"><i
                                                             class="ti ti-edit"></i> Edit</a></li>
                                                 @endif
+                                                @if (Auth::user()->can('booking.add'))
+                                                <li><a href="javascript:void(0)" class="dropdown-item text-success" data-bs-toggle="modal" data-id="{{ $pack->id }}" data-bs-target="#bookingModal"> <i class="ti ti-shopping-cart-plus"></i>
+                                                        Booking
+                                                    </a></li>
+                                                @endif
                                                 @if (Auth::user()->can('package.delete'))
                                                 <li><a href="javascript:void(0)"
                                                         class="dropdown-item text-danger delete-confirm"
@@ -148,6 +153,98 @@
     <!--/ Destinations List -->
 </div>
 
+<!-- Booking Modal -->
+<div class="modal fade" id="bookingModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-simple modal-edit-user">
+        <div class="modal-content">
+            <div class="modal-body">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="text-center mb-6">
+                    <h4 class="mb-2">Booking Information</h4>
+                </div>
+                <form id="fourdayModalForm" class="row g-6" method="POST" action="{{ route('booking.save') }}">
+                    @csrf
+                    <div class="row mb-4">
+                        <input type="hidden" name="package_id" id="packageId">
+                        <div class="col-12 mb-4">
+                            <label class="form-label" for="modalClientName">Client Name</label>
+                            <input type="text" id="modalClientName" name="modalClientName" class="form-control"
+                                placeholder="johndoe007" required />
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-12 col-md-6 mb-4">
+                            <label for="fourday_packageType" class="form-label">Package Type</label>
+                            <input type="text" id="fourday_packageType" name="modalPackageType" class="form-control" placeholder="Four Day" value="fourday" readonly/>
+                        </div>
+                        <div class="col-12 col-md-6 mb-4">
+                            <label for="modal_agenName" class="form-label">Agen</label>
+                            <select id="modal_agenName" class="select2 form-select" data-allow-clear="true"
+                                name="user_id" required>
+                                @foreach ( $agens as $agen )
+                                <option value="{{ $agen->id }}">{{ $agen->username }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-12 col-md-6 mb-4" id="total_user_container">
+                            <label class="form-label" for="modalTotalUser">Total User</label>
+                            <input type="number" id="modalTotalUser" name="modalTotalUser" class="form-control"
+                                required />
+                        </div>
+                        <div class="col-12 col-md-6 mb-4" id="hotel_type_container">
+                            <label for="modal_hotelType" class="form-label">Hotel Type</label>
+                            <select id="modal_hotelType" name="modalHotelType" class="select2 form-select"
+                                data-allow-clear="true" required aria-hidden="true">
+                                <option value="">Select Type</option>
+                                <option value="TwoStar">Bintang 2</option>
+                                <option value="ThreeStar">Bintang 3</option>
+                                <option value="FourStar">Bintang 4</option>
+                                <option value="FiveStar">Bintang 5</option>
+                                <option value="Villa">Villa</option>
+                                <option value="Homestay">Homestay</option>
+                                <option value="Cottage">Cottage</option>
+                                <option value="Cabin">Cabin</option>
+                                <option value="Guesthouse">Guesthouse</option>
+                                <option value="WithoutAccomodation">Without Accomodation</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-12 col-md-6 mb-4">
+                            <div class="form-check mb-0">
+                                <input class="form-check-input" type="checkbox" id="nomeal" name="mealStatus" value="1" />
+                                <label class="form-check-label" for="nomeal">Include Meal</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-12 col-md-6 mb-4">
+                            <label for="bs-datepicker-autoclose" class="form-label">Start Date</label>
+                            <input type="text" id="bs-datepicker-autoclose" placeholder="MM/DD/YYYY"
+                                class="form-control" name="modalStartDate" required />
+                        </div>
+                        <div class="col-12 col-md-6 mb-4">
+                            <label for="bs-datepicker-autoclose2" class="form-label">End Date</label>
+                            <input type="text" id="bs-datepicker-autoclose2" placeholder="MM/DD/YYYY"
+                                class="form-control" name="modalEndDate" required />
+                        </div>
+                    </div>
+                    <div class="col-12 text-center">
+                        <button type="submit" class="btn btn-primary me-3">Submit</button>
+                        <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
+                            aria-label="Close">
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!--/ Booking Modal -->
+
 <script>
     function updateAgenUrl() {
         const agenId = document.getElementById('name_agen').value;
@@ -161,6 +258,27 @@
             showAgenPackagesBtn.classList.add('disabled'); // Disable button
         }
     }
+
+    // Form Booking fourday Package
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('fourdayModalForm');
+        const mealStatusCheckbox = document.getElementById('nomeal'); // Ambil elemen checkbox
+        const mealStatusInput = document.createElement('input');
+
+        // Buat input hidden untuk mealStatus
+        mealStatusInput.type = 'hidden';
+        mealStatusInput.name = 'mealStatus';
+        form.appendChild(mealStatusInput);
+
+        form.addEventListener('submit', function(e) {
+            // Pastikan nilai package type di-set ke 'fourday'
+            const packageTypeInput = document.getElementById('fourday_packageType');
+            packageTypeInput.value = 'fourday';
+
+            // Update nilai mealStatus sebelum submit
+            mealStatusInput.value = mealStatusCheckbox.checked ? 1 : 0;
+        });
+    });
 </script>
 
 @endsection
