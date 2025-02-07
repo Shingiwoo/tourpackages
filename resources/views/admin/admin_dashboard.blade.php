@@ -48,6 +48,7 @@
     <link rel="stylesheet"
         href="{{ asset('assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css') }} " />
 
 
     <!-- Page CSS -->
@@ -127,6 +128,7 @@
     <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 
 
@@ -141,6 +143,7 @@
     <script src="{{ asset('assets/js/forms-selects.js') }}"></script>
     <script src="{{ asset('assets/js/ui-carousel.js') }}"></script>
     <script src="{{ asset('assets/js/modal-service-fee.js') }}"></script>
+    <script src="{{ asset('assets/js/forms-pickers.js') }}"></script>
     <script src="{{ asset('assets/js/form-data.js') }}"></script>
     <script src="{{ asset('assets/js/form-modal-booking.js') }}"></script>
     <script src="{{ asset('assets/js/form-data-booking.js') }}"></script>

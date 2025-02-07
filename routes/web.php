@@ -272,13 +272,14 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::post('/store/custom-save', 'CustomSave')->name('save.custom.package');
         Route::get('/index/custom-package', 'IndexCustom')->name('all.custom.package');
         Route::get('/get-custom-package/{id}', 'getCustomPackage');
+        Route::delete('/delete/custom-package/{id}', 'DeleteCustomPackage')->name('delete.custom.package');
     });
 
     // Booking all Route
     Route::controller(BookingController::class)->group(function () {
 
         Route::get('/all/bookings', 'Index')->name('all.bookings');
-        // Route::get('/add/bookings', 'AddVehicle')->name('add.vehicle');
+        Route::post('/admin/create/booking', 'SaveBooking')->name('booking.save');
     });
 });
 

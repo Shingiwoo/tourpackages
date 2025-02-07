@@ -26,7 +26,7 @@ class GeneratePackageController extends Controller
         $destinations = Destination::all(); // Untuk form generate
         $active = PackageOneDay::where('status', 1)->count();
         $inactive = PackageOneDay::where('status', 0)->count();
-        $agens = User::agen()->get();
+        $agens = User::where('role', 'agen')->get();
         return view('admin.package.oneday.all_packages', compact('packages', 'destinations', 'active', 'inactive', 'agens'));
     }
 
