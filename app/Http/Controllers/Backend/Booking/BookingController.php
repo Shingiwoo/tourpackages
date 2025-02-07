@@ -100,8 +100,13 @@ class BookingController extends Controller
             $remainingCosts = 0;
 
             if (!$type) {
+                // Kirim Notification Warning
+                $notification = [
+                    'message' => 'Tipe paket tidak ditemukan.',
+                    'alert-type' => 'warning',
+                ];
                 Log::error('Tipe paket tidak diberikan.', ['validated' => $validated]);
-                return back()->withErrors(['error' => 'Tipe paket tidak diberikan.']);
+                return back()->with($notification);
             }
 
             if ($type === 'custom') {
@@ -109,8 +114,13 @@ class BookingController extends Controller
                 $custom = Custom::where('id', $packageID)->first();
 
                 if (!$custom) {
+                    // Kirim Notification Warning
+                    $notification = [
+                        'message' => 'Custom package tidak ditemukan.',
+                        'alert-type' => 'warning',
+                    ];
                     Log::error('Custom package tidak ditemukan.', ['package_id' => $packageID]);
-                    return back()->withErrors(['error' => 'Custom package tidak ditemukan.']);
+                    return back()->with($notification);
                 }
 
                 $customPackage = json_decode($custom->custompackage, true);
@@ -146,8 +156,13 @@ class BookingController extends Controller
                 ];
 
                 if (!array_key_exists($type, $packageModels)) {
+                    // Kirim Notification Warning
+                    $notification = [
+                        'message' => 'Tipe paket tidak valid..',
+                        'alert-type' => 'warning',
+                    ];
                     Log::error('Tipe paket tidak valid.', ['type' => $type]);
-                    return back()->withErrors(['error' => 'Tipe paket tidak valid.']);
+                    return back()->with($notification);
                 }
 
                 $packageModel = $packageModels[$type];
@@ -191,24 +206,34 @@ class BookingController extends Controller
                     $pricesArray = json_decode($package->prices['price_data'], true);
 
                     if (!is_array($pricesArray)) {
+                        // Kirim notifikasi error
+                        $notification = [
+                            'message' => 'Format data harga tidak valid.',
+                            'alert-type' => 'error',
+                        ];
                         Log::error('Format data harga tidak valid.', [
                             'package_id' => $packageID,
                             'type' => $type,
                             'price_data' => $package->prices['price_data'],
                         ]);
-                        return back()->withErrors(['error' => 'Format data harga tidak valid.']);
+                        return back()->with($notification);
                     }
 
                     // Gunakan filter untuk mencari data harga sesuai jumlah user
                     $priceData = collect($pricesArray)->firstWhere('user', (int)$totalUser);
 
                     if (!$priceData) {
+                        // Kirim notifikasi error
+                        $notification = [
+                            'message' => 'Harga untuk jumlah user tidak ditemukan.',
+                            'alert-type' => 'error',
+                        ];
                         Log::error('Harga untuk jumlah user tidak ditemukan.', [
                             'package_id' => $packageID,
                             'type' => $type,
                             'total_user' => $totalUser,
                         ]);
-                        return back()->withErrors(['error' => 'Harga untuk jumlah user tidak ditemukan.']);
+                        return back()->with($notification);
                     }
 
                     // Ambil harga berdasarkan mealStatus
@@ -219,23 +244,33 @@ class BookingController extends Controller
                     }
 
                     if (!$pricePerPerson || !is_numeric($pricePerPerson)) {
+                        // Kirim notifikasi error
+                        $notification = [
+                            'message' => 'Harga tidak ditemukan atau tidak valid.',
+                            'alert-type' => 'error',
+                        ];
                         Log::error('Harga tidak ditemukan atau tidak valid.', [
                             'package_id' => $packageID,
                             'type' => $type,
                             'total_user' => $totalUser,
                             'mealStatus' => $mealStatus,
                         ]);
-                        return back()->withErrors(['error' => 'Harga tidak ditemukan atau tidak valid.']);
+                        return back()->with($notification);
                     }
                 } else {
                     // Logika untuk twoday, threeday, fourday
                     $hotelType = $validated['modalHotelType'] ?? null;
                     if (!$hotelType) {
+                        // Kirim notifikasi error
+                        $notification = [
+                            'message' => 'Tipe hotel tidak ditemukan.',
+                            'alert-type' => 'error',
+                        ];
                         Log::error('Tipe hotel tidak diberikan.', [
                             'package_id' => $packageID,
                             'type' => $type,
                         ]);
-                        return back()->withErrors(['error' => 'Tipe hotel tidak diberikan.']);
+                        return back()->with($notification);
                     }
 
                     // Tentukan grup harga berdasarkan mealStatus
