@@ -162,9 +162,12 @@
                                                 </li>
                                                 @endif
                                                 @if (Auth::user()->can('booking.delete'))
-                                                <li><a href="javascript:void(0)" class="dropdown-item text-danger"> <i
-                                                            class="ti ti-trash"></i> Delete
-                                                    </a></li>
+                                                <li><a href="javascript:void(0)"
+                                                    class="dropdown-item text-danger delete-confirm"
+                                                    data-id="{{ $booking->id }}"
+                                                    data-url="{{ route('delete.booking', $booking->id) }}"> <i
+                                                        class="ti ti-trash"></i> Delete
+                                                </a></li>
                                                 @endif
                                             </ul>
                                         </div>

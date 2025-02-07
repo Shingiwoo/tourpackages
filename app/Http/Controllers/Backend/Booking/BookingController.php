@@ -383,4 +383,47 @@ class BookingController extends Controller
             return back()->with($notification);
         }
     }
+
+
+    public function DeleteBooking($id)
+    {
+        try {
+            // Cari booking berdasarkan ID
+            $booking = Booking::find($id);
+
+            if (!$booking) {
+                Log::error('Booking tidak ditemukan', ['id' => $id]);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data booking tidak ditemukan!'
+                ], 404);
+            }
+
+            // Cari related booking list (gunakan relasi jika memungkinkan)
+            $booklist = BookingList::where('booking_id', $id)->first();
+
+            // Hapus booking list jika ada
+            if ($booklist) {
+                $booklist->delete();
+            }
+
+            // Hapus booking
+            $booking->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data berhasil dihapus'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error menghapus booking: ' . $e->getMessage(), [
+                'id' => $id,
+                'exception' => $e
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus data'
+            ], 500);
+        }
+    }
 }

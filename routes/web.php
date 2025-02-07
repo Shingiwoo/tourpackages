@@ -280,6 +280,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
 
         Route::get('/all/bookings', 'Index')->name('all.bookings');
         Route::post('/admin/create/booking', 'SaveBooking')->name('booking.save');
+        Route::delete('/delete/booking/{id}', 'DeleteBooking')->name('delete.booking');
     });
 });
 
