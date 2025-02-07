@@ -217,7 +217,7 @@
                         <div class="col-12 col-md-6 mb-4">
                             <div class="form-check mb-0">
                                 <input class="form-check-input" type="checkbox" id="nomeal" name="mealStatus" value="1" />
-                                <label class="form-check-label" for="nomeal">Exclude Meal</label>
+                                <label class="form-check-label" for="nomeal">Include Meal</label>
                             </div>
                         </div>
                     </div>

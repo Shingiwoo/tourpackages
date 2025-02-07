@@ -238,9 +238,9 @@ class BookingController extends Controller
 
                     // Ambil harga berdasarkan mealStatus
                     if ($mealStatus) {
-                        $pricePerPerson = isset($priceData['nomeal']) ? $priceData['nomeal'] : null;
-                    } else {
                         $pricePerPerson = isset($priceData['price']) ? $priceData['price'] : null;
+                    } else {
+                        $pricePerPerson = isset($priceData['nomeal']) ? $priceData['nomeal'] : null;
                     }
 
                     if (!$pricePerPerson || !is_numeric($pricePerPerson)) {
