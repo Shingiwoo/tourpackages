@@ -44,7 +44,7 @@
                             </div>
                             <div class="mb-2 mt-4">
                                 <h6 class="text-warning">Information :</h6>
-                                <p class="fw-medium">{{ strip_tags($package->information) }}</p>
+                                <small class="fw-medium text-capitalize">{{ strip_tags($package->information ?? 'no data')   }}</small>
                             </div>
                         </div>
                     </div>
