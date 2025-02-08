@@ -9,6 +9,7 @@ use App\Http\Controllers\Backend\Role\RoleController;
 use App\Http\Controllers\Backend\Admin\AdminController;
 use App\Http\Controllers\Backend\Hotel\HotelController;
 use App\Http\Controllers\Agen\Core\AgenServiceController;
+use App\Http\Controllers\Backend\Booking\BookingController;
 use App\Http\Controllers\Backend\Vehicle\VehicleController;
 use App\Http\Controllers\Agen\Core\BookingServiceController;
 use App\Http\Controllers\Agen\Core\PackageServiceController;
@@ -271,6 +272,17 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::post('/store/custom-save', 'CustomSave')->name('save.custom.package');
         Route::get('/index/custom-package', 'IndexCustom')->name('all.custom.package');
         Route::get('/get-custom-package/{id}', 'getCustomPackage');
+        Route::delete('/delete/custom-package/{id}', 'DeleteCustomPackage')->name('delete.custom.package');
+    });
+
+    // Booking all Route
+    Route::controller(BookingController::class)->group(function () {
+
+        Route::get('/all/bookings', 'Index')->name('all.bookings');
+        Route::post('/admin/create/booking', 'SaveBooking')->name('booking.save');
+        Route::get('/edit/booking/{id}', 'EditBooking')->name('edit.booking');
+        Route::patch('/booking/update/{id}', 'UpdateBooking')->name('booking.update');
+        Route::delete('/delete/booking/{id}', 'DeleteBooking')->name('delete.booking');
     });
 });
 

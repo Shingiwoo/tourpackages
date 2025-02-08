@@ -441,4 +441,30 @@ class CustomPackageController extends Controller
             'prices' => $prices,
         ]);
     }
+
+
+    public function DeleteCustomPackage($id)
+    {
+        try {
+            // Cari paket berdasarkan ID
+            $package = Custom::find($id);
+
+            if (!$package) {
+                return redirect()->route('all.custom.package')->with('error', 'Package not found!');
+            }
+
+            // Hapus paket
+            $package->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data has been successfully deleted',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to delete data',
+            ], 500);
+        }
+    }
 }

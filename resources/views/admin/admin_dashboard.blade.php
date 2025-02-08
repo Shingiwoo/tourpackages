@@ -48,6 +48,7 @@
     <link rel="stylesheet"
         href="{{ asset('assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.css') }} " />
 
 
     <!-- Page CSS -->
@@ -127,6 +128,7 @@
     <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/bootstrap-datepicker/bootstrap-datepicker.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
 
 
@@ -135,48 +137,49 @@
 
     <!-- Page JS -->
     <script src="{{ asset('assets/js/app-academy-dashboard.js') }}"></script>
-    <script src="{{ asset('assets/js/forms-extras.js') }}"> </script>
+    <script src="{{ asset('assets/js/forms-extras.js') }}"></script>
     <script src="{{ asset('assets/js/ui-popover.js') }}"></script>
     <script src="{{ asset('assets/js/extended-ui-sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/js/forms-selects.js') }}"></script>
     <script src="{{ asset('assets/js/ui-carousel.js') }}"></script>
     <script src="{{ asset('assets/js/modal-service-fee.js') }}"></script>
+    <script src="{{ asset('assets/js/forms-pickers.js') }}"></script>
     <script src="{{ asset('assets/js/form-data.js') }}"></script>
     <script src="{{ asset('assets/js/form-modal-booking.js') }}"></script>
     <script src="{{ asset('assets/js/form-data-booking.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('#example').DataTable();
-        } );
+        });
     </script>
 
     <script>
-        @if(Session::has('message'))
-            var type = "{{ Session::get('alert-type','info') }}"
-            switch(type){
+        @if (Session::has('message'))
+            var type = "{{ Session::get('alert-type', 'info') }}"
+            switch (type) {
                 case 'info':
-                toastr.info(" {{ Session::get('message') }} ");
-                break;
+                    toastr.info(" {{ Session::get('message') }} ");
+                    break;
 
                 case 'success':
-                toastr.success(" {{ Session::get('message') }} ");
-                break;
+                    toastr.success(" {{ Session::get('message') }} ");
+                    break;
 
                 case 'warning':
-                toastr.warning(" {{ Session::get('message') }} ");
-                break;
+                    toastr.warning(" {{ Session::get('message') }} ");
+                    break;
 
                 case 'error':
-                toastr.error(" {{ Session::get('message') }} ");
-                break;
+                    toastr.error(" {{ Session::get('message') }} ");
+                    break;
             }
         @endif
     </script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            document.querySelectorAll('[data-bs-toggle="modal"]').forEach(function (button) {
-                button.addEventListener('click', function () {
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('[data-bs-target="#showData"]').forEach(function(button) {
+                button.addEventListener('click', function() {
                     const customId = this.getAttribute('data-id');
                     fetch(`/get-custom-package/${customId}`)
                         .then(response => response.json())
@@ -184,38 +187,96 @@
                             if (data.success) {
                                 const prices = data.prices;
 
-                                document.querySelector('#showData .package-name').textContent = prices.package_name;
-                                document.querySelector('#showData .duration').textContent = prices.DurationPackage;
-                                document.querySelector('#showData .night').textContent = prices.night;
+                                document.querySelector('#showData .package-name').textContent =
+                                    prices.package_name;
+                                document.querySelector('#showData .duration').textContent =
+                                    prices.DurationPackage;
+                                document.querySelector('#showData .night').textContent = prices
+                                    .night;
 
-                                const destinationList = document.querySelector('#showData .list-group.destinations');
+                                const destinationList = document.querySelector(
+                                    '#showData .list-group.destinations');
                                 destinationList.innerHTML = '';
                                 prices.destinationNames.forEach(name => {
-                                    destinationList.innerHTML += `<li class="list-group-item">- ${name}</li>`;
+                                    destinationList.innerHTML +=
+                                        `<li class="list-group-item">- ${name}</li>`;
                                 });
 
-                                const facilityList = document.querySelector('#showData .list-group.facilities');
+                                const facilityList = document.querySelector(
+                                    '#showData .list-group.facilities');
                                 facilityList.innerHTML = '';
                                 prices.facilityNames.forEach(name => {
-                                    facilityList.innerHTML += `<li class="list-group-item">- ${name}</li>`;
+                                    facilityList.innerHTML +=
+                                        `<li class="list-group-item">- ${name}</li>`;
                                 });
 
                                 document.querySelector('#showData .perperso-cost').textContent =
                                     `Rp ${prices.costPerPerson.toLocaleString('id-ID')}`;
-                                document.querySelector('#showData .total-user').textContent = `${prices.participants} orang`;
+                                document.querySelector('#showData .total-user').textContent =
+                                    `${prices.participants} orang`;
                                 document.querySelector('#showData .total-cost').textContent =
                                     `Rp ${prices.totalCost.toLocaleString('id-ID')}`;
                                 document.querySelector('#showData .down-payment').textContent =
                                     `Rp ${prices.downPayment.toLocaleString('id-ID')}`;
-                                document.querySelector('#showData .remaining-costs').textContent =
+                                document.querySelector('#showData .remaining-costs')
+                                    .textContent =
                                     `Rp ${prices.remainingCosts.toLocaleString('id-ID')}`;
 
                                 document.querySelector('#showData .child-cost').textContent =
                                     `Rp ${prices.childCost.toLocaleString('id-ID')}`;
-                                document.querySelector('#showData .additional-cost-wna').textContent =
+                                document.querySelector('#showData .additional-cost-wna')
+                                    .textContent =
                                     `Rp ${prices.additionalCostWna.toLocaleString('id-ID')}`;
                             }
                         });
+                });
+            });
+        });
+    </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Pilih semua tombol yang memicu modal
+            const showButtons = document.querySelectorAll('[data-bs-target="#viewBookingData"]');
+
+            showButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Ambil data dari atribut data-*
+                    const codeBooking = this.getAttribute('data-codeBooking');
+                    const agenName = this.getAttribute('data-agenName');
+                    const bookingType = this.getAttribute('data-bookingType');
+                    const bookingStatus = this.getAttribute('data-bookingStatus');
+                    const clientName = this.getAttribute('data-clientName');
+                    const startDate = this.getAttribute('data-startDate');
+                    const endDate = this.getAttribute('data-endDate');
+                    const pricePerPerson = this.getAttribute('data-pricePerperson') || 0;
+                    const totalUser = this.getAttribute('data-totalUser');
+                    const totalCost = this.getAttribute('data-totalCost');
+                    const downPayment = this.getAttribute('data-downPayment');
+                    const remainingCost = this.getAttribute('data-remainingCost');
+                    const kidsCost = pricePerPerson * 0.3;
+                    const wnaCost = pricePerPerson * 0.44;
+
+
+                    // Set data ke modal
+                    document.getElementById('booking-code').innerText = codeBooking;
+                    document.getElementById('agen-name').innerText = agenName;
+                    document.getElementById('booking-type').innerText = bookingType;
+                    document.getElementById('booking-status').innerText = bookingStatus;
+                    document.getElementById('client-name').innerText = clientName;
+                    document.getElementById('start-date').innerText = startDate;
+                    document.getElementById('end-date').innerText = endDate;
+                    document.getElementById('price-per-person').innerText =
+                        `Rp ${parseInt(pricePerPerson).toLocaleString('id-ID')}`;
+                    document.getElementById('total-user').innerText = `${totalUser} orang`;
+                    document.getElementById('total-cost').innerText =
+                        `Rp ${parseInt(totalCost).toLocaleString('id-ID')}`;
+                    document.getElementById('down-payment').innerText =
+                        `Rp ${parseInt(downPayment).toLocaleString('id-ID')}`;
+                    document.getElementById('remaining-cost').innerText =
+                        `Rp ${parseInt(remainingCost).toLocaleString('id-ID')}`;
+                    document.getElementById('child-cost').innerText = `Rp ${kidsCost.toLocaleString('id-ID')}`;
+                    document.getElementById('additional-cost-wna').innerText = `Rp ${wnaCost.toLocaleString('id-ID')}`;
                 });
             });
         });

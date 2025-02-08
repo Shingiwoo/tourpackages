@@ -62,6 +62,11 @@ class User extends Authenticatable
         return $query->where('role', 'agen')->where('status', 'active');
     }
 
+    public function bookingLists()
+    {
+        return $this->hasMany(BookingList::class, 'agen_id', 'id');
+    }
+
     public static function getpermissionGroup(){
 
         $permissions_groups = DB::table('permissions')
