@@ -47,21 +47,13 @@
                                                 <ul class="dropdown-menu dropdown-menu-end">
                                                     @if (Auth::user()->can('rent.edit'))
                                                     <li><a class="dropdown-item text-warning"
-                                                            href=""><i
+                                                            href="{{ route('edit.facility', $item->id)}}"><i
                                                                 class="ti ti-edit"></i> Edit</a>
                                                     </li>
                                                     @endif
                                                     @if (Auth::user()->can('booking.add'))
                                                     <li><a href="javascript:void(0)" class="dropdown-item text-success" data-bs-toggle="modal" data-id="{{ $item->id }}" data-bs-target="#bookingModal"> <i class="ti ti-shopping-cart-plus"></i>
                                                             Booking
-                                                        </a></li>
-                                                    @endif
-                                                    @if (Auth::user()->can('rent.delete'))
-                                                    <li><a href="javascript:void(0)"
-                                                            class="dropdown-item text-danger delete-confirm"
-                                                            data-id="{{ $item->id }}"
-                                                            data-url=""> <i
-                                                                class="ti ti-trash"></i> Delete
                                                         </a></li>
                                                     @endif
                                                 </ul>
