@@ -5,6 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Backend\Agen\AgenController;
 use App\Http\Controllers\Backend\Crew\CrewController;
 use App\Http\Controllers\Backend\Meal\MealController;
+use App\Http\Controllers\Backend\Rent\RentController;
 use App\Http\Controllers\Backend\Role\RoleController;
 use App\Http\Controllers\Backend\Admin\AdminController;
 use App\Http\Controllers\Backend\Hotel\HotelController;
@@ -283,6 +284,12 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/edit/booking/{id}', 'EditBooking')->name('edit.booking');
         Route::patch('/booking/update/{id}', 'UpdateBooking')->name('booking.update');
         Route::delete('/delete/booking/{id}', 'DeleteBooking')->name('delete.booking');
+    });
+
+    // Rent all Route
+    Route::controller(RentController::class)->group(function () {
+
+        Route::get('/all/rents', 'RentIndex')->name('all.rents');
     });
 });
 

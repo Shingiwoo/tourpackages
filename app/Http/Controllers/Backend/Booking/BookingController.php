@@ -14,6 +14,7 @@ use App\Models\PackageFourDay;
 use App\Models\PackageThreeDay;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\Facility;
 use Illuminate\Support\Facades\Validator;
 
 class BookingController extends Controller
@@ -141,6 +142,29 @@ class BookingController extends Controller
                 $downPayment = $customPackage['downPayment'];
                 $remainingCosts = $customPackage['remainingCosts'];
 
+            }
+
+            // Rent logic
+            if ($type === 'rent') {
+                // Cari rent berdasarkan id
+                $rent = Facility::where('id', $packageID)->first();
+
+                if (!$rent) {
+                    // Kirim Notification Warning
+                    Log::error('Rent tidak ditemukan.', ['package_id' => $packageID]);
+                    return back()->with([
+                        'message' => 'Rent tidak ditemukan.',
+                        'alert-type' => 'warning',
+                    ]);
+                }
+
+                // Ambil data
+                $unitCount = ceil($rent->max_user / $validated['modalTotalUser']);
+                $totalPrice = $rent->price * $unitCount;
+                $pricePerPerson = $totalPrice / $validated['modalTotalUser'];
+                $downPayment = 150000; // 150k DP unit
+                $remainingCosts = $totalPrice - $downPayment;
+
             } else {
                 // Logika untuk paket lainnya (oneday, twoday, dll)
                 $packageModels = [
@@ -152,12 +176,11 @@ class BookingController extends Controller
 
                 if (!array_key_exists($type, $packageModels)) {
                     // Kirim Notification Warning
-                    $notification = [
+                    Log::error('Tipe paket tidak valid.', ['type' => $type]);
+                    return back()->with([
                         'message' => 'Tipe paket tidak valid..',
                         'alert-type' => 'warning',
-                    ];
-                    Log::error('Tipe paket tidak valid.', ['type' => $type]);
-                    return back()->with($notification);
+                    ]);
                 }
 
                 $packageModel = $packageModels[$type];
@@ -167,30 +190,29 @@ class BookingController extends Controller
 
                 if (!$package || !$package->prices) {
                     // Kirim notifikasi error
-                    $notification = [
-                        'message' => 'Paket tidak ditemukan atau tidak memiliki data harga.',
-                        'alert-type' => 'error',
-                    ];
                     Log::error('Paket tidak ditemukan atau tidak memiliki data harga.', [
                         'package_id' => $packageID,
                         'type' => $type,
                     ]);
-                    return back()->with($notification);
+                    return back()->with([
+                        'message' => 'Paket tidak ditemukan atau tidak memiliki data harga.',
+                        'alert-type' => 'error',
+                    ]);
                 }
 
                 $pricesArray = json_decode($package->prices['price_data'], true);
+
                 if (!is_array($pricesArray)) {
                     // Kirim notifikasi error
-                    $notification = [
-                        'message' => 'Format data harga tidak valid.',
-                        'alert-type' => 'error',
-                    ];
                     Log::error('Format data harga tidak valid.', [
                         'package_id' => $packageID,
                         'type' => $type,
                         'price_data' => $package->prices['price_data'],
                     ]);
-                    return back()->with($notification);
+                    return back()->with([
+                        'message' => 'Format data harga tidak valid.',
+                        'alert-type' => 'error',
+                    ]);
                 }
 
                 // Ambil nilai mealStatus, default false jika tidak ada
@@ -202,16 +224,15 @@ class BookingController extends Controller
 
                     if (!is_array($pricesArray)) {
                         // Kirim notifikasi error
-                        $notification = [
-                            'message' => 'Format data harga tidak valid.',
-                            'alert-type' => 'error',
-                        ];
                         Log::error('Format data harga tidak valid.', [
                             'package_id' => $packageID,
                             'type' => $type,
                             'price_data' => $package->prices['price_data'],
                         ]);
-                        return back()->with($notification);
+                        return back()->with([
+                            'message' => 'Format data harga tidak valid.',
+                            'alert-type' => 'error',
+                        ]);
                     }
 
                     // Gunakan filter untuk mencari data harga sesuai jumlah user
@@ -355,27 +376,24 @@ class BookingController extends Controller
             // Update booking_list_id pada tabel bookings
             $booking->update(['booking_list_id' => $bookingList->id]);
 
-            // Kirim notifikasi berhasil
-            $notification = [
+            // Redirect ke halaman destinasi dengan notifikasi
+            return redirect()->route('all.bookings')->with([
                 'message' => 'Booking Package Created Successfully!',
                 'alert-type' => 'success',
-            ];
-
-            // Redirect ke halaman destinasi dengan notifikasi
-            return redirect()->route('all.bookings')->with($notification);
+            ]);
 
         } catch (\Exception $e) {
-            // Kirim notifikasi error
-            $notification = [
-                'message' => 'Terjadi kesalahan pada StoreBooking.!',
-                'alert-type' => 'error',
-            ];
             // Log error jika terjadi masalah
             Log::error('Terjadi kesalahan pada StoreBooking.', [
                 'message' => $e->getMessage(),
                 'stack' => $e->getTraceAsString()
             ]);
-            return back()->with($notification);
+
+            // Kirim notifikasi error
+            return back()->with([
+                'message' => 'Terjadi kesalahan pada StoreBooking.!',
+                'alert-type' => 'error',
+            ]);
         }
     }
 
