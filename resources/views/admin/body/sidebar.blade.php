@@ -81,13 +81,6 @@
                             </a>
                         </li>
                     @endif
-                    @if (Auth::user()->can('booking.add'))
-                        <li class="menu-item">
-                            <a href="" class="menu-link">
-                                <div data-i18n="Booking">Booking</div>
-                            </a>
-                        </li>
-                    @endif
                 </ul>
                 <!-- Booking Manage End -->
             </li>

@@ -14,6 +14,7 @@ use App\Models\PackageFourDay;
 use App\Models\PackageThreeDay;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class BookingController extends Controller
 {
@@ -71,25 +72,21 @@ class BookingController extends Controller
             ]);
 
             if (!$validated) {
-                // Kirim Notification Warning
-                $notification = [
+                Log::info('Cek Validasi:', $validated);
+                return back()->with([
                     'message' => 'Data form belum terisi semua harap di cek kembali',
                     'alert-type' => 'warning',
-                ];
-                Log::info('Cek Validasi:', $validated);
-                return back()->with($notification);
+                ]);
             }
 
             // Ambil objek User berdasarkan user_id
             $agen = User::find($validated['user_id']);
             if (!$agen) {
-                // Kirim Notification Warning
-                $notification = [
+                Log::error('Data Agen tidak di temukan', $agen);
+                return back()->with([
                     'message' => 'Data agen tidak di temukan',
                     'alert-type' => 'warning',
-                ];
-                Log::error('Data Agen tidak di temukan', $agen);
-                return back()->with($notification);
+                ]);
             }
 
             $packageID = $validated['package_id'];
@@ -100,13 +97,11 @@ class BookingController extends Controller
             $remainingCosts = 0;
 
             if (!$type) {
-                // Kirim Notification Warning
-                $notification = [
+                Log::error('Tipe paket tidak diberikan.', ['validated' => $validated]);
+                return back()->with([
                     'message' => 'Tipe paket tidak ditemukan.',
                     'alert-type' => 'warning',
-                ];
-                Log::error('Tipe paket tidak diberikan.', ['validated' => $validated]);
-                return back()->with($notification);
+                ]);
             }
 
             if ($type === 'custom') {
@@ -383,6 +378,82 @@ class BookingController extends Controller
             return back()->with($notification);
         }
     }
+
+    public function EditBooking($id)
+    {
+        // Cari booking berdasarkan ID atau gagal jika tidak ditemukan
+        $booking = Booking::with(['bookingList', 'bookingList.agen'])
+            ->whereHas('bookingList', function ($query) {
+                $query->whereHas('agen', function ($subQuery) {
+                    $subQuery->where('role', 'agen');
+                });
+            })
+            ->findOrFail($id); // Ambil data berdasarkan ID
+
+        return view('admin.booking.edit', compact('booking'));
+    }
+
+    public function UpdateBooking(Request $request, $id)
+    {
+        try {
+            // Hilangkan titik/koma pada angka sebelum validasi
+            $cleanedData = $request->all();
+            $numericFields = ['pricePerPerson', 'totalUser', 'totalPrice', 'downPayment', 'remainingCosts'];
+
+            foreach ($numericFields as $field) {
+                if ($request->has($field)) {
+                    // Hapus titik dan koma, lalu konversi ke integer
+                    $cleanedData[$field] = (int) str_replace(['.', ','], '', $request->input($field));
+                }
+            }
+
+            // Validasi input setelah dibersihkan
+            $validatedData = Validator::make($cleanedData, [
+                'ClientName' => 'required|string',
+                'startDate' => 'required|date_format:Y-m-d',
+                'endDate' => 'required|date_format:Y-m-d',
+                'pricePerPerson' => 'required|numeric',
+                'totalUser' => 'required|numeric',
+                'totalPrice' => 'required|numeric',
+                'downPayment' => 'required|numeric',
+                'remainingCosts' => 'required|numeric',
+                'bookingstatus' => 'required|in:pending,booked,paid,finished',
+            ])->validate();
+
+            // Cari booking berdasarkan ID
+            $booking = Booking::findOrFail($id);
+
+            // Update data booking
+            $booking->update([
+                'name' => $validatedData['ClientName'],
+                'start_date' => $validatedData['startDate'],
+                'end_date' => $validatedData['endDate'],
+                'price_person' => $validatedData['pricePerPerson'],
+                'total_user' => $validatedData['totalUser'],
+                'total_price' => $validatedData['totalPrice'],
+                'down_paymet' => $validatedData['downPayment'],
+                'remaining_costs' => $validatedData['remainingCosts'],
+                'status' => $validatedData['bookingstatus'],
+            ]);
+
+            // Kirim notifikasi sukses
+            return redirect()->route('all.bookings')->with([
+                'message' => 'Booking Data Updated successfully!',
+                'alert-type' => 'success',
+            ]);
+
+        } catch (\Exception $e) {
+            // Log error untuk debugging
+            Log::error('Error in Update Booking:', ['error' => $e->getMessage()]);
+
+            // Kirim notifikasi error
+            return back()->with([
+                'message' => 'Terjadi kesalahan saat memperbarui data booking!',
+                'alert-type' => 'error',
+            ]);
+        }
+    }
+
 
 
     public function DeleteBooking($id)

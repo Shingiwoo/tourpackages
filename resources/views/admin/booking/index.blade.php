@@ -156,7 +156,7 @@
                                                 @endif
                                                 @if (Auth::user()->can('booking.edit'))
                                                 <li>
-                                                    <a href="javascript:void(0)" class="dropdown-item text-warning"> <i
+                                                    <a href="{{ route('edit.booking', $booking->id) }}" class="dropdown-item text-warning"> <i
                                                         class="ti ti-edit"></i> Edit
                                                     </a>
                                                 </li>
@@ -184,7 +184,7 @@
 </div>
 
 
-<!-- Booking Data Modal -->
+<!-- View Data Modal -->
 <div class="modal fade" id="viewBookingData" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
         <div class="modal-content">
@@ -287,5 +287,5 @@
         </div>
     </div>
 </div>
-<!--/ Booking Data Modal -->
+<!--/ View Data Modal -->
 @endsection
