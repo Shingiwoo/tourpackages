@@ -87,6 +87,31 @@
         @endif
         <!-- Booking End -->
 
+        <!-- Rents -->
+        @if (Auth::user()->can('rent.menu'))
+            <li class="menu-header small">
+                <span class="menu-header-text" data-i18n="Rents">Rents</span>
+            </li>
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons ti ti-car-suv"></i>
+                    <div data-i18n="Rent Manage">Rent Manage</div>
+                </a>
+                <!-- Rents Manage -->
+                <ul class="menu-sub">
+                    @if (Auth::user()->can('rent.list'))
+                        <li class="menu-item">
+                            <a href="{{ route('all.rents') }}" class="menu-link">
+                                <div data-i18n="All Rents">All Rents</div>
+                            </a>
+                        </li>
+                    @endif
+                </ul>
+                <!-- Rents Manage End -->
+            </li>
+        @endif
+        <!-- Rents End -->
+
         <!-- Packages -->
         @if (Auth::user()->can('package.tour.menu'))
             <li class="menu-header small">
