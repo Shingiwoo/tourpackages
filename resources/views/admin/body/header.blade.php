@@ -47,9 +47,9 @@
                     <span class="position-relative">
                         <i class="ti ti-bell ti-md"></i>
                         @if ($ncount > 0)
-                            <span class="badge rounded-pill bg-success badge-dot badge-notifications border"></span>
-                        @else
                             <span class="badge rounded-pill bg-danger badge-dot badge-notifications border"></span>
+                        @else
+                            <span class="badge rounded-pill bg-success badge-dot badge-notifications border"></span>
                         @endif
                     </span>
                 </a>
@@ -98,7 +98,7 @@
                         </li>
                     @empty
                         <li class="dropdown-notifications-list scrollable-container">
-                            <p class="text-center text-muted">Tidak ada notifikasi baru</p>
+                            <p class="text-center text-muted mt-3">Tidak ada notifikasi baru</p>
                         </li>
                     @endforelse
 

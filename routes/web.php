@@ -289,7 +289,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/edit/booking/{id}', 'EditBooking')->name('edit.booking');
         Route::patch('/booking/update/{id}', 'UpdateBooking')->name('booking.update');
         Route::delete('/delete/booking/{id}', 'DeleteBooking')->name('delete.booking');
-        Route::post('/notifications/{id}/mark-as-read', 'markAsRead');
+        Route::post('/notifications/{id}/mark-read', 'markRead');
     });
 
     // Rent all Route

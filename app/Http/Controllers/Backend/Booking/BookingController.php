@@ -532,7 +532,7 @@ class BookingController extends Controller
         }
     }
 
-    public function markAsRead(Request $request, $id)
+    public function markRead(Request $request, $id)
     {
         try {
             $user = Auth::user();

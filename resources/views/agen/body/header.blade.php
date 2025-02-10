@@ -102,7 +102,7 @@
                                 </li>
                             @empty
                                 <li class="dropdown-notifications-list scrollable-container">
-                                    <p class="text-center text-muted">Tidak ada notifikasi baru</p>
+                                    <p class="text-center text-muted mt-3">Tidak ada notifikasi baru</p>
                                 </li>
                             @endforelse
                         </ul>

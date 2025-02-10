@@ -287,31 +287,55 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll(".dropdown-notifications-read").forEach(item => {
-                item.addEventListener("click", function() {
-                    let notificationId = this.getAttribute("data-id");
+                item.addEventListener("click", function(event) {
+                    event.preventDefault();
 
-                    fetch(`/notifications/${notificationId}/mark-as-read`, {
+                    let notificationId = this.getAttribute("data-id");
+                    let csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute(
+                        "content");
+
+                    if (!csrfToken) {
+                        console.error("CSRF token tidak ditemukan!");
+                        alert("Terjadi kesalahan, coba refresh halaman.");
+                        return;
+                    }
+
+                    fetch(`${window.location.origin}/notifications/${notificationId}/mark-read`, {
                             method: "POST",
                             headers: {
-                                "X-CSRF-TOKEN": document.querySelector(
-                                    'meta[name="csrf-token"]').content,
+                                "X-CSRF-TOKEN": csrfToken,
                                 "Content-Type": "application/json",
+                                "Accept": "application/json"
                             },
                             body: JSON.stringify({
                                 id: notificationId
                             }),
+                            credentials: "same-origin"
                         })
-                        .then(response => response.json())
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.json().then(err => {
+                                    throw new Error(err.message || response.statusText);
+                                });
+                            }
+                            return response.json();
+                        })
                         .then(data => {
-                            console.log("Notifikasi dibaca:", data);
-
-                            let notifElement = document.querySelector(
-                                `[data-id="${notificationId}"]`);
-                            if (notifElement) {
-                                notifElement.remove(); // Hapus notifikasi dari tampilan
+                            if (data.success) {
+                                let notifElement = document.querySelector(
+                                    `[data-id="${notificationId}"]`);
+                                if (notifElement) {
+                                    notifElement.remove(); // Hapus dari tampilan
+                                }
+                            } else {
+                                console.error("Gagal menandai notifikasi:", data.message);
+                                alert("Gagal menandai notifikasi: " + data.message);
                             }
                         })
-                        .catch(error => console.error("Error:", error));
+                        .catch(error => {
+                            console.error("Error:", error);
+                            alert("Terjadi kesalahan: " + error.message);
+                        });
                 });
             });
         });
