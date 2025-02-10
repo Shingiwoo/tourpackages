@@ -290,6 +290,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::patch('/booking/update/{id}', 'UpdateBooking')->name('booking.update');
         Route::delete('/delete/booking/{id}', 'DeleteBooking')->name('delete.booking');
         Route::post('/notifications/{id}/mark-read', 'markRead');
+        Route::post('/mark-all-read', 'markAllRead');
     });
 
     // Rent all Route
@@ -332,6 +333,7 @@ route::middleware(['auth','roles:agen'])->group(function(){
         Route::post('/booking/store', 'StoreBooking')->name('booking.store');
         Route::get('/booking/details/{id}','getBookingDetails');
         Route::post('/notifications/{id}/mark-as-read', 'markAsRead');
+        Route::post('/mark-all-as-read', 'markAllAsRead');
     });
 
 

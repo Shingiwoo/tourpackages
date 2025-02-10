@@ -338,6 +338,46 @@
                         });
                 });
             });
+
+
+            document.getElementById("markAllRead").addEventListener("click", function() {
+                let csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content");
+
+                if (!csrfToken) {
+                    console.error("CSRF token tidak ditemukan!");
+                    alert("Terjadi kesalahan, coba refresh halaman.");
+                    return;
+                }
+
+                fetch('/mark-all-read', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.text().then(text => {
+                                throw new Error(text);
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById("notification-count").textContent = "0 New";
+
+                        } else {
+                            alert("Failed to mark notifications as read.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("Terjadi kesalahan: " + error.message);
+                    });
+            });
         });
     </script>
 </body>

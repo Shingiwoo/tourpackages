@@ -37,7 +37,7 @@
             <!-- / Style Switcher-->
 
             @php
-                 $ncount = Auth::user()->unreadNotifications()->count();
+                $ncount = Auth::user()->unreadNotifications()->count();
             @endphp
             <!-- Notification -->
             <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-2">
@@ -62,8 +62,10 @@
                                     New</span>
                                 <a href="javascript:void(0)"
                                     class="btn btn-text-secondary rounded-pill btn-icon dropdown-notifications-all"
-                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Mark all as read"><i
-                                        class="ti ti-mail-opened text-heading"></i></a>
+                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Mark all as read"
+                                    id="markAllAsRead">
+                                    <i class="ti ti-mail-opened text-heading"></i>
+                                </a>
                             </div>
                         </div>
                     </li>

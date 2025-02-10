@@ -58,11 +58,13 @@
                         <div class="dropdown-header d-flex align-items-center py-3">
                             <h6 class="mb-0 me-auto">Notification</h6>
                             <div class="d-flex align-items-center h6 mb-0">
-                                <span class="badge bg-label-primary me-2">{{ $ncount }} New</span>
+                                <span class="badge bg-label-primary me-2" id="notification-count">{{ $ncount }} New</span>
                                 <a href="javascript:void(0)"
                                     class="btn btn-text-secondary rounded-pill btn-icon dropdown-notifications-all"
-                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Mark all as read"><i
-                                        class="ti ti-mail-opened text-heading"></i></a>
+                                    data-bs-toggle="tooltip" data-bs-placement="top" title="Mark all as read"
+                                    id="markAllRead">
+                                    <i class="ti ti-mail-opened text-heading"></i>
+                                </a>
                             </div>
                         </div>
                     </li>

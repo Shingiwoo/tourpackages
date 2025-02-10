@@ -441,4 +441,17 @@ class BookingServiceController extends Controller
             ], 500);
         }
     }
+
+    public function markAllAsRead()
+    {
+        // Ambil semua notifikasi yang belum dibaca untuk user yang sedang login
+        $user = Auth::user();
+
+        if ($user) {
+            $user->unreadNotifications->markAsRead(); // Tandai semua sebagai telah dibaca
+            return response()->json(['success' => true, 'message' => 'All notifications marked as read.']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'User not authenticated.'], 401);
+    }
 }
