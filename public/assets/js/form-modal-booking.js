@@ -21,7 +21,7 @@ $(document).ready(function () {
             totalUserContainer.show();
             totalUserInput.prop("required", true).prop("disabled", false);
             mealContainer.show();
-            mealUserInput.prop("required", true).prop("disabled", false);
+            mealUserInput.prop("required", false).prop("disabled", false);
         } else if (inputValue === "custom") {
             // Tidak melakukan apapun, semua elemen tetap tersembunyi
         } else {
@@ -30,7 +30,7 @@ $(document).ready(function () {
             totalUserContainer.show();
             totalUserInput.prop("required", true).prop("disabled", false);
             mealContainer.show();
-            mealUserInput.prop("required", true).prop("disabled", false);
+            mealUserInput.prop("required", false).prop("disabled", false);
         }
     }
 
