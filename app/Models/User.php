@@ -6,13 +6,41 @@ namespace App\Models;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\DatabaseNotificationCollection;
 
+/**
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection $notifications
+ * @property-read \Illuminate\Notifications\DatabaseNotificationCollection $unreadNotifications
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, HasRoles;
+
+    /**
+    * Relasi notifikasi berbasis database
+    *
+    * @return MorphMany
+    */
+   public function notifications(): MorphMany
+   {
+       return $this->morphMany(DatabaseNotification::class, 'notifiable')->orderBy('created_at', 'desc');
+   }
+
+   /**
+    * Relasi untuk mendapatkan notifikasi yang belum dibaca.
+    *
+    * @return MorphMany
+    */
+   public function unreadNotifications(): MorphMany
+   {
+       return $this->notifications()->whereNull('read_at');
+   }
+
 
     /**
      * The attributes that are mass assignable.

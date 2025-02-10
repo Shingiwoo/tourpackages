@@ -137,7 +137,7 @@
 
     <!-- Page JS -->
     <script src="{{ asset('assets/js/app-academy-dashboard.js') }}"></script>
-    <script src="{{ asset('assets/js/forms-extras.js') }}"> </script>
+    <script src="{{ asset('assets/js/forms-extras.js') }}"></script>
     <script src="{{ asset('assets/js/extended-ui-sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/js/forms-selects.js') }}"></script>
     <script src="{{ asset('assets/js/ui-carousel.js') }}"></script>
@@ -149,31 +149,90 @@
     <script>
         $(document).ready(function() {
             $('#example').DataTable();
-        } );
+        });
     </script>
 
     <script>
-        @if(Session::has('message'))
-            var type = "{{ Session::get('alert-type','info') }}"
-            switch(type){
+        @if (Session::has('message'))
+            var type = "{{ Session::get('alert-type', 'info') }}"
+            switch (type) {
                 case 'info':
-                toastr.info(" {{ Session::get('message') }} ");
-                break;
+                    toastr.info(" {{ Session::get('message') }} ");
+                    break;
 
                 case 'success':
-                toastr.success(" {{ Session::get('message') }} ");
-                break;
+                    toastr.success(" {{ Session::get('message') }} ");
+                    break;
 
                 case 'warning':
-                toastr.warning(" {{ Session::get('message') }} ");
-                break;
+                    toastr.warning(" {{ Session::get('message') }} ");
+                    break;
 
                 case 'error':
-                toastr.error(" {{ Session::get('message') }} ");
-                break;
+                    toastr.error(" {{ Session::get('message') }} ");
+                    break;
             }
         @endif
     </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".dropdown-notifications-read").forEach(item => {
+                item.addEventListener("click", function(event) {
+                    event.preventDefault();
+
+                    let notificationId = this.getAttribute("data-id");
+                    let csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute(
+                        "content");
+
+                    if (!csrfToken) {
+                        console.error("CSRF token tidak ditemukan!");
+                        alert("Terjadi kesalahan, coba refresh halaman.");
+                        return;
+                    }
+
+                    fetch(`${window.location.origin}/notifications/${notificationId}/mark-as-read`, {
+                            method: "POST",
+                            headers: {
+                                "X-CSRF-TOKEN": csrfToken,
+                                "Content-Type": "application/json",
+                                "Accept": "application/json"
+                            },
+                            body: JSON.stringify({
+                                id: notificationId
+                            }),
+                            credentials: "same-origin"
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.json().then(err => {
+                                    throw new Error(err.message || response.statusText);
+                                });
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                let notifElement = document.querySelector(
+                                    `[data-id="${notificationId}"]`);
+                                if (notifElement) {
+                                    notifElement.remove(); // Hapus dari tampilan
+                                }
+                            } else {
+                                console.error("Gagal menandai notifikasi:", data.message);
+                                alert("Gagal menandai notifikasi: " + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            alert("Terjadi kesalahan: " + error.message);
+                        });
+                });
+            });
+        });
+    </script>
+
+
 
 </body>
 

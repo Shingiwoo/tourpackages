@@ -275,15 +275,47 @@
                         `Rp ${parseInt(downPayment).toLocaleString('id-ID')}`;
                     document.getElementById('remaining-cost').innerText =
                         `Rp ${parseInt(remainingCost).toLocaleString('id-ID')}`;
-                    document.getElementById('child-cost').innerText = `Rp ${kidsCost.toLocaleString('id-ID')}`;
-                    document.getElementById('additional-cost-wna').innerText = `Rp ${wnaCost.toLocaleString('id-ID')}`;
+                    document.getElementById('child-cost').innerText =
+                        `Rp ${kidsCost.toLocaleString('id-ID')}`;
+                    document.getElementById('additional-cost-wna').innerText =
+                        `Rp ${wnaCost.toLocaleString('id-ID')}`;
                 });
             });
         });
     </script>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".dropdown-notifications-read").forEach(item => {
+                item.addEventListener("click", function() {
+                    let notificationId = this.getAttribute("data-id");
 
+                    fetch(`/notifications/${notificationId}/mark-as-read`, {
+                            method: "POST",
+                            headers: {
+                                "X-CSRF-TOKEN": document.querySelector(
+                                    'meta[name="csrf-token"]').content,
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({
+                                id: notificationId
+                            }),
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log("Notifikasi dibaca:", data);
 
+                            let notifElement = document.querySelector(
+                                `[data-id="${notificationId}"]`);
+                            if (notifElement) {
+                                notifElement.remove(); // Hapus notifikasi dari tampilan
+                            }
+                        })
+                        .catch(error => console.error("Error:", error));
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

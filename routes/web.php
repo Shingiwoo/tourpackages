@@ -1,7 +1,9 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Backend\Agen\AgenController;
 use App\Http\Controllers\Backend\Crew\CrewController;
 use App\Http\Controllers\Backend\Meal\MealController;
@@ -47,6 +49,9 @@ Route::get('/dashboard', [AgenServiceController::class, 'AgenDashboard'])
 require __DIR__ . '/auth.php';
 
 Route::get('/admin/login', [AdminController::class, 'AdminLogin'])->name('admin.login');
+
+Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])
+    ->middleware(['auth', 'web']);
 
 Route::middleware(['auth', 'roles:admin'])->group(function () {
 
@@ -284,6 +289,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/edit/booking/{id}', 'EditBooking')->name('edit.booking');
         Route::patch('/booking/update/{id}', 'UpdateBooking')->name('booking.update');
         Route::delete('/delete/booking/{id}', 'DeleteBooking')->name('delete.booking');
+        Route::post('/notifications/{id}/mark-as-read', 'markAsRead');
     });
 
     // Rent all Route
@@ -325,7 +331,7 @@ route::middleware(['auth','roles:agen'])->group(function(){
         Route::get('/agen/all-booking', 'AllBooking')->name('agen.booking');
         Route::post('/booking/store', 'StoreBooking')->name('booking.store');
         Route::get('/booking/details/{id}','getBookingDetails');
-
+        Route::post('/notifications/{id}/mark-as-read', 'markAsRead');
     });
 
 

@@ -63,7 +63,7 @@
                           <div class="d-flex align-items-center">
                             <div class="badge rounded bg-label-info me-4 p-2"><i class="ti ti-brand-booking ti-lg"></i></div>
                             <div class="card-info">
-                              <h5 class="mb-0">{{ $bookedStatus }}</h5>
+                              <h5 class="mb-0">{{ $bookedTotal}}</h5>
                               <small>Booked</small>
                             </div>
                           </div>

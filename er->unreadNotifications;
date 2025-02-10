@@ -1,0 +1,25 @@
+[90m= [39m[34;4mIlluminate\Notifications\DatabaseNotificationCollection[39;24m {#5375
+    [34mall[39m: [
+      [34;4mIlluminate\Notifications\DatabaseNotification[39;24m {#5374
+        [34mid[39m: "[32m3d15a67f-fd8e-4681-b71c-19fc10da956c[39m",
+        [34mtype[39m: "[32mApp\Notifications\Agen\AgenBookingCreated[39m",
+        [34mnotifiable_type[39m: "[32mApp\Models\User[39m",
+        [34mnotifiable_id[39m: [35m1[39m,
+        [34mdata[39m: "[32m{"message":"A new booking added by agen1"}[39m",
+        [34mread_at[39m: [36mnull[39m,
+        [34mcreated_at[39m: "[32m2025-02-08 18:46:17[39m",
+        [34mupdated_at[39m: "[32m2025-02-08 18:46:17[39m",
+      },
+      [34;4mIlluminate\Notifications\DatabaseNotification[39;24m {#5373
+        [34mid[39m: "[32m70b3aa74-3716-4a1e-923b-825cb5dffb5d[39m",
+        [34mtype[39m: "[32mApp\Notifications\Agen\AgenBookingCreated[39m",
+        [34mnotifiable_type[39m: "[32mApp\Models\User[39m",
+        [34mnotifiable_id[39m: [35m1[39m,
+        [34mdata[39m: "[32m{"message":"A new booking added by agen1"}[39m",
+        [34mread_at[39m: [36mnull[39m,
+        [34mcreated_at[39m: "[32m2025-02-08 18:35:29[39m",
+        [34mupdated_at[39m: "[32m2025-02-08 18:35:29[39m",
+      },
+    ],
+  }
+
