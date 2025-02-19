@@ -2,8 +2,6 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\Backend\Agen\AgenController;
 use App\Http\Controllers\Backend\Crew\CrewController;
 use App\Http\Controllers\Backend\Meal\MealController;
@@ -13,6 +11,7 @@ use App\Http\Controllers\Backend\Admin\AdminController;
 use App\Http\Controllers\Backend\Hotel\HotelController;
 use App\Http\Controllers\Agen\Core\AgenServiceController;
 use App\Http\Controllers\Backend\Booking\BookingController;
+use App\Http\Controllers\Backend\Invoice\InvoiceController;
 use App\Http\Controllers\Backend\Vehicle\VehicleController;
 use App\Http\Controllers\Agen\Core\BookingServiceController;
 use App\Http\Controllers\Agen\Core\PackageServiceController;
@@ -49,9 +48,6 @@ Route::get('/dashboard', [AgenServiceController::class, 'AgenDashboard'])
 require __DIR__ . '/auth.php';
 
 Route::get('/admin/login', [AdminController::class, 'AdminLogin'])->name('admin.login');
-
-Route::post('/notifications/{id}/mark-as-read', [NotificationController::class, 'markAsRead'])
-    ->middleware(['auth', 'web']);
 
 Route::middleware(['auth', 'roles:admin'])->group(function () {
 
@@ -297,6 +293,13 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::controller(RentController::class)->group(function () {
 
         Route::get('/all/rents', 'RentIndex')->name('all.rents');
+    });
+
+    // Invoice all Route
+    Route::controller(InvoiceController::class)->group(function () {
+
+        Route::get('/all/invoices', 'indexInvoice')->name('all.invoices');
+        Route::get('/add/invoice', 'createInvoice')->name('add.invoice');
     });
 });
 

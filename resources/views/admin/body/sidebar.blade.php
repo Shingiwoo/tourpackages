@@ -65,7 +65,7 @@
         <!-- Booking -->
         @if (Auth::user()->can('booking.menu'))
             <li class="menu-header small">
-                <span class="menu-header-text" data-i18n="Booking">Booking</span>
+                <span class="menu-header-text" data-i18n="Booking & Invoice ">Booking & Invoice</span>
             </li>
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
@@ -82,7 +82,31 @@
                         </li>
                     @endif
                 </ul>
-                <!-- Booking Manage End -->
+                <!-- Invoice Manage End -->
+            </li>
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons ti ti-file-dollar"></i>
+                    <div data-i18n="Invoice Manage">Invoice Manage</div>
+                </a>
+                <!-- Invoice Manage -->
+                <ul class="menu-sub">
+                    @if (Auth::user()->can('invoice.list'))
+                        <li class="menu-item">
+                            <a href="{{ route('all.invoices') }}" class="menu-link">
+                                <div data-i18n="All Invoices">All Invoices</div>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::user()->can('invoice.add'))
+                        <li class="menu-item">
+                            <a href="{{ route('add.invoice') }}" class="menu-link">
+                                <div data-i18n="Add Invoice">All Invoice</div>
+                            </a>
+                        </li>
+                    @endif
+                </ul>
+                <!-- Invoice Manage End -->
             </li>
         @endif
         <!-- Booking End -->

@@ -53,6 +53,7 @@
 
     <!-- Page CSS -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/ui-carousel.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/app-invoice.css') }}" />
 
 
 
@@ -125,6 +126,7 @@
     <script src="{{ asset('assets/vendor/libs/toastr/toastr.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/moment/moment.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/cleavejs/cleave.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/jquery-repeater/jquery-repeater.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
@@ -147,6 +149,8 @@
     <script src="{{ asset('assets/js/form-data.js') }}"></script>
     <script src="{{ asset('assets/js/form-modal-booking.js') }}"></script>
     <script src="{{ asset('assets/js/form-data-booking.js') }}"></script>
+    <script src="{{ asset('assets/js/offcanvas-send-invoice.js') }}"></script>
+    <script src="{{ asset('assets/js/app-invoice-add.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('#example').DataTable();
