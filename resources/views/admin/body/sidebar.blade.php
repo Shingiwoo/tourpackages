@@ -85,7 +85,7 @@
                 <!-- Booking Manage End -->
             </li>
 
-            @if (Auth::user()->can('fuction.comingsoon'))
+            @if (Auth::user()->can('function.comingsoon'))
                 <!-- Invoice -->
                 <li class="menu-item">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
