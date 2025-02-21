@@ -22,8 +22,7 @@
                                 <ul
                                     class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-4 my-2">
                                     <li class="list-inline-item d-flex gap-2 align-items-center">
-                                        <i class="ti ti-signature ti-lg"></i><span class="fw-medium">{{
-                                            $profileData->username }}</span>
+                                        <i class="ti ti-user-scan ti-lg"></i><span class="fw-medium text-capitalize">{{ $profileData->username }} | {{ $profileData->company ?? 'Tour package' }}</span>
                                     </li>
                                 </ul>
                             </div>

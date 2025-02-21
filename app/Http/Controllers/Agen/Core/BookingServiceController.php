@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Agen\Core;
 
 
+use Throwable;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Custom;

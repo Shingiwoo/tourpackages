@@ -55,6 +55,7 @@ class User extends Authenticatable
         'photo',
         'phone',
         'address',
+        'company',
         'norek',
         'bank',
         'role',
