@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Backend\Admin;
 
 use App\Models\User;
+use App\Models\Booking;
+use App\Models\BookingList;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rules;
 use Spatie\Permission\Models\Role;
@@ -15,8 +17,53 @@ class AdminController extends Controller
 {
     public function AdminDashboard()
     {
-        return view('admin.index');
+        $bookedStatus = Booking::where('status', 'booked')->count();
+
+        $paidStatus = Booking::where('status', 'paid')->count();
+
+        $pendingStatus = Booking::where('status', 'pending')->count();
+
+        $bookedTotal = $bookedStatus + $paidStatus;
+
+        $finishedStatus = Booking::where('status', 'finished')->count();
+
+        $agenRanking = $this->getAgenRanking();
+
+        return view('admin.index', compact('bookedTotal', 'finishedStatus', 'pendingStatus', 'agenRanking'));
     }
+
+    public function getAgenRanking()
+    {
+        $agenRanking = BookingList::with('agen')
+            ->withCount([
+                'bookings as total_booked' => function ($query) {
+                    $query->where('status', 'booked');
+                },
+                'bookings as total_paid' => function ($query) {
+                    $query->where('status', 'paid');
+                },
+                'bookings as total_finished' => function ($query) {
+                    $query->where('status', 'finished');
+                }
+            ])
+            ->get()
+            ->groupBy('agen_id') // Kelompokkan berdasarkan agen_id
+            ->map(function ($bookings, $agenId) {
+                return [
+                    'agen_id' => $agenId,
+                    'agen_name' => $bookings->first()->agen->username ?? 'Unknown',
+                    'agen_company' => $bookings->first()->agen->company ?? 'Tour Package',
+                    'total_tour' => $bookings->sum('total_booked') +
+                                    $bookings->sum('total_paid') +
+                                    $bookings->sum('total_finished'),
+                ];
+            })
+            ->sortByDesc('total_tour')
+            ->values();
+
+        return $agenRanking;
+    }
+
 
     /**
      * Destroy an authenticated session.

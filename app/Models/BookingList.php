@@ -14,8 +14,9 @@ class BookingList extends Model
 
     public function bookings()
     {
-        return $this->hasMany(Booking::class, 'booking_id', 'id');
+        return $this->hasMany(Booking::class, 'booking_list_id', 'id');
     }
+
 
     public function agen()
     {
