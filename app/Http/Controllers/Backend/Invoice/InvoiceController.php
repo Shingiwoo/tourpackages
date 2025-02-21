@@ -13,6 +13,12 @@ class InvoiceController extends Controller
     }
 
 
+    public function configInvoice()
+    {
+        return view('admin.invoice.config');
+    }
+
+
     public function createInvoice()
     {
         return view('admin.invoice.add');

@@ -71,7 +71,6 @@
                                     <h6>Invoice To:</h6>
                                     <input type="text" class="form-control mb-4 w-50" name="userName" placeholder="Jond Doe" />
                                     <input type="text" class="form-control mb-1" name="address1" placeholder="Shelby Company Limited" />
-                                    <input type="text" class="form-control mb-1" name="address2" placeholder="Small Heath, B10 0HF, UK" />
                                     <input type="text" class="form-control mb-1" name="contact" placeholder="718-986-6062" />
                                     <input type="email" class="form-control mb-0" name="email" placeholder="peakyFBlinders@gmail.com" />
                                 </div>
@@ -104,28 +103,28 @@
                                 </div>
                             </div>
                         </div>
-                        <hr class="mt-0 mb-6" />
+                        <hr class="mt-0 mb-4" />
                         <div class="card-body pt-0 px-0">
                             <form class="source-item">
-                                <div class="mb-4" data-repeater-list="group-a">
-                                    <div class="repeater-wrapper pt-0 pt-md-9" data-repeater-item>
+                                <div class="mb-3" data-repeater-list="group-a">
+                                    <div class="repeater-wrapper pt-0 pt-md-7" data-repeater-item>
                                         <div class="d-flex border rounded position-relative pe-0">
-                                            <div class="row w-100 p-6">
-                                                <div class="col-md-4 col-12 mb-md-0 mb-4">
-                                                    <p class="h6 repeater-title">Item</p><input type="text" class="form-control item-details mb-5"
+                                            <div class="row w-100 p-2">
+                                                <div class="col-md-4 col-12 mb-md-0 mb-2">
+                                                    <p class="h6 repeater-title">Item</p><input type="text" name="nameItem" class="form-control item-details mb-5"
                                                     placeholder="Oneday Jogja #A" />
                                                 </div>
-                                                <div class="col-md-3 col-12 mb-md-0 mb-4">
+                                                <div class="col-md-3 col-12 mb-md-0 mb-2">
                                                     <p class="h6 repeater-title">Cost</p>
-                                                    <input type="text" class="form-control invoice-item-price mb-5"
+                                                    <input type="text" name="priceItem" class="form-control invoice-item-price mb-5"
                                                         placeholder="24" min="12" />
                                                 </div>
-                                                <div class="col-md-2 col-12 mb-md-0 mb-4">
+                                                <div class="col-md-2 col-12 mb-md-0 mb-2">
                                                     <p class="h6 repeater-title">Qty</p>
-                                                    <input type="text" class="form-control invoice-item-qty"
+                                                    <input type="text" name="qtyItem" class="form-control invoice-item-qty"
                                                         placeholder="1" min="1" max="50" />
                                                 </div>
-                                                <div class="col-md-2 col-12 pe-0 mt-md-2">
+                                                <div class="col-md-2 ol-12 pe-0 mt-md-2">
                                                     <p class="h6 repeater-title">Price</p>
                                                     <p class="mb-0 text-heading">Rp 24.000.000</p>
                                                 </div>
@@ -152,7 +151,7 @@
                                 <div class="col-md-6 mb-md-0 mb-4">
                                     <div class="d-flex align-items-center mb-4">
                                         <label for="salesperson" class="me-2 fw-medium text-heading">Salesperson:</label>
-                                        <input type="text" class="form-control" id="salesperson"
+                                        <input type="text" class="form-control" id="salesperson" name="salesperson"
                                             placeholder="Edward Crowley" />
                                     </div>
                                     <input type="text" class="form-control" id="invoiceMsg"
@@ -187,8 +186,8 @@
                                 <div class="col-12">
                                     <div>
                                         <label for="note" class="text-heading mb-1 fw-medium">Note:</label>
-                                        <textarea class="form-control" rows="2" id="note"
-                                            placeholder="Invoice note"> It was a pleasure working with you and your team. We hope you will keep us in mind for future freelance projects. Thank You!</textarea>
+                                        <textarea class="form-control" rows="2" id="note" name="note"
+                                            placeholder="Invoice note"> Untuk pelunasan silakan transfer melalui rekening yang tertera pada Invoice.</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -212,12 +211,12 @@
                         </div>
                     </div>
                     <div>
-                        <label for="acceptPaymentsVia" class="form-label">Accept payments via</label>
-                        <select class="form-select mb-6" id="acceptPaymentsVia">
-                            <option value="Bank Account">Bank Account</option>
-                            <option value="Paypal">Paypal</option>
-                            <option value="Card">Credit/Debit Card</option>
-                            <option value="UPI Transfer">UPI Transfer</option>
+                        <label for="InvoiceCompany" class="form-label">Create Invoice For</label>
+                        <select class="form-select mb-6" id="InvoiceCompany">
+                            <option value="">Select Company</option>
+                            <option value="TI">Travel Istimewa</option>
+                            <option value="LTT">Librah Tour Travel</option>
+                            <option value="JG">Jeep Gunung</option>
                         </select>
                         <div class="d-flex justify-content-between mb-2">
                             <label for="payment-terms">Payment Terms</label>
