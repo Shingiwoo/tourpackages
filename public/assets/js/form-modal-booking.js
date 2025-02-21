@@ -5,17 +5,23 @@ $(document).ready(function () {
         const hotelTypeInput = $("#modal_hotelType");
         const totalUserContainer = $("#total_user_container");
         const totalUserInput = $("#modalTotalUser");
+        const mealContainer = $("#meal_container");
+        const mealUserInput = $("#mealStatus");
 
         // Reset semua elemen terlebih dahulu
         hotelContainer.hide();
         hotelTypeInput.prop("required", false).prop("disabled", true);
         totalUserContainer.hide();
         totalUserInput.prop("required", false).prop("disabled", true);
+        mealContainer.hide();
+        mealUserInput.prop("required", false).prop("disabled", true);
 
         // Tampilkan dan aktifkan elemen sesuai dengan tipe paket
         if (inputValue === "oneday") {
             totalUserContainer.show();
             totalUserInput.prop("required", true).prop("disabled", false);
+            mealContainer.show();
+            mealUserInput.prop("required", false).prop("disabled", false);
         } else if (inputValue === "custom") {
             // Tidak melakukan apapun, semua elemen tetap tersembunyi
         } else {
@@ -23,6 +29,8 @@ $(document).ready(function () {
             hotelTypeInput.prop("required", true).prop("disabled", false);
             totalUserContainer.show();
             totalUserInput.prop("required", true).prop("disabled", false);
+            mealContainer.show();
+            mealUserInput.prop("required", false).prop("disabled", false);
         }
     }
 

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Custom;
 use App\Models\Booking;
+use App\Models\Facility;
 use App\Models\BookingList;
 use Illuminate\Http\Request;
 use App\Models\PackageOneDay;
@@ -14,8 +15,10 @@ use App\Models\PackageFourDay;
 use App\Models\PackageThreeDay;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Models\Facility;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Notifications\Admin\BookingStatus;
+use Illuminate\Support\Facades\Notification;
 
 class BookingController extends Controller
 {
@@ -106,33 +109,36 @@ class BookingController extends Controller
             }
 
             if ($type === 'custom') {
-                // Cari custom package berdasarkan id
+
                 $custom = Custom::where('id', $packageID)->first();
 
                 if (!$custom) {
-                    // Kirim Notification Warning
-                    $notification = [
+                    Log::error('Custom package tidak ditemukan.', ['package_id' => $packageID]);
+                    return back()->with([
                         'message' => 'Custom package tidak ditemukan.',
                         'alert-type' => 'warning',
-                    ];
-                    Log::error('Custom package tidak ditemukan.', ['package_id' => $packageID]);
-                    return back()->with($notification);
+                    ]);
                 }
 
                 $customPackage = json_decode($custom->custompackage, true);
 
-                // Pastikan agen_id di JSON cocok dengan agen saat ini
-                if ($customPackage['agen_id'] != $agen->id) {
-                    // Kirim notifikasi error
-                    $notification = [
-                        'message' => 'Custom package tidak sesuai dengan Agen',
+                if (!is_array($customPackage) || !isset($customPackage['agen_id'])) {
+                    Log::error('Data custom package tidak valid atau tidak memiliki agen_id.', ['customPackage' => $customPackage]);
+                    return back()->with([
+                        'message' => 'Data custom package tidak valid.',
                         'alert-type' => 'error',
-                    ];
-                    Log::error('Custom package tidak sesuai dengan agen.', [
+                    ]);
+                }
+
+                if ($customPackage['agen_id'] != $agen->id) {
+                    Log::error('Custom package tidak sesuai dengan Agen.', [
                         'agen_id' => $agen->id,
                         'custom_agen_id' => $customPackage['agen_id']
                     ]);
-                    return back()->with($notification);
+                    return back()->with([
+                        'message' => 'Custom package tidak sesuai dengan Agen',
+                        'alert-type' => 'error',
+                    ]);
                 }
 
                 // Ambil data langsung dari JSON
@@ -145,7 +151,7 @@ class BookingController extends Controller
             }
 
             // Rent logic
-            if ($type === 'rent') {
+            elseif ($type === 'rent') {
                 // Cari rent berdasarkan id
                 $rent = Facility::where('id', $packageID)->first();
 
@@ -166,7 +172,7 @@ class BookingController extends Controller
                 $remainingCosts = $totalPrice - $downPayment;
 
             } else {
-                // Logika untuk paket lainnya (oneday, twoday, dll)
+                // Logika untuk paket lainnya (twoday, dll)
                 $packageModels = [
                     'oneday' => PackageOneDay::class,
                     'twoday' => PackageTwoDay::class,
@@ -414,6 +420,8 @@ class BookingController extends Controller
     public function UpdateBooking(Request $request, $id)
     {
         try {
+
+
             // Hilangkan titik/koma pada angka sebelum validasi
             $cleanedData = $request->all();
             $numericFields = ['pricePerPerson', 'totalUser', 'totalPrice', 'downPayment', 'remainingCosts'];
@@ -454,6 +462,16 @@ class BookingController extends Controller
                 'status' => $validatedData['bookingstatus'],
             ]);
 
+            // Cari booking berdasarkan ID dan relasi dengan booking_list dan agen
+            $bookingAgen = Booking::with(['bookingList', 'bookingList.agen'])
+            ->whereHas('bookingList', function ($query) {
+                $query->whereHas('agen', function ($subQuery) {
+                    $subQuery->where('role', 'agen');
+                });
+            })->findOrFail($id);
+
+            Notification::send($bookingAgen->bookingList->agen, new BookingStatus($bookingAgen));
+
             // Kirim notifikasi sukses
             return redirect()->route('all.bookings')->with([
                 'message' => 'Booking Data Updated successfully!',
@@ -471,8 +489,6 @@ class BookingController extends Controller
             ]);
         }
     }
-
-
 
     public function DeleteBooking($id)
     {
@@ -514,5 +530,44 @@ class BookingController extends Controller
                 'message' => 'Gagal menghapus data'
             ], 500);
         }
+    }
+
+    public function markRead(Request $request, $id)
+    {
+        try {
+            $user = Auth::user();
+            $notification = $user->notifications()->find($id); // Gunakan find() saja, handle jika null
+
+            if (!$notification) {
+                return response()->json(['success' => false, 'message' => 'Notifikasi tidak ditemukan.'], 404);
+            }
+
+            $notification->markAsRead();
+
+            return response()->json([
+                'success' => true,
+                'count' => $user->unreadNotifications()->count()
+            ]);
+        } catch (Throwable $e) {
+            report($e); // Log error untuk debugging
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage() || 'Terjadi kesalahan server.'
+            ], 500);
+        }
+    }
+
+    public function markAllRead()
+    {
+        // Ambil semua notifikasi yang belum dibaca untuk user yang sedang login
+        $user = Auth::user();
+
+        if ($user) {
+            $user->unreadNotifications->markAsRead(); // Tandai semua sebagai telah dibaca
+            return response()->json(['success' => true, 'message' => 'All notifications marked as read.']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'User not authenticated.'], 401);
     }
 }

@@ -53,6 +53,7 @@
 
     <!-- Page CSS -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/ui-carousel.css') }}" />
+    <link rel="stylesheet" href="{{ asset('assets/vendor/css/pages/app-invoice.css') }}" />
 
 
 
@@ -125,6 +126,7 @@
     <script src="{{ asset('assets/vendor/libs/toastr/toastr.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/moment/moment.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/cleavejs/cleave.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/jquery-repeater/jquery-repeater.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/sweetalert2/sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js') }}"></script>
@@ -147,6 +149,8 @@
     <script src="{{ asset('assets/js/form-data.js') }}"></script>
     <script src="{{ asset('assets/js/form-modal-booking.js') }}"></script>
     <script src="{{ asset('assets/js/form-data-booking.js') }}"></script>
+    <script src="{{ asset('assets/js/offcanvas-send-invoice.js') }}"></script>
+    <script src="{{ asset('assets/js/app-invoice-add.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('#example').DataTable();
@@ -275,15 +279,111 @@
                         `Rp ${parseInt(downPayment).toLocaleString('id-ID')}`;
                     document.getElementById('remaining-cost').innerText =
                         `Rp ${parseInt(remainingCost).toLocaleString('id-ID')}`;
-                    document.getElementById('child-cost').innerText = `Rp ${kidsCost.toLocaleString('id-ID')}`;
-                    document.getElementById('additional-cost-wna').innerText = `Rp ${wnaCost.toLocaleString('id-ID')}`;
+                    document.getElementById('child-cost').innerText =
+                        `Rp ${kidsCost.toLocaleString('id-ID')}`;
+                    document.getElementById('additional-cost-wna').innerText =
+                        `Rp ${wnaCost.toLocaleString('id-ID')}`;
                 });
             });
         });
     </script>
 
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".dropdown-notifications-read").forEach(item => {
+                item.addEventListener("click", function(event) {
+                    event.preventDefault();
+
+                    let notificationId = this.getAttribute("data-id");
+                    let csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute(
+                        "content");
+
+                    if (!csrfToken) {
+                        console.error("CSRF token tidak ditemukan!");
+                        alert("Terjadi kesalahan, coba refresh halaman.");
+                        return;
+                    }
+
+                    fetch(`${window.location.origin}/notifications/${notificationId}/mark-read`, {
+                            method: "POST",
+                            headers: {
+                                "X-CSRF-TOKEN": csrfToken,
+                                "Content-Type": "application/json",
+                                "Accept": "application/json"
+                            },
+                            body: JSON.stringify({
+                                id: notificationId
+                            }),
+                            credentials: "same-origin"
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                return response.json().then(err => {
+                                    throw new Error(err.message || response.statusText);
+                                });
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                let notifElement = document.querySelector(
+                                    `[data-id="${notificationId}"]`);
+                                if (notifElement) {
+                                    notifElement.remove(); // Hapus dari tampilan
+                                }
+                            } else {
+                                console.error("Gagal menandai notifikasi:", data.message);
+                                alert("Gagal menandai notifikasi: " + data.message);
+                            }
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                            alert("Terjadi kesalahan: " + error.message);
+                        });
+                });
+            });
 
 
+            document.getElementById("markAllRead").addEventListener("click", function() {
+                let csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content");
+
+                if (!csrfToken) {
+                    console.error("CSRF token tidak ditemukan!");
+                    alert("Terjadi kesalahan, coba refresh halaman.");
+                    return;
+                }
+
+                fetch('/mark-all-read', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.text().then(text => {
+                                throw new Error(text);
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            document.getElementById("notification-count").textContent = "0 New";
+
+                        } else {
+                            alert("Failed to mark notifications as read.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("Terjadi kesalahan: " + error.message);
+                    });
+            });
+        });
+    </script>
 </body>
 
 </html>

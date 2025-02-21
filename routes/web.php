@@ -1,7 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Backend\Agen\AgenController;
 use App\Http\Controllers\Backend\Crew\CrewController;
 use App\Http\Controllers\Backend\Meal\MealController;
@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\Admin\AdminController;
 use App\Http\Controllers\Backend\Hotel\HotelController;
 use App\Http\Controllers\Agen\Core\AgenServiceController;
 use App\Http\Controllers\Backend\Booking\BookingController;
+use App\Http\Controllers\Backend\Invoice\InvoiceController;
 use App\Http\Controllers\Backend\Vehicle\VehicleController;
 use App\Http\Controllers\Agen\Core\BookingServiceController;
 use App\Http\Controllers\Agen\Core\PackageServiceController;
@@ -284,12 +285,21 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/edit/booking/{id}', 'EditBooking')->name('edit.booking');
         Route::patch('/booking/update/{id}', 'UpdateBooking')->name('booking.update');
         Route::delete('/delete/booking/{id}', 'DeleteBooking')->name('delete.booking');
+        Route::post('/notifications/{id}/mark-read', 'markRead');
+        Route::post('/mark-all-read', 'markAllRead');
     });
 
     // Rent all Route
     Route::controller(RentController::class)->group(function () {
 
         Route::get('/all/rents', 'RentIndex')->name('all.rents');
+    });
+
+    // Invoice all Route
+    Route::controller(InvoiceController::class)->group(function () {
+
+        Route::get('/all/invoices', 'indexInvoice')->name('all.invoices');
+        Route::get('/add/invoice', 'createInvoice')->name('add.invoice');
     });
 });
 
@@ -325,7 +335,8 @@ route::middleware(['auth','roles:agen'])->group(function(){
         Route::get('/agen/all-booking', 'AllBooking')->name('agen.booking');
         Route::post('/booking/store', 'StoreBooking')->name('booking.store');
         Route::get('/booking/details/{id}','getBookingDetails');
-
+        Route::post('/notifications/{id}/mark-as-read', 'markAsRead');
+        Route::post('/mark-all-as-read', 'markAllAsRead');
     });
 
 

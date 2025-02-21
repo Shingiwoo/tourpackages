@@ -40,12 +40,18 @@ class AgenServiceController extends Controller
             $query->where('agen_id', $agen->id);
         })->where('status', 'booked')->count();
 
+        $paidStatus = Booking::whereHas('bookingList', function ($query) use ($agen) {
+            $query->where('agen_id', $agen->id);
+        })->where('status', 'paid')->count();
+
+        $bookedTotal = $bookedStatus + $paidStatus;
+
         $finishedStatus = Booking::whereHas('bookingList', function ($query) use ($agen) {
             $query->where('agen_id', $agen->id);
         })->where('status', 'finished')->count();
 
 
-        return view('agen.index', compact('agen', 'totalPackage', 'pendingStatus', 'bookedStatus', 'finishedStatus'));
+        return view('agen.index', compact('agen', 'totalPackage', 'pendingStatus', 'bookedStatus', 'finishedStatus', 'bookedTotal'));
     }
 
     public function AgenLogout(Request $request)

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Agen\Core;
 
 
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Custom;
 use App\Models\Booking;
 use App\Models\BookingList;
@@ -15,6 +16,8 @@ use App\Models\PackageThreeDay;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\Agen\AgenBookingCreated;
 
 class BookingServiceController extends Controller
 {
@@ -51,13 +54,13 @@ class BookingServiceController extends Controller
         $agen = Auth::user();
 
         $packOneday = PackageOneDay::where('agen_id', $agen->id)
-        ->with(['destinations', 'prices', 'regency'])->get();
+            ->with(['destinations', 'prices', 'regency'])->get();
         $packTwoday = PackageTwoDay::where('agen_id', $agen->id)
-        ->with(['destinations', 'prices', 'regency'])->get();
+            ->with(['destinations', 'prices', 'regency'])->get();
         $packThreeday = PackageThreeDay::where('agen_id', $agen->id)
-        ->with(['destinations', 'prices', 'regency'])->get();
+            ->with(['destinations', 'prices', 'regency'])->get();
         $packFourday = PackageFourDay::where('agen_id', $agen->id)
-        ->with(['destinations', 'prices', 'regency'])->get();
+            ->with(['destinations', 'prices', 'regency'])->get();
 
         // Gabungkan semua paket menjadi satu koleksi
         $allPackages = collect()
@@ -72,6 +75,9 @@ class BookingServiceController extends Controller
     public function StoreBooking(Request $request)
     {
         try {
+            // Ambil data admin
+            $admin = User::where('role', 'admin')->first();
+
             // Validasi data
             $validated = $request->validate([
                 'package_id' => 'required|integer',
@@ -159,7 +165,6 @@ class BookingServiceController extends Controller
                 $totalPrice = $customPackage['totalCost'];
                 $downPayment = $customPackage['downPayment'];
                 $remainingCosts = $customPackage['remainingCosts'];
-
             } else {
                 // Logika untuk paket lainnya (oneday, twoday, dll)
                 $packageModels = [
@@ -374,15 +379,13 @@ class BookingServiceController extends Controller
             // Update booking_list_id pada tabel bookings
             $booking->update(['booking_list_id' => $bookingList->id]);
 
-            // Kirim notifikasi berhasil
-            $notification = [
+            Notification::send($admin, new AgenBookingCreated($agen->username));
+
+            // Kirim Notifikasi dan Redirect ke halaman destinasi dengan notifikasi
+            return redirect()->route('agen.booking')->with([
                 'message' => 'Booking Package Created Successfully!',
                 'alert-type' => 'success',
-            ];
-
-            // Redirect ke halaman destinasi dengan notifikasi
-            return redirect()->route('agen.booking')->with($notification);
-
+            ]);
         } catch (\Exception $e) {
             // Kirim notifikasi error
             $notification = [
@@ -413,7 +416,42 @@ class BookingServiceController extends Controller
         return response()->json(['html' => $html]);
     }
 
+    public function markAsRead(Request $request, $id)
+    {
+        try {
+            $user = Auth::user();
+            $notification = $user->notifications()->find($id); // Gunakan find() saja, handle jika null
 
+            if (!$notification) {
+                return response()->json(['success' => false, 'message' => 'Notifikasi tidak ditemukan.'], 404);
+            }
 
+            $notification->markAsRead();
 
+            return response()->json([
+                'success' => true,
+                'count' => $user->unreadNotifications()->count()
+            ]);
+        } catch (Throwable $e) {
+            report($e); // Log error untuk debugging
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage() || 'Terjadi kesalahan server.'
+            ], 500);
+        }
+    }
+
+    public function markAllAsRead()
+    {
+        // Ambil semua notifikasi yang belum dibaca untuk user yang sedang login
+        $user = Auth::user();
+
+        if ($user) {
+            $user->unreadNotifications->markAsRead(); // Tandai semua sebagai telah dibaca
+            return response()->json(['success' => true, 'message' => 'All notifications marked as read.']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'User not authenticated.'], 401);
+    }
 }
