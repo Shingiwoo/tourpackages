@@ -56,6 +56,7 @@
                                     <th class="align-content-center text-center">Photo</th>
                                     <th class="align-content-center text-center">Name</th>
                                     <th class="align-content-center text-center">Username</th>
+                                    <th class="align-content-center text-center">Company</th>
                                     <th class="align-content-center text-center">Email</th>
                                     <th class="align-content-center text-center">Phone</th>
                                     <th class="align-content-center text-center">Role</th>
@@ -83,6 +84,7 @@
                                     </td>
                                     <td class="align-content-center text-center">{{ $item->name }}</td>
                                     <td class="align-content-center text-center">{{ $item->username }}</td>
+                                    <td class="align-content-center text-center">{{ $item->company ?? 'Tour Packages' }}</td>
                                     <td class="align-content-center text-center">{{ $item->email }}</td>
                                     <td class="align-content-center text-center">+62{{ $item->phone }}</td>
                                     <td class="align-content-center text-center">

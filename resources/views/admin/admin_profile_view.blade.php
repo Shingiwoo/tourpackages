@@ -22,8 +22,7 @@
                                 <ul
                                     class="list-inline mb-0 d-flex align-items-center flex-wrap justify-content-sm-start justify-content-center gap-4 my-2">
                                     <li class="list-inline-item d-flex gap-2 align-items-center">
-                                        <i class="ti ti-user-scan ti-lg"></i><span class="fw-medium">{{
-                                            $profileData->username }}</span>
+                                        <i class="ti ti-user-scan ti-lg"></i><span class="fw-medium text-capitalize">{{ $profileData->username }} | {{ $profileData->company ?? 'Tour package' }}</span>
                                     </li>
                                 </ul>
                             </div>
@@ -140,16 +139,23 @@
                     </div>
                     <div class="card-body pt-4">
                         <div class="row">
-                            <div class="mb-4 col-md-6">
+                            <div class="mb-4 col-6 col-md-4">
                                 <label for="name" class="form-label">Full Name</label>
                                 <input class="form-control" type="text" id="name" name="name"
                                     value="{{ $profileData->name }}" autofocus />
                             </div>
-                            <div class="mb-4 col-md-6">
+                            <div class="mb-4 col-6 col-md-4">
                                 <label for="username" class="form-label">Username</label>
                                 <input class="form-control" type="text" name="username" id="username"
                                     value="{{ $profileData->username }}" />
                             </div>
+                            <div class="mb-4 col-6 col-md-4">
+                                <label for="company" class="form-label">Company</label>
+                                <input class="form-control" type="text" name="company" id="company"
+                                    value="{{ $profileData->company ?? 'Tour Packages' }}" />
+                            </div>
+                        </div>
+                        <div class="row">
                             <div class="mb-4 col-md-6">
                                 <label for="email" class="form-label">E-mail</label>
                                 <input class="form-control" type="email" id="email" name="email"

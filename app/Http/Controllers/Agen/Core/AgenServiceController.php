@@ -82,6 +82,7 @@ class AgenServiceController extends Controller
             'email' => 'required|string|email|unique:users,email,' . Auth::id(),
             'phone' => 'required|string',
             'address' => 'required|string',
+            'company' => 'nullable|string',
             'bank' => 'required|string',
             'norek' => 'required|string',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048' // Validation for image upload

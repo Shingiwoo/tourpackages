@@ -29,7 +29,7 @@ class BookingController extends Controller
 
         $bookings = Booking::whereHas('bookingList', function ($query) use ($agenIds) {
             $query->whereIn('agen_id', $agenIds);
-        })->with(['bookingList', 'bookingList.agen'])->get();
+        })->with(['bookingList', 'bookingList.agen'])->orderBy('created_at', 'desc')->get();
 
         $pendingStatus = Booking::where('status', 'pending')->count();
 
