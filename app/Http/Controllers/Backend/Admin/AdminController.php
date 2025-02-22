@@ -29,10 +29,27 @@ class AdminController extends Controller
 
         $agenRanking = $this->getAgenRanking();
 
-        return view('admin.index', compact('bookedTotal', 'finishedStatus', 'pendingStatus', 'agenRanking'));
+
+        $bestPackOneDay = $this->bestPackageOneDay();
+        $bestPackTwoDay = $this->bestPackageTwoDay();
+        $bestPackThreeDay = $this->bestPackageThreeDay();
+        $bestPackFourDay = $this->bestPackageFourDay();
+        $bestRentService = $this->bestPackageRent();
+        $bestPackCustom = $this->bestPackageCustom();
+
+        // Gabungkan semua paket menjadi satu koleksi ->merge($bestRentService)
+        $bestPackages = collect()
+            ->merge($bestPackOneDay)
+            ->merge($bestPackTwoDay)
+            ->merge($bestPackThreeDay)
+            ->merge($bestPackFourDay)
+            ->merge($bestRentService)
+            ->merge($bestPackCustom);
+
+        return view('admin.index', compact('bookedTotal', 'finishedStatus', 'pendingStatus', 'agenRanking', 'bestPackages', 'bestRentService'));
     }
 
-    public function getAgenRanking()
+    private function getAgenRanking()
     {
         $agenRanking = BookingList::with('agen')
             ->withCount([
@@ -46,6 +63,7 @@ class AdminController extends Controller
                     $query->where('status', 'finished');
                 }
             ])
+            ->take(4) // Ambil 4 data teratas
             ->get()
             ->groupBy('agen_id') // Kelompokkan berdasarkan agen_id
             ->map(function ($bookings, $agenId) {
@@ -62,6 +80,196 @@ class AdminController extends Controller
             ->values();
 
         return $agenRanking;
+    }
+
+
+    private function bestPackageOneDay()
+    {
+        $validStatuses = ['booked', 'paid', 'finished'];
+
+        $bestPackOneDay = BookingList::select('package_id')
+            ->with('packageOneDay')
+            ->join('bookings', 'booking_lists.id', '=', 'bookings.booking_list_id')
+            ->where('bookings.type', 'oneday')
+            ->whereIn('bookings.status', $validStatuses)
+            ->groupBy('package_id')
+            ->selectRaw('package_id, COUNT(bookings.id) as total_bookings')
+            ->having('total_bookings', '>', 1)
+            ->orderByDesc('total_bookings')
+            ->take(2)
+            ->get();
+
+        if ($bestPackOneDay->isEmpty()) {
+            Log::info('No best package found for OneDay with more than one booking.');
+            return collect([]); // Mengembalikan collection kosong
+        }
+
+        return $bestPackOneDay->map(function ($item) {
+            return [
+                'name' => optional($item->packageOneDay)->name_package ?? 'Tidak ditemukan',
+                'total_bookings' => $item->total_bookings,
+                'type' => 'oneday',
+            ];
+        });
+    }
+
+
+    private function bestPackageTwoDay()
+    {
+        $validStatuses = ['booked', 'paid', 'finished'];
+
+        $bestPackTwoDay = BookingList::select('package_id')
+            ->with('packageTwoDay')
+            ->join('bookings', 'booking_lists.id', '=', 'bookings.booking_list_id')
+            ->where('bookings.type', 'twoday')
+            ->whereIn('bookings.status', $validStatuses)
+            ->groupBy('package_id')
+            ->selectRaw('package_id, COUNT(bookings.id) as total_bookings')
+            ->having('total_bookings', '>', 1) // Gunakan having tanpa raw
+            ->orderByDesc('total_bookings')
+            ->take(2)
+            ->get();
+
+        if ($bestPackTwoDay->isEmpty()) {
+            Log::info('No best package found for Twoday with more than one booking.');
+            return collect([]); // Mengembalikan collection kosong
+        }
+
+        return $bestPackTwoDay->map(function ($item) {
+            return [
+                'name' => optional($item->packageTwoDay)->name_package ?? 'Tidak ditemukan',
+                'total_bookings' => $item->total_bookings,
+                'type' => 'twoday',
+            ];
+        });
+    }
+
+    private function bestPackageThreeDay()
+    {
+        $validStatuses = ['booked', 'paid', 'finished'];
+
+        $bestPackThreeDay = BookingList::select('package_id')
+            ->with('packageThreeDay')
+            ->join('bookings', 'booking_lists.id', '=', 'bookings.booking_list_id')
+            ->where('bookings.type', 'threeday')
+            ->whereIn('bookings.status', $validStatuses)
+            ->groupBy('package_id')
+            ->selectRaw('package_id, COUNT(bookings.id) as total_bookings')
+            ->having('total_bookings', '>', 1) // Gunakan having tanpa raw
+            ->orderByDesc('total_bookings')
+            ->take(2)
+            ->get();
+
+        if ($bestPackThreeDay->isEmpty()) {
+            Log::info('No best package found for ThreeDay with more than one booking.');
+            return collect([]); // Mengembalikan collection kosong
+        }
+
+        return $bestPackThreeDay->map(function ($item) {
+            return [
+                'name' => optional($item->packageThreeDay)->name_package ?? 'Tidak ditemukan',
+                'total_bookings' => $item->total_bookings,
+                'type' => 'threeday',
+            ];
+        });
+    }
+
+    private function bestPackageFourDay()
+    {
+        $validStatuses = ['booked', 'paid', 'finished'];
+
+        $bestPackFourDay = BookingList::select('package_id')
+            ->with('packageFourDay')
+            ->join('bookings', 'booking_lists.id', '=', 'bookings.booking_list_id')
+            ->where('bookings.type', 'fourday')
+            ->whereIn('bookings.status', $validStatuses)
+            ->groupBy('package_id')
+            ->selectRaw('package_id, COUNT(bookings.id) as total_bookings')
+            ->having('total_bookings', '>', 1) // Gunakan having tanpa raw
+            ->orderByDesc('total_bookings')
+            ->take(2)
+            ->get();
+
+        if ($bestPackFourDay->isEmpty()) {
+            Log::info('No best package found for FourDay with more than one booking.');
+            return collect([]); // Mengembalikan collection kosong
+        }
+
+        return $bestPackFourDay->map(function ($item) {
+            return [
+                'name' => optional($item->packageFourDay)->name_package ?? 'Tidak ditemukan',
+                'total_bookings' => $item->total_bookings,
+                'type' => 'fourday',
+            ];
+        });
+    }
+
+    private function bestPackageRent()
+    {
+        $validStatuses = ['booked', 'paid', 'finished'];
+
+        $bestRentService = BookingList::select('package_id')
+            ->with('rentService')
+            ->join('bookings', 'booking_lists.id', '=', 'bookings.booking_list_id')
+            ->where('bookings.type', 'rent')
+            ->whereIn('bookings.status', $validStatuses)
+            ->groupBy('package_id')
+            ->selectRaw('package_id, COUNT(bookings.id) as total_bookings')
+            ->having('total_bookings', '>', 1) // Gunakan having tanpa raw
+            ->orderByDesc('total_bookings')
+            ->take(2)
+            ->get();
+
+        if ($bestRentService->isEmpty()) {
+            Log::info('No best package found for Rent with more than one booking.');
+            return collect([]); // Mengembalikan collection kosong
+        }
+
+        return $bestRentService->map(function ($item) {
+            return [
+                'name' => optional($item->rentService)->name ?? 'Tidak ditemukan',
+                'total_bookings' => $item->total_bookings,
+                'type' => 'rent',
+            ];
+        });
+    }
+
+    private function bestPackageCustom()
+    {
+        $validStatuses = ['booked', 'paid', 'finished'];
+
+        $bestPackCustom = BookingList::select('package_id')
+            ->with('customPackage') // Menggunakan relasi untuk custom package
+            ->join('bookings', 'booking_lists.id', '=', 'bookings.booking_list_id')
+            ->where('bookings.type', 'custom') // Filter hanya untuk paket custom
+            ->whereIn('bookings.status', $validStatuses) // Filter berdasarkan status booking
+            ->groupBy('package_id')
+            ->selectRaw('package_id, COUNT(bookings.id) as total_bookings')
+            ->having('total_bookings', '>', 1)
+            ->orderByDesc('total_bookings')
+            ->take(2) // Ambil 1 paket custom teratas
+            ->get();
+
+        if ($bestPackCustom->isEmpty()) {
+            Log::info('No best package found for Custom with more than one booking.');
+            return collect([]); // Mengembalikan collection kosong jika tidak ada data
+        }
+
+        return $bestPackCustom->map(function ($item) {
+            // Cek apakah relasi ada dan memiliki data
+            if ($item->customPackage) {
+                $customData = json_decode($item->customPackage->custompackage, true); // Decode JSON
+                $packageName = $customData['package_name'] ?? 'Tidak ditemukan'; // Ambil nama paket jika ada
+            } else {
+                $packageName = 'Tidak ditemukan';
+            }
+
+            return [
+                'name' => $packageName,
+                'total_bookings' => $item->total_bookings,
+                'type' => 'custom',
+            ];
+        });
     }
 
 

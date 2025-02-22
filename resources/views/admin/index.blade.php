@@ -128,91 +128,123 @@
             <div class="col-xxl-4 col-lg-6">
                 <div class="card h-100">
                     <div class="card-header d-flex align-items-center justify-content-between">
-                        <h5 class="card-title m-0 me-2">Top Tour Packages</h5>
-                        <div class="dropdown">
-                            <button class="btn btn-text-secondary rounded-pill text-muted border-0 p-2 me-n1" type="button"
-                                id="topCourses" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="ti ti-dots-vertical ti-md text-muted"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="topCourses">
-                                <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
-                                <a class="dropdown-item" href="javascript:void(0);">Download</a>
-                                <a class="dropdown-item" href="javascript:void(0);">View All</a>
-                            </div>
-                        </div>
+                        <h5 class="card-title m-0 me-2">Top Packages</h5>
                     </div>
                     <div class="card-body">
                         <ul class="list-unstyled mb-0">
-                            <li class="d-flex mb-6 align-items-center">
-                                <div class="avatar flex-shrink-0 me-4">
-                                    <span class="avatar-initial rounded bg-label-primary"><i
-                                            class="ti ti-video ti-lg"></i></span>
-                                </div>
-                                <div class="row w-100 align-items-center">
-                                    <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
-                                        <h6 class="mb-0">Videography Basic Design Course</h6>
+                            @forelse ($bestPackages as $package)
+                                @if ($package['type'] === 'oneday')
+                                <li class="d-flex mb-6 align-items-center">
+                                    <div class="avatar flex-shrink-0 me-4">
+                                        <span class="avatar-initial rounded bg-label-primary"><i
+                                                class="ti ti-square-number-1 ti-lg text-primary"></i></span>
                                     </div>
-                                    <div class="col-sm-4 d-flex justify-content-sm-end">
-                                        <div class="badge bg-label-secondary">1.2k Views</div>
+                                    <div class="row w-100 align-items-center">
+                                        <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
+                                           <a href="{{ route('all.packages') }}"><h6 class="mb-0 text-uppercase">{{ $package['name'] }}</h6></a>
+                                        </div>
+                                        <div class="col-sm-4 d-flex justify-content-sm-end">
+                                            <div class="badge bg-label-secondary">{{ $package['total_bookings'] }} Book</div>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
-                            <li class="d-flex mb-6 align-items-center">
-                                <div class="avatar flex-shrink-0 me-4">
-                                    <span class="avatar-initial rounded bg-label-info"><i
-                                            class="ti ti-code ti-lg"></i></span>
-                                </div>
-                                <div class="row w-100 align-items-center">
-                                    <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
-                                        <h6 class="mb-0">Basic Front-end Development Course</h6>
+                                </li>
+                                @endif
+                                @if ($package['type'] === 'twoday')
+                                <li class="d-flex mb-6 align-items-center">
+                                    <div class="avatar flex-shrink-0 me-4">
+                                        <span class="avatar-initial rounded bg-label-info"><i
+                                                class="ti ti-square-number-2 ti-lg text-info"></i></span>
                                     </div>
-                                    <div class="col-sm-4 d-flex justify-content-sm-end">
-                                        <div class="badge bg-label-secondary">834 Views</div>
+                                    <div class="row w-100 align-items-center">
+                                        <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
+                                           <a href="{{ route('all.twoday.packages') }}"><h6 class="mb-0 text-uppercase">{{ $package['name'] }}</h6></a>
+                                        </div>
+                                        <div class="col-sm-4 d-flex justify-content-sm-end">
+                                            <div class="badge bg-label-secondary">{{ $package['total_bookings'] }} Book</div>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
-                            <li class="d-flex mb-6 align-items-center">
-                                <div class="avatar flex-shrink-0 me-4">
-                                    <span class="avatar-initial rounded bg-label-success"><i
-                                            class="ti ti-camera ti-lg"></i></span>
-                                </div>
-                                <div class="row w-100 align-items-center">
-                                    <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
-                                        <h6 class="mb-0">Basic Fundamentals of Photography</h6>
+                                </li>
+                                @endif
+                                @if ($package['type'] === 'threeday')
+                                <li class="d-flex mb-6 align-items-center">
+                                    <div class="avatar flex-shrink-0 me-4">
+                                        <span class="avatar-initial rounded bg-label-success"><i
+                                                class="ti ti-square-number-3 ti-lg text-primary"></i></span>
                                     </div>
-                                    <div class="col-sm-4 d-flex justify-content-sm-end">
-                                        <div class="badge bg-label-secondary">3.7k Views</div>
+                                    <div class="row w-100 align-items-center">
+                                        <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
+                                           <a href="{{ route('all.threeday.packages') }}"><h6 class="mb-0 text-uppercase">{{ $package['name'] }}</h6></a>
+                                        </div>
+                                        <div class="col-sm-4 d-flex justify-content-sm-end">
+                                            <div class="badge bg-label-secondary">{{ $package['total_bookings'] }} Book</div>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
-                            <li class="d-flex mb-6 align-items-center">
-                                <div class="avatar flex-shrink-0 me-4">
-                                    <span class="avatar-initial rounded bg-label-warning"><i
-                                            class="ti ti-brand-dribbble ti-lg"></i></span>
-                                </div>
-                                <div class="row w-100 align-items-center">
-                                    <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
-                                        <h6 class="mb-0">Advance Dribble Base Visual Design</h6>
+                                </li>
+                                @endif
+                                @if ($package['type'] === 'fourday')
+                                <li class="d-flex mb-6 align-items-center">
+                                    <div class="avatar flex-shrink-0 me-4">
+                                        <span class="avatar-initial rounded bg-label-warning"><i
+                                                class="ti ti-square-number-4 ti-lg text-warning"></i></span>
                                     </div>
-                                    <div class="col-sm-4 d-flex justify-content-sm-end">
-                                        <div class="badge bg-label-secondary">2.5k Views</div>
+                                    <div class="row w-100 align-items-center">
+                                        <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
+                                          <a href="{{ route('all.fourday.packages') }}"><h6 class="mb-0 text-uppercase">{{ $package['name'] }}</h6></a>
+                                        </div>
+                                        <div class="col-sm-4 d-flex justify-content-sm-end">
+                                            <div class="badge bg-label-secondary">{{ $package['total_bookings'] }} Book</div>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
-                            <li class="d-flex align-items-center">
-                                <div class="avatar flex-shrink-0 me-4">
-                                    <span class="avatar-initial rounded bg-label-danger"><i
-                                            class="ti ti-microphone-2 ti-lg"></i></span>
-                                </div>
-                                <div class="row w-100 align-items-center">
-                                    <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
-                                        <h6 class="mb-0">Your First Singing Lesson</h6>
+                                </li>
+                                @endif
+                                @if ($package['type'] === 'custom')
+                                <li class="d-flex mb-6 align-items-center">
+                                    <div class="avatar flex-shrink-0 me-4">
+                                        <span class="avatar-initial rounded bg-label-danger"><i
+                                                class="ti ti-table-options ti-lg text-danger"></i></span>
                                     </div>
-                                    <div class="col-sm-4 d-flex justify-content-sm-end">
-                                        <div class="badge bg-label-secondary">948 Views</div>
+                                    <div class="row w-100 align-items-center">
+                                        <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
+                                          <a href="{{ route('all.custom.package') }}"><h6 class="mb-0 text-uppercase">{{ $package['name'] }}</h6></a>
+                                        </div>
+                                        <div class="col-sm-4 d-flex justify-content-sm-end">
+                                            <div class="badge bg-label-secondary">{{ $package['total_bookings'] }} Book</div>
+                                        </div>
                                     </div>
-                                </div>
-                            </li>
+                                </li>
+                                @endif
+                                @if ($package['type'] === 'rent')
+                                <li class="d-flex mb-6 align-items-center">
+                                    <div class="avatar flex-shrink-0 me-4">
+                                        <span class="avatar-initial rounded bg-label-secondary"><i
+                                                class="ti ti-car-suv ti-lg text-info"></i></span>
+                                    </div>
+                                    <div class="row w-100 align-items-center">
+                                        <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
+                                           <a href="{{ route('all.rents') }}"> <h6 class="mb-0 text-uppercase">{{ $package['name'] }}</h6></a>
+                                        </div>
+                                        <div class="col-sm-4 d-flex justify-content-sm-end">
+                                            <div class="badge bg-label-secondary">{{ $package['total_bookings'] }} Book</div>
+                                        </div>
+                                    </div>
+                                </li>
+                                @endif
+                            @empty
+                                <li class="d-flex align-items-center">
+                                    <div class="avatar flex-shrink-0 me-4">
+                                        <span class="avatar-initial rounded bg-label-secondary"><i
+                                                class="ti ti-database-off ti-lg text-secondary"></i></span>
+                                    </div>
+                                    <div class="row w-100 align-items-center">
+                                        <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
+                                            <h6 class="mb-0 text-uppercase">Tidak ada data Top Packages</h6>
+                                        </div>
+                                        <div class="col-sm-4 d-flex justify-content-sm-end">
+                                            <div class="badge bg-label-secondary">0 Booked</div>
+                                        </div>
+                                    </div>
+                                </li>
+                            @endforelse
                         </ul>
                     </div>
                 </div>
