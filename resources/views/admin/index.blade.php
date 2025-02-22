@@ -103,21 +103,21 @@
                     </div>
                     <div class="card-body">
                         @foreach ($agenRanking as $agen)
-                        <div class="d-flex justify-content-between align-items-center mb-6">
+                            <div class="d-flex justify-content-between align-items-center mb-6">
 
 
-                            <div class="d-flex align-items-center">
-                                <div>
+                                <div class="d-flex align-items-center">
                                     <div>
-                                        <h6 class="mb-0 text-truncate text-capitalize">{{ $agen['agen_name'] }}</h6>
-                                        <small class="text-truncate text-body">{{ $agen['agen_company'] }}</small>
+                                        <div>
+                                            <h6 class="mb-0 text-truncate text-capitalize">{{ $agen['agen_name'] }}</h6>
+                                            <small class="text-truncate text-body">{{ $agen['agen_company'] }}</small>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="text-end">
+                                    <h6 class="mb-0">0{{ $agen['total_tour'] }} Tour</h6>
+                                </div>
                             </div>
-                            <div class="text-end">
-                                <h6 class="mb-0">0{{ $agen['total_tour'] }} Tour</h6>
-                            </div>
-                        </div>
                         @endforeach
                     </div>
                 </div>
@@ -134,100 +134,118 @@
                         <ul class="list-unstyled mb-0">
                             @forelse ($bestPackages as $package)
                                 @if ($package['type'] === 'oneday')
-                                <li class="d-flex mb-6 align-items-center">
-                                    <div class="avatar flex-shrink-0 me-4">
-                                        <span class="avatar-initial rounded bg-label-primary"><i
-                                                class="ti ti-square-number-1 ti-lg text-primary"></i></span>
-                                    </div>
-                                    <div class="row w-100 align-items-center">
-                                        <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
-                                           <a href="{{ route('all.packages') }}"><h6 class="mb-0 text-uppercase">{{ $package['name'] }}</h6></a>
+                                    <li class="d-flex mb-6 align-items-center">
+                                        <div class="avatar flex-shrink-0 me-4">
+                                            <span class="avatar-initial rounded bg-label-primary"><i
+                                                    class="ti ti-square-number-1 ti-lg text-primary"></i></span>
                                         </div>
-                                        <div class="col-sm-4 d-flex justify-content-sm-end">
-                                            <div class="badge bg-label-secondary">{{ $package['total_bookings'] }} Book</div>
+                                        <div class="row w-100 align-items-center">
+                                            <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
+                                                <a href="{{ route('all.packages') }}">
+                                                    <h6 class="mb-0 text-uppercase">{{ $package['name'] }}</h6>
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-4 d-flex justify-content-sm-end">
+                                                <div class="badge bg-label-secondary">{{ $package['total_bookings'] }} Book
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </li>
+                                    </li>
                                 @endif
                                 @if ($package['type'] === 'twoday')
-                                <li class="d-flex mb-6 align-items-center">
-                                    <div class="avatar flex-shrink-0 me-4">
-                                        <span class="avatar-initial rounded bg-label-info"><i
-                                                class="ti ti-square-number-2 ti-lg text-info"></i></span>
-                                    </div>
-                                    <div class="row w-100 align-items-center">
-                                        <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
-                                           <a href="{{ route('all.twoday.packages') }}"><h6 class="mb-0 text-uppercase">{{ $package['name'] }}</h6></a>
+                                    <li class="d-flex mb-6 align-items-center">
+                                        <div class="avatar flex-shrink-0 me-4">
+                                            <span class="avatar-initial rounded bg-label-info"><i
+                                                    class="ti ti-square-number-2 ti-lg text-info"></i></span>
                                         </div>
-                                        <div class="col-sm-4 d-flex justify-content-sm-end">
-                                            <div class="badge bg-label-secondary">{{ $package['total_bookings'] }} Book</div>
+                                        <div class="row w-100 align-items-center">
+                                            <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
+                                                <a href="{{ route('all.twoday.packages') }}">
+                                                    <h6 class="mb-0 text-uppercase">{{ $package['name'] }}</h6>
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-4 d-flex justify-content-sm-end">
+                                                <div class="badge bg-label-secondary">{{ $package['total_bookings'] }} Book
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </li>
+                                    </li>
                                 @endif
                                 @if ($package['type'] === 'threeday')
-                                <li class="d-flex mb-6 align-items-center">
-                                    <div class="avatar flex-shrink-0 me-4">
-                                        <span class="avatar-initial rounded bg-label-success"><i
-                                                class="ti ti-square-number-3 ti-lg text-primary"></i></span>
-                                    </div>
-                                    <div class="row w-100 align-items-center">
-                                        <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
-                                           <a href="{{ route('all.threeday.packages') }}"><h6 class="mb-0 text-uppercase">{{ $package['name'] }}</h6></a>
+                                    <li class="d-flex mb-6 align-items-center">
+                                        <div class="avatar flex-shrink-0 me-4">
+                                            <span class="avatar-initial rounded bg-label-success"><i
+                                                    class="ti ti-square-number-3 ti-lg text-primary"></i></span>
                                         </div>
-                                        <div class="col-sm-4 d-flex justify-content-sm-end">
-                                            <div class="badge bg-label-secondary">{{ $package['total_bookings'] }} Book</div>
+                                        <div class="row w-100 align-items-center">
+                                            <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
+                                                <a href="{{ route('all.threeday.packages') }}">
+                                                    <h6 class="mb-0 text-uppercase">{{ $package['name'] }}</h6>
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-4 d-flex justify-content-sm-end">
+                                                <div class="badge bg-label-secondary">{{ $package['total_bookings'] }}
+                                                    Book</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </li>
+                                    </li>
                                 @endif
                                 @if ($package['type'] === 'fourday')
-                                <li class="d-flex mb-6 align-items-center">
-                                    <div class="avatar flex-shrink-0 me-4">
-                                        <span class="avatar-initial rounded bg-label-warning"><i
-                                                class="ti ti-square-number-4 ti-lg text-warning"></i></span>
-                                    </div>
-                                    <div class="row w-100 align-items-center">
-                                        <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
-                                          <a href="{{ route('all.fourday.packages') }}"><h6 class="mb-0 text-uppercase">{{ $package['name'] }}</h6></a>
+                                    <li class="d-flex mb-6 align-items-center">
+                                        <div class="avatar flex-shrink-0 me-4">
+                                            <span class="avatar-initial rounded bg-label-warning"><i
+                                                    class="ti ti-square-number-4 ti-lg text-warning"></i></span>
                                         </div>
-                                        <div class="col-sm-4 d-flex justify-content-sm-end">
-                                            <div class="badge bg-label-secondary">{{ $package['total_bookings'] }} Book</div>
+                                        <div class="row w-100 align-items-center">
+                                            <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
+                                                <a href="{{ route('all.fourday.packages') }}">
+                                                    <h6 class="mb-0 text-uppercase">{{ $package['name'] }}</h6>
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-4 d-flex justify-content-sm-end">
+                                                <div class="badge bg-label-secondary">{{ $package['total_bookings'] }}
+                                                    Book</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </li>
+                                    </li>
                                 @endif
                                 @if ($package['type'] === 'custom')
-                                <li class="d-flex mb-6 align-items-center">
-                                    <div class="avatar flex-shrink-0 me-4">
-                                        <span class="avatar-initial rounded bg-label-danger"><i
-                                                class="ti ti-table-options ti-lg text-danger"></i></span>
-                                    </div>
-                                    <div class="row w-100 align-items-center">
-                                        <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
-                                          <a href="{{ route('all.custom.package') }}"><h6 class="mb-0 text-uppercase">{{ $package['name'] }}</h6></a>
+                                    <li class="d-flex mb-6 align-items-center">
+                                        <div class="avatar flex-shrink-0 me-4">
+                                            <span class="avatar-initial rounded bg-label-danger"><i
+                                                    class="ti ti-table-options ti-lg text-danger"></i></span>
                                         </div>
-                                        <div class="col-sm-4 d-flex justify-content-sm-end">
-                                            <div class="badge bg-label-secondary">{{ $package['total_bookings'] }} Book</div>
+                                        <div class="row w-100 align-items-center">
+                                            <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
+                                                <a href="{{ route('all.custom.package') }}">
+                                                    <h6 class="mb-0 text-uppercase">{{ $package['name'] }}</h6>
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-4 d-flex justify-content-sm-end">
+                                                <div class="badge bg-label-secondary">{{ $package['total_bookings'] }}
+                                                    Book</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </li>
+                                    </li>
                                 @endif
                                 @if ($package['type'] === 'rent')
-                                <li class="d-flex mb-6 align-items-center">
-                                    <div class="avatar flex-shrink-0 me-4">
-                                        <span class="avatar-initial rounded bg-label-secondary"><i
-                                                class="ti ti-car-suv ti-lg text-info"></i></span>
-                                    </div>
-                                    <div class="row w-100 align-items-center">
-                                        <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
-                                           <a href="{{ route('all.rents') }}"> <h6 class="mb-0 text-uppercase">{{ $package['name'] }}</h6></a>
+                                    <li class="d-flex mb-6 align-items-center">
+                                        <div class="avatar flex-shrink-0 me-4">
+                                            <span class="avatar-initial rounded bg-label-secondary"><i
+                                                    class="ti ti-car-suv ti-lg text-info"></i></span>
                                         </div>
-                                        <div class="col-sm-4 d-flex justify-content-sm-end">
-                                            <div class="badge bg-label-secondary">{{ $package['total_bookings'] }} Book</div>
+                                        <div class="row w-100 align-items-center">
+                                            <div class="col-sm-8 mb-1 mb-sm-0 mb-lg-1 mb-xxl-0">
+                                                <a href="{{ route('all.rents') }}">
+                                                    <h6 class="mb-0 text-uppercase">{{ $package['name'] }}</h6>
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-4 d-flex justify-content-sm-end">
+                                                <div class="badge bg-label-secondary">{{ $package['total_bookings'] }}
+                                                    Book</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                </li>
+                                    </li>
                                 @endif
                             @empty
                                 <li class="d-flex align-items-center">
@@ -253,24 +271,165 @@
         </div>
         <!--  Topic and Instructors  End-->
 
-        <!-- Course datatable -->
-        <div class="card">
-            <div class="table-responsive mb-4">
-                <table class="table table-sm datatables-academy-course">
-                    <thead class="border-top">
-                        <tr>
-                            <th></th>
-                            <th></th>
-                            <th>Course Name</th>
-                            <th>Time</th>
-                            <th class="w-25">Progress</th>
-                            <th class="w-25">Status</th>
-                        </tr>
-                    </thead>
-                </table>
+        <div class="card app-calendar-wrapper">
+            <div class="row g-0">
+                <!-- Calendar Sidebar -->
+                <div class="col app-calendar-sidebar border-end" id="app-calendar-sidebar">
+                    <div class="border-bottom p-6 my-sm-0 mb-4">
+                        <button class="btn btn-primary btn-toggle-sidebar w-100" data-bs-toggle="offcanvas"
+                            data-bs-target="#addEventSidebar" aria-controls="addEventSidebar">
+                            <i class="ti ti-plus ti-16px me-2"></i>
+                            <span class="align-middle">Add Event</span>
+                        </button>
+                    </div>
+                    <div class="px-3 pt-2">
+                        <!-- inline calendar (flatpicker) -->
+                        <div class="inline-calendar"></div>
+                    </div>
+                    <hr class="mb-6 mx-n4 mt-3" />
+                    <div class="px-6 pb-2">
+                        <!-- Filter -->
+                        <div>
+                            <h5>Tour Filters</h5>
+                        </div>
+
+                        <div class="form-check form-check-secondary mb-5 ms-2">
+                            <input class="form-check-input select-all" type="checkbox" id="selectAll" data-value="all"
+                                checked />
+                            <label class="form-check-label" for="selectAll">View All</label>
+                        </div>
+
+                        <div class="app-calendar-events-filter text-heading">
+                            <div class="form-check form-check-danger mb-5 ms-2">
+                                <input class="form-check-input input-filter" type="checkbox" id="select-oneday"
+                                    data-value="oneday" checked />
+                                <label class="form-check-label" for="select-oneday">Oneday</label>
+                            </div>
+                            <div class="form-check form-check-primary mb-5 ms-2">
+                                <input class="form-check-input input-filter" type="checkbox" id="select-twoday"
+                                    data-value="twoday" checked />
+                                <label class="form-check-label" for="select-twoday">Twoday</label>
+                            </div>
+                            <div class="form-check form-check-warning mb-5 ms-2">
+                                <input class="form-check-input input-filter" type="checkbox" id="select-threeday"
+                                    data-value="threeday" checked />
+                                <label class="form-check-label" for="select-threeday">Threeday</label>
+                            </div>
+                            <div class="form-check form-check-success mb-5 ms-2">
+                                <input class="form-check-input input-filter" type="checkbox" id="select-fourday"
+                                    data-value="fourday" checked />
+                                <label class="form-check-label" for="select-fourday">Fourday</label>
+                            </div>
+                            <div class="form-check form-check-secondary mb-5 ms-2">
+                                <input class="form-check-input input-filter" type="checkbox" id="select-custom"
+                                    data-value="custom" checked />
+                                <label class="form-check-label" for="select-custom">Custom</label>
+                            </div>
+                            <div class="form-check form-check-info ms-2">
+                                <input class="form-check-input input-filter" type="checkbox" id="select-rent"
+                                    data-value="rent" checked />
+                                <label class="form-check-label" for="select-rent">Rent</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Calendar Sidebar -->
+
+                <!-- Calendar & Modal -->
+                <div class="col app-calendar-content">
+                    <div class="card shadow-none border-0">
+                        <div class="card-body pb-0">
+                            <!-- FullCalendar -->
+                            <div id="calendar"></div>
+                        </div>
+                    </div>
+                    <div class="app-overlay"></div>
+                    <!-- FullCalendar Offcanvas -->
+                    <div class="offcanvas offcanvas-end event-sidebar" tabindex="-1" id="addEventSidebar"
+                        aria-labelledby="addEventSidebarLabel">
+                        <div class="offcanvas-header border-bottom">
+                            <h5 class="offcanvas-title" id="addEventSidebarLabel">Add Event</h5>
+                            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                                aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <form class="event-form pt-0" id="eventForm" onsubmit="return false">
+                                <div class="mb-5">
+                                    <label class="form-label" for="bookingCode">Booking Code</label>
+                                    <input type="text" class="form-control" id="bookingCode" name="bookingCode"
+                                        placeholder="Booking Code" />
+                                </div>
+                                <div class="mb-5">
+                                    <label class="form-label" for="eventStartDate">Start Date</label>
+                                    <input type="text" class="form-control" id="eventStartDate" name="eventStartDate"
+                                        placeholder="Start Date" />
+                                </div>
+                                <div class="mb-5">
+                                    <label class="form-label" for="eventEndDate">End Date</label>
+                                    <input type="text" class="form-control" id="eventEndDate" name="eventEndDate"
+                                        placeholder="End Date" />
+                                </div>
+                                <div class="mb-5">
+                                    <div class="form-check form-switch">
+                                        <input type="checkbox" class="form-check-input allDay-switch"
+                                            id="allDaySwitch" />
+                                        <label class="form-check-label" for="allDaySwitch">All Day</label>
+                                    </div>
+                                </div>
+                                <div class="mb-5">
+                                    <label class="form-label" for="eventType">Type</label>
+                                    <select class="select2 select-event-label form-select" id="eventType" name="Type">
+                                        <option data-label="danger" value="oneday" selected>Oneday</option>
+                                        <option data-label="primary" value="twoday">Twoday</option>
+                                        <option data-label="warning" value="threeday">Threeday</option>
+                                        <option data-label="success" value="fourday">Fourday</option>
+                                        <option data-label="secondary" value="custom" selected>Custom</option>
+                                        <option data-label="info" value="rent">Rent</option>
+                                    </select>
+                                </div>
+                                <div class="mb-5">
+                                    <label class="form-label" for="eventStatus">Status</label>
+                                    <select class="select2 select-event-label form-select" id="eventStatus"
+                                        name="Status">
+                                        <option data-label="primary" value="booked" selected>Booked</option>
+                                        <option data-label="success" value="paid">Paid</option>
+                                        <option data-label="info" value="finished">Finished</option>
+                                    </select>
+                                </div>
+                                <div class="mb-5">
+                                    <label class="form-label" for="packageName">Package Name</label>
+                                    <input type="text" class="form-control" id="packageName" name="packageName"
+                                        placeholder="Package Name" />
+                                </div>
+                                <div class="mb-5">
+                                    <label class="form-label" for="clientName">Client Name</label>
+                                    <input type="text" class="form-control" id="clientName" name="clientName"
+                                        placeholder="Client Name" />
+                                </div>
+                                <div class="mb-5">
+                                    <label class="form-label" for="eventDescription">Description</label>
+                                    <textarea class="form-control" name="eventDescription" id="eventDescription"></textarea>
+                                </div>
+                                <div class="d-flex justify-content-sm-between justify-content-start mt-6 gap-2">
+                                    <div class="d-flex">
+                                        <button type="submit" id="addEventBtn"
+                                            class="btn btn-primary btn-add-event me-4">
+                                            Add
+                                        </button>
+                                        <button type="reset" class="btn btn-label-secondary btn-cancel me-sm-0 me-1"
+                                            data-bs-dismiss="offcanvas">
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- /Calendar & Modal -->
             </div>
         </div>
-
-        <!-- Course datatable End -->
     </div>
+
+    <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
 @endsection

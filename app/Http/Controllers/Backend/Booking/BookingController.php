@@ -490,6 +490,30 @@ class BookingController extends Controller
         }
     }
 
+    public function getBookings()
+    {
+        // Ambil data booking dengan status booked, paid, dan finished
+        $bookings = Booking::whereIn('status', ['booked', 'paid', 'finished'])
+            ->get(['id', 'code_booking as title', 'start_date as start', 'end_date as end', 'name as cname','note as description','status', 'type']);
+
+        // Format data untuk FullCalendar
+        $formattedBookings = $bookings->map(function ($booking) {
+            return [
+                'id' => $booking->id,
+                'title' => $booking->title,
+                'start' => $booking->start,
+                'end' => $booking->end,
+                'description' => $booking->note,
+                'extendedProps' => [
+                    'calendar' => $booking->status, // Gunakan status sebagai calendar type
+                    'type' => $booking->type, // Jenis paket (oneday, twoday, dll)
+                ],
+            ];
+        });
+
+        return response()->json($formattedBookings);
+    }
+
     public function DeleteBooking($id)
     {
         try {
