@@ -355,11 +355,6 @@
                         <div class="offcanvas-body">
                             <form class="event-form pt-0" id="eventForm" onsubmit="return false">
                                 <div class="mb-5">
-                                    <label class="form-label" for="bookingCode">Booking Code</label>
-                                    <input type="text" class="form-control" id="bookingCode" name="bookingCode"
-                                        placeholder="Booking Code" />
-                                </div>
-                                <div class="mb-5">
                                     <label class="form-label" for="eventStartDate">Start Date</label>
                                     <input type="text" class="form-control" id="eventStartDate" name="eventStartDate"
                                         placeholder="Start Date" />
@@ -369,44 +364,20 @@
                                     <input type="text" class="form-control" id="eventEndDate" name="eventEndDate"
                                         placeholder="End Date" />
                                 </div>
-                                <div class="mb-5">
+                                <div class="mb-8">
                                     <div class="form-check form-switch">
                                         <input type="checkbox" class="form-check-input allDay-switch"
                                             id="allDaySwitch" />
                                         <label class="form-check-label" for="allDaySwitch">All Day</label>
                                     </div>
                                 </div>
-                                <div class="mb-5">
-                                    <label class="form-label" for="eventType">Type</label>
-                                    <select class="select2 select-event-label form-select" id="eventType" name="Type">
-                                        <option data-label="danger" value="oneday" selected>Oneday</option>
-                                        <option data-label="primary" value="twoday">Twoday</option>
-                                        <option data-label="warning" value="threeday">Threeday</option>
-                                        <option data-label="success" value="fourday">Fourday</option>
-                                        <option data-label="secondary" value="custom" selected>Custom</option>
-                                        <option data-label="info" value="rent">Rent</option>
-                                    </select>
+                                <hr class="mt-8 mb-8">
+                                <div class="mb-8">
+                                    <label class="form-label" for="bookingCode">Booking Code</label>
+                                    <input type="text" class="form-control" id="bookingCode" name="bookingCode"
+                                        placeholder="Booking Code" />
                                 </div>
-                                <div class="mb-5">
-                                    <label class="form-label" for="eventStatus">Status</label>
-                                    <select class="select2 select-event-label form-select" id="eventStatus"
-                                        name="Status">
-                                        <option data-label="primary" value="booked" selected>Booked</option>
-                                        <option data-label="success" value="paid">Paid</option>
-                                        <option data-label="info" value="finished">Finished</option>
-                                    </select>
-                                </div>
-                                <div class="mb-5">
-                                    <label class="form-label" for="packageName">Package Name</label>
-                                    <input type="text" class="form-control" id="packageName" name="packageName"
-                                        placeholder="Package Name" />
-                                </div>
-                                <div class="mb-5">
-                                    <label class="form-label" for="clientName">Client Name</label>
-                                    <input type="text" class="form-control" id="clientName" name="clientName"
-                                        placeholder="Client Name" />
-                                </div>
-                                <div class="mb-5">
+                                <div class="mb-8 ">
                                     <label class="form-label" for="eventDescription">Description</label>
                                     <textarea class="form-control" name="eventDescription" id="eventDescription"></textarea>
                                 </div>
