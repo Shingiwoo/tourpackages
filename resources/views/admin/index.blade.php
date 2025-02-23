@@ -398,6 +398,110 @@
                     </div>
                 </div>
                 <!-- /Calendar & Modal -->
+
+
+                <!-- View Data Modal -->
+                <div class="modal fade" id="viewBookingData" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-simple modal-enable-otp modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                                <div class="text-center mb-6">
+                                    <h4 class="mb-2">Booking Data</h4>
+                                </div>
+                                <div id="bookingData">
+                                    <div class="row mb-4">
+                                        <div class="col">
+                                            <div class="card-datatable table-responsive text-nowrap">
+                                                <table class="table table-bordered">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th>Code :</th>
+                                                            <td id="booking-code"></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Agen :</th>
+                                                            <td><span id="agen-name" class="text-uppercase text-info"></span></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Type Trip :</th>
+                                                            <td><span id="booking-type"
+                                                                    class="text-uppercase text-primary"></span></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Status :</th>
+                                                            <td><span id="booking-status"
+                                                                    class="text-uppercase text-warning"></span></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Client Name :</th>
+                                                            <td><span id="client-name" class="text-capitalize"></span>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>Start Trip :</th>
+                                                            <td><span id="start-date" class="text-success"> </span></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th>End Trip :</th>
+                                                            <td><span id="end-date" class="text-danger"></span></td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row g-6">
+                                        <div class="card-datatable table-responsive text-nowrap">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="fw-medium mx-2 text-center" style="width: 40%">Detail
+                                                        </th>
+                                                        <th class="fw-medium mx-2 text-center">Harga</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <th><i class="ti ti-receipt ti-lg mx-2"></i><strong>Biaya
+                                                                Perorang</strong></th>
+                                                        <td class="text-end" id="price-per-person"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><i class="ti ti-user ti-lg mx-2"></i><strong>Total
+                                                                User</strong></th>
+                                                        <td class="text-end" id="total-user"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><i class="ti ti-receipt ti-lg mx-2"></i><strong>Total
+                                                                Biaya</strong></th>
+                                                        <td class="text-end" id="total-cost"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><i class="ti ti-cash-register ti-lg mx-2"></i><strong>Down
+                                                                Payment</strong></th>
+                                                        <td class="text-end" id="down-payment"></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th><i class="ti ti-cash ti-lg mx-2"></i><strong>Sisa
+                                                                Biaya</strong></th>
+                                                        <td class="text-end" id="remaining-cost"></td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <div>
+                                            <a href="{{ route('all.bookings') }}" class="btn btn-info">Detail</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--/ View Data Modal -->
             </div>
         </div>
     </div>

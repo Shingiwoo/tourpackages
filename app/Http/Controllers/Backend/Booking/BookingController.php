@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Booking;
 
+use Throwable;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Custom;
@@ -49,7 +50,7 @@ class BookingController extends Controller
         $packThreeday = PackageThreeDay::with(['destinations', 'prices', 'regency'])->get();
         $packFourday = PackageFourDay::with(['destinations', 'prices', 'regency'])->get();
 
-        // Gabungkan semua paket menjadi satu koleksi
+        // Gabungkan semua package menjadi satu koleksi
         $allPackages = collect()
             ->merge($packOneday)
             ->merge($packTwoday)
@@ -72,7 +73,7 @@ class BookingController extends Controller
                 'modalTotalUser' => 'nullable|integer|min:1',
                 'mealStatus' => 'nullable|boolean',
                 'modalPackageType' => 'nullable|string',
-                'modalHotelType' => 'nullable|string', // Untuk paket 2-4 hari
+                'modalHotelType' => 'nullable|string', // Untuk package 2-4 hari
             ]);
 
             if (!$validated) {
@@ -94,16 +95,16 @@ class BookingController extends Controller
             }
 
             $packageID = $validated['package_id'];
-            $type = $validated['modalPackageType'] ?? null; // Pastikan tipe paket ada
+            $type = $validated['modalPackageType'] ?? null; // Pastikan tipe package ada
             $pricePerPerson = null;
             $totalUser = $validated['modalTotalUser'] ?? 1; // Default 1 jika kosong
             $downPayment = 0;
             $remainingCosts = 0;
 
             if (!$type) {
-                Log::error('Tipe paket tidak diberikan.', ['validated' => $validated]);
+                Log::error( 'Tipe package tidak diberikan.', ['validated' => $validated]);
                 return back()->with([
-                    'message' => 'Tipe paket tidak ditemukan.',
+                    'message' => 'Tipe package tidak ditemukan.',
                     'alert-type' => 'warning',
                 ]);
             }
@@ -172,7 +173,7 @@ class BookingController extends Controller
                 $remainingCosts = $totalPrice - $downPayment;
 
             } else {
-                // Logika untuk paket lainnya (twoday, dll)
+                // Logika untuk package lainnya (twoday, dll)
                 $packageModels = [
                     'oneday' => PackageOneDay::class,
                     'twoday' => PackageTwoDay::class,
@@ -182,9 +183,9 @@ class BookingController extends Controller
 
                 if (!array_key_exists($type, $packageModels)) {
                     // Kirim Notification Warning
-                    Log::error('Tipe paket tidak valid.', ['type' => $type]);
+                    Log::error('Tipe package tidak valid.', ['type' => $type]);
                     return back()->with([
-                        'message' => 'Tipe paket tidak valid..',
+                        'message' => 'Tipe package tidak valid..',
                         'alert-type' => 'warning',
                     ]);
                 }
@@ -492,26 +493,41 @@ class BookingController extends Controller
 
     public function getBookings()
     {
-        // Ambil data booking dengan status booked, paid, dan finished
-        $bookings = Booking::whereIn('status', ['booked', 'paid', 'finished'])
-            ->get(['id', 'code_booking as title', 'start_date as start', 'end_date as end', 'name as cname','note as description','status', 'type']);
+        try {
+            // Ambil data booking dengan status booked, paid, dan finished
+            $bookings = Booking::whereIn('status', ['booked', 'paid', 'finished'])
+                ->get();
 
-        // Format data untuk FullCalendar
-        $formattedBookings = $bookings->map(function ($booking) {
-            return [
-                'id' => $booking->id,
-                'title' => $booking->title,
-                'start' => $booking->start,
-                'end' => $booking->end,
-                'description' => $booking->note,
-                'extendedProps' => [
-                    'calendar' => $booking->status, // Gunakan status sebagai calendar type
-                    'type' => $booking->type, // Jenis paket (oneday, twoday, dll)
-                ],
-            ];
-        });
+            // Format data untuk FullCalendar
+            $formattedBookings = $bookings->map(function ($booking) {
+                return [
+                    'id' => $booking->id,
+                    'title' => $booking->code_booking, // Gunakan code_booking sebagai title
+                    'start' => $booking->start_date,
+                    'end' => $booking->end_date,
+                    'extendedProps' => [
+                        'code_booking' => $booking->code_booking,
+                        'agen_name' => $booking->bookingList->agen->username ?? 'N/A',
+                        'type' => $booking->type,
+                        'status' => $booking->status,
+                        'client_name' => $booking->name,
+                        'start_date' => $booking->start_date,
+                        'end_date' => $booking->end_date,
+                        'price_person' => $booking->price_person,
+                        'total_user' => $booking->total_user,
+                        'total_price' => $booking->total_price,
+                        'down_payment' => $booking->down_paymet,
+                        'remaining_costs' => $booking->remaining_costs,
+                    ],
+                ];
+            });
 
-        return response()->json($formattedBookings);
+            return response()->json($formattedBookings);
+        } catch (\Exception $e) {
+            // Log error dan kembalikan pesan error
+            Log::error('Error in getBookings: ' . $e->getMessage());
+            return response()->json(['error' => 'Internal Server Error'], 500);
+        }
     }
 
     public function DeleteBooking($id)
@@ -556,7 +572,7 @@ class BookingController extends Controller
         }
     }
 
-    public function markRead(Request $request, $id)
+    public function markRead($id)
     {
         try {
             $user = Auth::user();

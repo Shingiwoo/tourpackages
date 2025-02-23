@@ -26,12 +26,12 @@ document.addEventListener("DOMContentLoaded", function () {
             addEventSidebar = document.getElementById("addEventSidebar"),
             appOverlay = document.querySelector(".app-overlay"),
             calendarsColor = {
-                oneday: 'danger',
-                twoday: 'primary',
-                threeday: 'warning',
-                fourday: 'success',
-                custom: 'secondary',
-                rent: 'info',
+                oneday: "danger",
+                twoday: "primary",
+                threeday: "warning",
+                fourday: "success",
+                custom: "secondary",
+                rent: "info",
             },
             offcanvasTitle = document.querySelector(".offcanvas-title"),
             btnToggleSidebar = document.querySelector(".btn-toggle-sidebar"),
@@ -120,21 +120,8 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }
 
-        // Event click function
         function eventClick(info) {
             eventToUpdate = info.event;
-            if (eventToUpdate.url) {
-                info.jsEvent.preventDefault();
-                window.open(eventToUpdate.url, "_blank");
-            }
-            bsAddEventSidebar.show();
-            // For update event set offcanvas title text: Update Event
-            if (offcanvasTitle) {
-                offcanvasTitle.innerHTML = "Update Event";
-            }
-            btnSubmit.innerHTML = "Update";
-            btnSubmit.classList.add("btn-update-event");
-            btnSubmit.classList.remove("btn-add-event");
 
             bookingCode.value = eventToUpdate.title;
             start.setDate(eventToUpdate.start, true, "Y-m-d");
@@ -144,13 +131,53 @@ document.addEventListener("DOMContentLoaded", function () {
             eventToUpdate.end !== null
                 ? end.setDate(eventToUpdate.end, true, "Y-m-d")
                 : end.setDate(eventToUpdate.start, true, "Y-m-d");
-            eventLabel
-                .val(eventToUpdate.extendedProps.calendar)
-                .trigger("change");
-            eventToUpdate.extendedProps.description !== undefined
-                ? (eventDescription.value =
-                      eventToUpdate.extendedProps.description)
-                : null;
+            eventDescription.value =
+                eventToUpdate.extendedProps.description ||
+                "No description available.";
+            eventLabel.val(eventToUpdate.extendedProps.type).trigger("change");
+
+            // Ambil data booking dari event
+            const bookingData = eventToUpdate.extendedProps;
+
+            // Isi data ke dalam modal
+            document.getElementById("booking-code").textContent =
+                bookingData.code_booking || "-";
+            document.getElementById("agen-name").textContent =
+                bookingData.agen_name || "-";
+            document.getElementById("booking-type").textContent =
+                bookingData.type || "-";
+            document.getElementById("booking-status").textContent =
+                bookingData.status || "-";
+            document.getElementById("client-name").textContent =
+                bookingData.client_name || "-";
+            document.getElementById("start-date").textContent =
+                moment(bookingData.start_date).format("YYYY-MM-DD") || "-";
+            document.getElementById("end-date").textContent =
+                moment(bookingData.end_date).format("YYYY-MM-DD") || "-";
+            document.getElementById("price-per-person").textContent =
+                formatCurrency(bookingData.price_person) || "-";
+            document.getElementById("total-user").textContent =
+                bookingData.total_user || "-";
+            document.getElementById("total-cost").textContent =
+                formatCurrency(bookingData.total_price) || "-";
+            document.getElementById("down-payment").textContent =
+                formatCurrency(bookingData.down_payment) || "-";
+            document.getElementById("remaining-cost").textContent =
+                formatCurrency(bookingData.remaining_costs) || "-";
+
+            // Tampilkan modal
+            const modal = new bootstrap.Modal(
+                document.getElementById("viewBookingData")
+            );
+            modal.show();
+        }
+
+        // Fungsi untuk format mata uang
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR",
+            }).format(amount);
         }
 
         // Modify sidebar toggler
@@ -182,10 +209,12 @@ document.addEventListener("DOMContentLoaded", function () {
         // Filter events by calender
         function selectedCalendars() {
             let selected = [],
-                filterInputChecked = [].slice.call(document.querySelectorAll('.input-filter:checked'));
+                filterInputChecked = [].slice.call(
+                    document.querySelectorAll(".input-filter:checked")
+                );
 
-            filterInputChecked.forEach(item => {
-                selected.push(item.getAttribute('data-value'));
+            filterInputChecked.forEach((item) => {
+                selected.push(item.getAttribute("data-value"));
             });
 
             return selected;
@@ -196,15 +225,40 @@ document.addEventListener("DOMContentLoaded", function () {
         // * This will be called by fullCalendar to fetch events. Also this can be used to refetch events.
         // --------------------------------------------------------------------------------------------------
         function fetchEvents(info, successCallback) {
-            // Fetch events from the API endpoint
             fetch("/bookings")
                 .then((response) => response.json())
                 .then((data) => {
-                    // Filter events based on selected types (oneday, twoday, etc.)
+                    // Format data agar sesuai dengan FullCalendar dan data yang dibutuhkan
+                    const formattedEvents = data.map((booking) => ({
+                        id: booking.id,
+                        title: booking.title, // Gunakan code_booking sebagai title
+                        start: booking.start,
+                        end: booking.end,
+                        extendedProps: {
+                            code_booking: booking.extendedProps.code_booking,
+                            agen_name: booking.extendedProps.agen_name,
+                            type: booking.extendedProps.type,
+                            status: booking.extendedProps.status,
+                            client_name: booking.extendedProps.client_name,
+                            start_date: booking.start,
+                            end_date: booking.end,
+                            price_person: booking.extendedProps.price_person,
+                            total_user: booking.extendedProps.total_user,
+                            total_price: booking.extendedProps.total_price,
+                            down_payment: booking.extendedProps.down_payment,
+                            remaining_costs:
+                                booking.extendedProps.remaining_costs,
+                        },
+                    }));
+                    // console.log("Formatted events:", formattedEvents); // Debugging
+
                     let selectedTypes = selectedCalendars();
-                    let selectedEvents = data.filter((event) =>
-                        selectedTypes.includes(event.extendedProps.type.toLowerCase())
+                    let selectedEvents = formattedEvents.filter((event) =>
+                        selectedTypes.includes(
+                            event.extendedProps.type.toLowerCase()
+                        )
                     );
+
                     successCallback(selectedEvents);
                 })
                 .catch((error) => {
@@ -217,10 +271,15 @@ document.addEventListener("DOMContentLoaded", function () {
         let calendar = new Calendar(calendarEl, {
             initialView: "dayGridMonth",
             events: fetchEvents,
-            plugins: [dayGridPlugin, interactionPlugin, listPlugin, timegridPlugin],
+            plugins: [
+                dayGridPlugin,
+                interactionPlugin,
+                listPlugin,
+                timegridPlugin,
+            ],
             editable: true,
             dragScroll: true,
-            dayMaxEvents: 2,
+            dayMaxEvents: 4,
             eventResizableFromStart: true,
             headerToolbar: {
                 start: "sidebarToggle, prev,next, title",
@@ -230,7 +289,8 @@ document.addEventListener("DOMContentLoaded", function () {
             initialDate: new Date(),
             navLinks: true,
             eventClassNames: function ({ event: calendarEvent }) {
-                const colorName = calendarsColor[calendarEvent._def.extendedProps.type];
+                const colorName =
+                    calendarsColor[calendarEvent._def.extendedProps.type];
                 return ["fc-event-" + colorName];
             },
             dateClick: function (info) {
@@ -247,7 +307,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 eventEndDate.value = date;
             },
             eventClick: function (info) {
-                eventClick(info);
+                eventClick(info); // Panggil fungsi eventClick yang sudah dimodifikasi
             },
             datesSet: function () {
                 modifyToggler();
@@ -261,7 +321,6 @@ document.addEventListener("DOMContentLoaded", function () {
         calendar.render();
         // Modify sidebar toggler
         modifyToggler();
-
 
         // Sidebar Toggle Btn
         if (btnToggleSidebar) {
@@ -423,7 +482,6 @@ document.addEventListener("DOMContentLoaded", function () {
             eventEndDate.value = "";
             eventStartDate.value = "";
             bookingCode.value = "";
-            clientName.value = "";
             allDaySwitch.checked = false;
             eventDescription.value = "";
         }
