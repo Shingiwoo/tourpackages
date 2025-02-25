@@ -226,14 +226,19 @@ document.addEventListener("DOMContentLoaded", function () {
         // --------------------------------------------------------------------------------------------------
         function fetchEvents(info, successCallback) {
             fetch("/bookings")
-                .then((response) => response.json())
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then((data) => {
-                    // Format data agar sesuai dengan FullCalendar dan data yang dibutuhkan
-                    const formattedEvents = data.map((booking) => ({
+                    //console.log("Data from backend:", data);
+                    const formattedEvents = data.map(booking => ({
                         id: booking.id,
                         title: booking.title, // Gunakan code_booking sebagai title
                         start: booking.start,
-                        end: booking.end,
+                        end: moment(booking.end).add(1, 'days').format("YYYY-MM-DD"),
                         extendedProps: {
                             code_booking: booking.extendedProps.code_booking,
                             agen_name: booking.extendedProps.agen_name,
@@ -246,11 +251,10 @@ document.addEventListener("DOMContentLoaded", function () {
                             total_user: booking.extendedProps.total_user,
                             total_price: booking.extendedProps.total_price,
                             down_payment: booking.extendedProps.down_payment,
-                            remaining_costs:
-                                booking.extendedProps.remaining_costs,
+                            remaining_costs: booking.extendedProps.remaining_costs,
                         },
                     }));
-                    // console.log("Formatted events:", formattedEvents); // Debugging
+                    //console.log("Formatted events:", formattedEvents); // Debugging
 
                     let selectedTypes = selectedCalendars();
                     let selectedEvents = formattedEvents.filter((event) =>

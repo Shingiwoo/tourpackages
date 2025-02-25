@@ -70,6 +70,8 @@ class BookingController extends Controller
                 'modalClientName' => 'required|string|max:255',
                 'modalStartDate' => 'required|date_format:m/d/Y',
                 'modalEndDate' => 'required|date_format:m/d/Y',
+                'modalStartTrip' => 'nullable|date_format:H:i',
+                'modalEndTrip' => 'nullable|date_format:H:i',
                 'modalTotalUser' => 'nullable|integer|min:1',
                 'mealStatus' => 'nullable|boolean',
                 'modalPackageType' => 'nullable|string',
@@ -168,6 +170,8 @@ class BookingController extends Controller
                 // Ambil data
                 $unitCount = ceil($rent->max_user / $validated['modalTotalUser']);
                 $totalPrice = $rent->price * $unitCount;
+                $pricePerPerson = $totalPrice / $validated['modalTotalUser'];
+                $pricePerPerson = $totalPrice / $validated['modalStartTrip'];
                 $pricePerPerson = $totalPrice / $validated['modalTotalUser'];
                 $downPayment = 150000; // 150k DP unit
                 $remainingCosts = $totalPrice - $downPayment;

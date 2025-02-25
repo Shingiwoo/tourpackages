@@ -163,10 +163,12 @@
                             <li class="mb-4">At least one lowercase character</li>
                             <li>At least one number, symbol, or whitespace character</li>
                         </ul>
+                        @if (Auth::user()->can('service.add'))
                         <div class="mt-6">
                             <button type="submit" class="btn btn-primary me-3">Save changes</button>
                             <button type="reset" class="btn btn-label-secondary">Reset</button>
                         </div>
+                        @endif
                     </form>
                 </div>
             </div>

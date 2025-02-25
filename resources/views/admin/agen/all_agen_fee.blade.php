@@ -72,9 +72,11 @@
                                         <input type="text" id="agen_fee" class="form-control numeral-mask" placeholder="25000" name="agenFee" aria-label="Agen Fee Perday" value="{{ $agenFee->price }}"/>
                                     </div>
                                 </div>
+                                @if (Auth::user()->can('service.add'))
                                 <div class="d-flex justify-content-end gap-4">
                                     <button type="submit" class="btn btn-primary">Save Changes</button>
                                 </div>
+                                @endif
                             </div>
                         </div>
                     </form>
