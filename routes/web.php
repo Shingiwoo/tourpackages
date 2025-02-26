@@ -287,6 +287,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::delete('/delete/booking/{id}', 'DeleteBooking')->name('delete.booking');
         Route::post('/notifications/{id}/mark-read', 'markRead');
         Route::post('/mark-all-read', 'markAllRead');
+        Route::get('/bookings', 'getBookings')->name('bookings.get');
     });
 
     // Rent all Route

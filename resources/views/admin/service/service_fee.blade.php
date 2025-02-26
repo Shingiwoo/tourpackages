@@ -78,9 +78,11 @@
                                             name="ServiceMark" aria-label="Mark" />
                                     </div>
                                 </div>
+                                @if (Auth::user()->can('service.add'))
                                 <div class="d-flex justify-content-end gap-4">
                                     <button type="submit" class="btn btn-primary">Save Changes</button>
                                 </div>
+                                @endif
                             </div>
                         </div>
                     </form>
@@ -109,6 +111,8 @@
                                                     <td class="align-content-center text-center">{{ $fee->duration }}
                                                     </td>
                                                     <td class="align-content-center text-center">{{ $fee->mark }}</td>
+
+                                                    @if (Auth::user()->can('service.action'))
                                                     <td class="align-content-center text-center">
                                                         <div class="dropdown">
                                                             <button type="button"
@@ -117,16 +121,22 @@
                                                                 <i class="ti ti-dots-vertical"></i>
                                                             </button>
                                                             <div class="dropdown-menu">
+
+                                                                @if (Auth::user()->can('service.add'))
                                                                 <a class="dropdown-item button" data-bs-toggle="modal"
                                                                     data-bs-target="#enableOTP" data-id="{{ $fee->id }}"
                                                                     data-duration="{{ $fee->duration }}"
                                                                     data-mark="{{ $fee->mark }}">
                                                                     <i class="ti ti-pencil me-1"></i> Edit
                                                                 </a>
+                                                                @endif
+                                                                @if (Auth::user()->can('service.delete'))
                                                                 <a class="dropdown-item button text-danger delete-confirm" data-id="{{ $fee->id }}" data-url="{{ route('delete.service.fee', $fee->id) }}"><i class="ti ti-trash me-1"></i> Delete</a>
+                                                                @endif
                                                             </div>
                                                         </div>
                                                     </td>
+                                                    @endif
                                                 </tr>
                                                 @endforeach
                                             </tbody>
@@ -169,9 +179,11 @@
                                 aria-label="Mark" value="" />
                         </div>
                     </div>
+                    @if (Auth::user()->can('service.add'))
                     <div class="d-flex justify-content-end gap-4">
                         <button type="submit" class="btn btn-primary">Save Changes</button>
                     </div>
+                    @endif
                 </form>
 
             </div>
