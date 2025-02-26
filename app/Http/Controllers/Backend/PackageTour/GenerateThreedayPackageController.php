@@ -20,7 +20,8 @@ use App\Http\Controllers\Controller;
 
 class GenerateThreedayPackageController extends Controller
 {
-    public function AllThreeDayPackage(Request $request){
+    public function AllThreeDayPackage(Request $request)
+    {
 
         $packages = PackageThreeDay::all();
         $destinations = Destination::all(); // Untuk form generate
@@ -30,7 +31,8 @@ class GenerateThreedayPackageController extends Controller
         return view('admin.package.threeday.all_packages', compact('packages', 'destinations', 'active', 'inactive', 'agens'));
     }
 
-    public function GenerateThreeDayPackage(Request $request){
+    public function GenerateThreeDayPackage(Request $request)
+    {
 
         $destinations = Destination::all();
         $agens = User::agen()->get();
@@ -40,7 +42,8 @@ class GenerateThreedayPackageController extends Controller
         return view('admin.package.threeday.generate_package_threeday', compact('destinations', 'agens', 'regencies', 'facilities'));
     }
 
-    public function generateCodeThreeDay(Request $request){
+    public function generateCodeThreeDay(Request $request)
+    {
         try {
             Log::info('generateCodeThreeDay method initiated.');
 
@@ -122,7 +125,6 @@ class GenerateThreedayPackageController extends Controller
                 'message' => 'Package generated successfully!',
                 'alert-type' => 'success',
             ]);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Validation error in generateCodeThreeDay.', ['errors' => $e->errors()]);
             return redirect()->back()->withErrors($e->errors())->withInput();
@@ -136,7 +138,8 @@ class GenerateThreedayPackageController extends Controller
     }
 
 
-    public function EditGenerateThreeDayPackage($id){
+    public function EditGenerateThreeDayPackage($id)
+    {
 
         $package = PackageThreeDay::with('destinations')->find($id);
 
@@ -154,7 +157,8 @@ class GenerateThreedayPackageController extends Controller
         return view('admin.package.threeday.edit_package', compact('destinations', 'agens', 'regencies', 'package', 'selectedDestinations', 'facilities', 'selectedFacilities'));
     }
 
-    public function UpdateGenerateCodeThreeDay(Request $request, $id){
+    public function UpdateGenerateCodeThreeDay(Request $request, $id)
+    {
         try {
 
             Log::info('UpdateGenerateCodeThreeDay method initiated.');
@@ -268,7 +272,8 @@ class GenerateThreedayPackageController extends Controller
         }
     }
 
-    private function calculatePrices($vehicles, $meals, $crewData, $serviceFee, $feeAgen, $reserveFees, $selectedDestinations, $selectedFacilities, $hotels, $regencyId, $days = 3) {
+    private function calculatePrices($vehicles, $meals, $crewData, $serviceFee, $feeAgen, $reserveFees, $selectedDestinations, $selectedFacilities, $hotels, $regencyId, $days = 3)
+    {
         $pricesWithMeal = [["Price Type" => "Include Meal"]];
         $pricesWithoutMeal = [["Price Type" => "Exclude Meal"]];
 
@@ -362,6 +367,15 @@ class GenerateThreedayPackageController extends Controller
         $facDocCost = 0;
         $guideCost = 0;
 
+        // Cek fasilitas 'flat' di seluruh $facilities
+        $hasFlat = false;
+        foreach ($facilities as $facility) {
+            if ($facility->type === 'flat') {
+                $hasFlat = true;
+                break; // Keluar dari loop begitu 'flat' ditemukan
+            }
+        }
+
         foreach ($facilities as $facility) {
             $groupCount = ceil($participants / ($facility->max_user ?? $participants)); // Hitung grup berdasarkan max_user
 
@@ -370,16 +384,16 @@ class GenerateThreedayPackageController extends Controller
                     // Hitung biaya flat
                     $flatCost += $groupCount * $facility->price;
 
-                    // Jika memenuhi syarat shuttle, hitung biaya shuttle
-                    if ($participants >= 18 && $participants <= 55 && $facility->type === 'shuttle') {
-                        $ShuttleCost += $groupCount * $facility->price * 2;
-                    }
-                    break;
-
                 case 'shuttle':
-                    // Hitung biaya shuttle dengan syarat peserta
+                    // Hanya hitung jika peserta memenuhi syarat 18-55
                     if ($participants >= 18 && $participants <= 55) {
-                        $ShuttleCost += $groupCount * $facility->price * 3;
+                        // Jika ada fasilitas 'flat', hitung biaya shuttle x2
+                        if ($hasFlat) {
+                            $ShuttleCost += $groupCount * $facility->price * 2; // x2
+                        } else {
+                            // Jika tidak ada 'flat', hitung shuttle x3
+                            $ShuttleCost += $groupCount * $facility->price * 3;
+                        }
                     }
                     break;
 

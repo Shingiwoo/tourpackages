@@ -240,7 +240,7 @@ class CustomPackageController extends Controller
         $facDocCost = 0;
         $guideCost = 0;
 
-        // Langkah 1: Periksa apakah ada fasilitas 'flat' di seluruh $facilityIds
+        // Cek fasilitas 'flat' di seluruh $facilityIds
         $hasFlat = false;
         foreach ($facilityIds as $facility) {
             if ($facility->type === 'flat') {
@@ -249,7 +249,7 @@ class CustomPackageController extends Controller
             }
         }
 
-        // Langkah 2: Hitung biaya berdasarkan fasilitas
+        // Hitung biaya berdasarkan fasilitas
         foreach ($facilityIds as $facility) {
             $groupCount = ceil($participants / ($facility->max_user ?? $participants));
 

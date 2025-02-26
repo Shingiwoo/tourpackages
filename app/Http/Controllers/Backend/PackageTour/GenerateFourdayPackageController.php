@@ -20,7 +20,8 @@ use App\Http\Controllers\Controller;
 
 class GenerateFourdayPackageController extends Controller
 {
-    public function AllFourDayPackage(Request $request){
+    public function AllFourDayPackage(Request $request)
+    {
 
         $packages = PackageFourDay::all();
         $destinations = Destination::all(); // Untuk form generate
@@ -30,7 +31,8 @@ class GenerateFourdayPackageController extends Controller
         return view('admin.package.four.all_packages', compact('packages', 'destinations', 'active', 'inactive', 'agens'));
     }
 
-    public function GenerateFourDayPackage(Request $request){
+    public function GenerateFourDayPackage(Request $request)
+    {
 
         $destinations = Destination::all();
         $agens = User::agen()->get();
@@ -40,7 +42,8 @@ class GenerateFourdayPackageController extends Controller
         return view('admin.package.four.generate_package_fourday', compact('destinations', 'agens', 'regencies', 'facilities'));
     }
 
-    public function generateCodeFourDay(Request $request){
+    public function generateCodeFourDay(Request $request)
+    {
         try {
             Log::info('generateCodeFourDay method initiated.');
 
@@ -140,7 +143,8 @@ class GenerateFourdayPackageController extends Controller
     }
 
 
-    public function EditGenerateFourDayPackage($id){
+    public function EditGenerateFourDayPackage($id)
+    {
 
         $package = PackageFourDay::with('destinations')->find($id);
 
@@ -158,7 +162,8 @@ class GenerateFourdayPackageController extends Controller
         return view('admin.package.four.edit_package', compact('destinations', 'agens', 'regencies', 'package', 'selectedDestinations', 'facilities', 'selectedFacilities'));
     }
 
-    public function UpdateGenerateCodeFourDay(Request $request, $id){
+    public function UpdateGenerateCodeFourDay(Request $request, $id)
+    {
         try {
 
             Log::info('UpdateGenerateCodeFourDay method initiated.');
@@ -271,7 +276,8 @@ class GenerateFourdayPackageController extends Controller
         }
     }
 
-    private function calculatePrices($vehicles, $meals, $crewData, $serviceFee, $feeAgen, $reserveFees, $selectedDestinations, $selectedFacilities, $hotels, $regencyId, $days = 4) {
+    private function calculatePrices($vehicles, $meals, $crewData, $serviceFee, $feeAgen, $reserveFees, $selectedDestinations, $selectedFacilities, $hotels, $regencyId, $days = 4)
+    {
         $pricesWithMeal = [["Price Type" => "Include Meal"]];
         $pricesWithoutMeal = [["Price Type" => "Exclude Meal"]];
 
@@ -365,6 +371,15 @@ class GenerateFourdayPackageController extends Controller
         $facDocCost = 0;
         $guideCost = 0;
 
+        // Cek fasilitas 'flat' di seluruh $facilities
+        $hasFlat = false;
+        foreach ($facilities as $facility) {
+            if ($facility->type === 'flat') {
+                $hasFlat = true;
+                break; // Keluar dari loop begitu 'flat' ditemukan
+            }
+        }
+
         foreach ($facilities as $facility) {
             $groupCount = ceil($participants / ($facility->max_user ?? $participants)); // Hitung grup berdasarkan max_user
 
@@ -373,16 +388,16 @@ class GenerateFourdayPackageController extends Controller
                     // Hitung biaya flat
                     $flatCost += $groupCount * $facility->price;
 
-                    // Jika memenuhi syarat shuttle, hitung biaya shuttle
-                    if ($participants >= 18 && $participants <= 55 && $facility->type === 'shuttle') {
-                        $ShuttleCost += $groupCount * $facility->price * 3;
-                    }
-                    break;
-
                 case 'shuttle':
-                    // Hitung biaya shuttle dengan syarat peserta
+                    // Hanya hitung jika peserta memenuhi syarat 18-55
                     if ($participants >= 18 && $participants <= 55) {
-                        $ShuttleCost += $groupCount * $facility->price * 4;
+                        // Jika ada fasilitas 'flat', hitung biaya shuttle x2
+                        if ($hasFlat) {
+                            $ShuttleCost += $groupCount * $facility->price * 2; // x2
+                        } else {
+                            // Jika tidak ada 'flat', hitung shuttle x3
+                            $ShuttleCost += $groupCount * $facility->price * 3;
+                        }
                     }
                     break;
 

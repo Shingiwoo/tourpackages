@@ -126,7 +126,6 @@ class GenerateTwodayPackageController extends Controller
                 'message' => 'Package generated successfully!',
                 'alert-type' => 'success',
             ]);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Validation error.', ['errors' => $e->errors()]);
             return redirect()->back()->withErrors($e->errors())->withInput();
@@ -158,7 +157,8 @@ class GenerateTwodayPackageController extends Controller
         return view('admin.package.twoday.edit_package', compact('destinations', 'agens', 'regencies', 'package', 'selectedDestinations', 'facilities', 'selectedFacilities'));
     }
 
-    public function UpdateGenerateCodeTwoday(Request $request, $id){
+    public function UpdateGenerateCodeTwoday(Request $request, $id)
+    {
         try {
             Log::info('generateCodeTwoday method initiated.');
 
@@ -271,7 +271,8 @@ class GenerateTwodayPackageController extends Controller
     }
 
 
-    private function calculatePrices($vehicles, $meals, $crewData, $serviceFee, $feeAgen, $reserveFees, $selectedDestinations, $selectedFacilities, $hotels, $regencyId, $days = 2) {
+    private function calculatePrices($vehicles, $meals, $crewData, $serviceFee, $feeAgen, $reserveFees, $selectedDestinations, $selectedFacilities, $hotels, $regencyId, $days = 2)
+    {
         $pricesWithMeal = [["Price Type" => "Include Meal"]];
         $pricesWithoutMeal = [["Price Type" => "Exclude Meal"]];
 
@@ -366,6 +367,16 @@ class GenerateTwodayPackageController extends Controller
         $facDocCost = 0;
         $guideCost = 0;
 
+        // Cek fasilitas 'flat' di seluruh $facilities
+        $hasFlat = false;
+        foreach ($facilities as $facility) {
+            if ($facility->type === 'flat') {
+                $hasFlat = true;
+                break; // Keluar dari loop begitu 'flat' ditemukan
+            }
+        }
+
+
         foreach ($facilities as $facility) {
             $groupCount = ceil($participants / ($facility->max_user ?? $participants)); // Hitung grup berdasarkan max_user
 
@@ -374,16 +385,16 @@ class GenerateTwodayPackageController extends Controller
                     // Hitung biaya flat
                     $flatCost += $groupCount * $facility->price;
 
-                    // Jika memenuhi syarat shuttle, hitung biaya shuttle
-                    if ($participants >= 18 && $participants <= 55 && $facility->type === 'shuttle') {
-                        $ShuttleCost += $groupCount * $facility->price;
-                    }
-                    break;
-
                 case 'shuttle':
-                    // Hitung biaya shuttle dengan syarat peserta
+                    // Hanya hitung jika peserta memenuhi syarat 18-55
                     if ($participants >= 18 && $participants <= 55) {
-                        $ShuttleCost += $groupCount * $facility->price * 2;
+                        // Jika ada fasilitas 'flat', hitung biaya shuttle berdasarkan durasi
+                        if ($hasFlat) {
+                            $ShuttleCost += $groupCount * $facility->price; // x1
+                        } else {
+                            // Jika tidak ada 'flat', hitung shuttle dengan logika default
+                            $ShuttleCost += $groupCount * $facility->price * 2;
+                        }
                     }
                     break;
 
@@ -541,5 +552,4 @@ class GenerateTwodayPackageController extends Controller
             ], 500);
         }
     }
-
 }
