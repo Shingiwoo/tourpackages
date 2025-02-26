@@ -227,9 +227,9 @@ class CustomPackageController extends Controller
         return [$totalCostWNI, $totalCostWNA, $parkingCost];
     }
 
+
     private function calculateFacilityCosts($facilityIds, $participants, $DurationPackage)
     {
-        // Inisialisasi biaya fasilitas
         $totalFacilityCost = 0;
         $ShuttleCost = 0;
         $flatCost = 0;
@@ -240,63 +240,47 @@ class CustomPackageController extends Controller
         $facDocCost = 0;
         $guideCost = 0;
 
+        // Langkah 1: Periksa apakah ada fasilitas 'flat' di seluruh $facilityIds
+        $hasFlat = false;
         foreach ($facilityIds as $facility) {
-            $groupCount = ceil($participants / ($facility->max_user ?? $participants)); // Hitung grup berdasarkan max_user
+            if ($facility->type === 'flat') {
+                $hasFlat = true;
+                break; // Keluar dari loop begitu 'flat' ditemukan
+            }
+        }
+
+        // Langkah 2: Hitung biaya berdasarkan fasilitas
+        foreach ($facilityIds as $facility) {
+            $groupCount = ceil($participants / ($facility->max_user ?? $participants));
 
             switch ($facility->type) {
-
                 case 'flat':
-                    // Hitung biaya flat
+                    // Biaya flat hanya dihitung sekali, tidak dikalikan durasi
                     $flatCost += $groupCount * $facility->price;
-
-                    // Hitung biaya flat / ShuttleCost jika ada nilainya
-                    if ($DurationPackage === '2') {
-                        // Hitung biaya flat
-                        $flatCost += $groupCount * $facility->price;
-
-                        // Jika memenuhi syarat shuttle, hitung biaya shuttle
-                        if ($participants >= 18 && $participants <= 55 && $facility->type === 'shuttle') {
-                            $ShuttleCost += $groupCount * $facility->price;
-                        }
-                        break;
-                    } elseif ($DurationPackage === '3') {
-                        // Hitung biaya flat
-                        $flatCost += $groupCount * $facility->price;
-
-                        // Jika memenuhi syarat shuttle, hitung biaya shuttle
-                        if ($participants >= 18 && $participants <= 55 && $facility->type === 'shuttle') {
-                            $ShuttleCost += $groupCount * $facility->price * 2;
-                        }
-                        break;
-                    } elseif ($DurationPackage === '4') {
-                        // Hitung biaya flat
-                        $flatCost += $groupCount * $facility->price;
-
-                        // Jika memenuhi syarat shuttle, hitung biaya shuttle
-                        if ($participants >= 18 && $participants <= 55 && $facility->type === 'shuttle') {
-                            $ShuttleCost += $groupCount * $facility->price * 3;
-                        }
-                        break;
-                    } elseif ($DurationPackage === '5') {
-                        // Hitung biaya flat
-                        $flatCost += $groupCount * $facility->price;
-
-                        // Jika memenuhi syarat shuttle, hitung biaya shuttle
-                        if ($participants >= 18 && $participants <= 55 && $facility->type === 'shuttle') {
-                            $ShuttleCost += $groupCount * $facility->price * 4;
-                        }
-                        break;
-                    }
+                    break;
 
                 case 'shuttle':
-                    // Hitung biaya shuttle dengan syarat peserta
+                    // Hanya hitung jika peserta memenuhi syarat 18-55
                     if ($participants >= 18 && $participants <= 55) {
-                        $ShuttleCost += $groupCount * $facility->price * $DurationPackage;
+                        // Jika ada fasilitas 'flat', hitung biaya shuttle berdasarkan durasi
+                        if ($hasFlat) {
+                            if ($DurationPackage === '2') {
+                                $ShuttleCost += $groupCount * $facility->price; // x1
+                            } elseif ($DurationPackage === '3') {
+                                $ShuttleCost += $groupCount * $facility->price * 2; // x2
+                            } elseif ($DurationPackage === '4') {
+                                $ShuttleCost += $groupCount * $facility->price * 3; // x3
+                            } elseif ($DurationPackage === '5') {
+                                $ShuttleCost += $groupCount * $facility->price * 4; // x4
+                            }
+                        } else {
+                            // Jika tidak ada 'flat', hitung shuttle dengan logika default
+                            $ShuttleCost += $groupCount * $facility->price * $DurationPackage;
+                        }
                     }
                     break;
 
                 case 'per_day':
-                    // Hitung biaya per hari
                     $facPerdayCost += $facility->price * $DurationPackage;
                     break;
 
@@ -309,17 +293,14 @@ class CustomPackageController extends Controller
                     break;
 
                 case 'per_person':
-                    // Hitung biaya per orang
                     $facPerpersonCost += $facility->price * $participants * $DurationPackage;
                     break;
 
                 case 'event':
-                    // Hitung biaya event
                     $facEventCost += $facility->price * $DurationPackage;
                     break;
 
                 case 'info':
-                    // Hitung biaya info
                     $facInfoCost += $facility->price * $DurationPackage;
                     break;
             }
