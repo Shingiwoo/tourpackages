@@ -281,10 +281,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 listPlugin,
                 timegridPlugin,
             ],
-            editable: true,
+            editable: false,
             dragScroll: true,
             dayMaxEvents: 4,
-            eventResizableFromStart: true,
+            eventResizableFromStart: false,
             headerToolbar: {
                 start: "sidebarToggle, prev,next, title",
                 end: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",

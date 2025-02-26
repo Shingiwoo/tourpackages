@@ -506,7 +506,7 @@ class BookingController extends Controller
             $formattedBookings = $bookings->map(function ($booking) {
                 return [
                     'id' => $booking->id,
-                    'title' => $booking->code_booking, // Gunakan code_booking sebagai title
+                    'title' => $booking->code_booking,
                     'start' => $booking->start_date,
                     'end' => $booking->end_date,
                     'extendedProps' => [
@@ -517,10 +517,12 @@ class BookingController extends Controller
                         'client_name' => $booking->name,
                         'start_date' => $booking->start_date,
                         'end_date' => $booking->end_date,
+                        'start_trip' => $booking->start_trip,
+                        'end_trip' => $booking->end_trip,
                         'price_person' => $booking->price_person,
                         'total_user' => $booking->total_user,
                         'total_price' => $booking->total_price,
-                        'down_payment' => $booking->down_paymet,
+                        'down_payment' => $booking->down_payment,
                         'remaining_costs' => $booking->remaining_costs,
                     ],
                 ];
