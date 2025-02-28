@@ -128,6 +128,7 @@
     <!-- Vendors JS -->
     <script src="{{ asset('assets/vendor/libs/toastr/toastr.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/moment/moment.js') }}"></script>
+    <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/cleavejs/cleave.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/jquery-repeater/jquery-repeater.js') }}"></script>
     <script src="{{ asset('assets/vendor/libs/select2/select2.js') }}"></script>
@@ -143,17 +144,16 @@
 
     <!-- Page JS -->
     <script src="{{ asset('assets/js/app-academy-dashboard.js') }}"></script>
+    <script src="{{ asset('assets/js/forms-pickers.js') }}"></script>
     <script src="{{ asset('assets/js/forms-extras.js') }}"></script>
     <script src="{{ asset('assets/js/ui-popover.js') }}"></script>
     <script src="{{ asset('assets/js/extended-ui-sweetalert2.js') }}"></script>
     <script src="{{ asset('assets/js/forms-selects.js') }}"></script>
     <script src="{{ asset('assets/js/ui-carousel.js') }}"></script>
     <script src="{{ asset('assets/js/modal-service-fee.js') }}"></script>
-    <script src="{{ asset('assets/js/forms-pickers.js') }}"></script>
     <script src="{{ asset('assets/js/form-data.js') }}"></script>
     <script src="{{ asset('assets/js/form-modal-booking.js') }}"></script>
     <script src="{{ asset('assets/js/form-data-booking.js') }}"></script>
-    <script src="{{ asset('assets/js/offcanvas-send-invoice.js') }}"></script>
     <script src="{{ asset('assets/js/app-invoice-add.js') }}"></script>
     <script src="{{ asset('assets/js/app-calendar-events.js') }}"></script>
     <script src="{{ asset('assets/js/app-calendar.js') }}"></script>

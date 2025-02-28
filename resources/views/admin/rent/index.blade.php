@@ -129,6 +129,16 @@
                                 class="form-control" name="modalEndDate" required />
                         </div>
                     </div>
+                    <div class="row mb-4">
+                        <div class="col-12 col-md-6 mb-4">
+                            <label for="modalStartTime" class="form-label">Start Time</label>
+                            <input type="text" id="modalStartTime" class="form-control" name="modalStartTime" placeholder="HH:MM" required />
+                        </div>
+                        <div class="col-12 col-md-6 mb-4">
+                            <label for="modalEndTime" class="form-label">End Time</label>
+                            <input type="text" id="modalEndTime" class="form-control" name="modalEndTime" placeholder="HH:MM" required />
+                        </div>
+                    </div>
                     <div class="col-12 text-center">
                         <button type="submit" class="btn btn-primary me-3">Submit</button>
                         <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
@@ -152,7 +162,22 @@
             const packageTypeInput = document.getElementById('rent_packageType');
             packageTypeInput.value = 'rent';
         });
+
+        flatpickr("#modalStartTime", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true
+        });
+        flatpickr("#modalEndTime", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "H:i",
+            time_24hr: true
+        });
     });
+
+
 
 </script>
 

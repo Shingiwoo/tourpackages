@@ -51,12 +51,15 @@ document.addEventListener("DOMContentLoaded", function () {
             inlineCalendar = document.querySelector(".inline-calendar");
 
         let eventToUpdate,
-            currentEvents = events, // Assign app-calendar-events.js file events (assume events from API) to currentEvents (browser store/object) to manage and update calender events
+            currentEvents = [], // Assign app-calendar-events.js file events (assume events from API) to currentEvents (browser store/object) to manage and update calender events
             isFormValid = false,
             inlineCalInstance;
 
         // Init event Offcanvas
-        const bsAddEventSidebar = new bootstrap.Offcanvas(addEventSidebar);
+        let bsAddEventSidebar;
+        if (addEventSidebar) {
+            bsAddEventSidebar = new bootstrap.Offcanvas(addEventSidebar);
+        }
 
         //! TODO: Update Event label and guest code to JS once select removes jQuery dependency
         // Event Label (select2)
@@ -121,43 +124,41 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         function eventClick(info) {
-            eventToUpdate = info.event;
-
-            bookingCode.value = eventToUpdate.title;
-            start.setDate(eventToUpdate.start, true, "Y-m-d");
-            eventToUpdate.allDay === true
-                ? (allDaySwitch.checked = true)
-                : (allDaySwitch.checked = false);
-            eventToUpdate.end !== null
-                ? end.setDate(eventToUpdate.end, true, "Y-m-d")
-                : end.setDate(eventToUpdate.start, true, "Y-m-d");
-            eventDescription.value =
-                eventToUpdate.extendedProps.description ||
-                "No description available.";
-            eventLabel.val(eventToUpdate.extendedProps.type).trigger("change");
-
-            // Ambil data booking dari event
-            const bookingData = eventToUpdate.extendedProps;
+            const event = info.event;
+            const bookingData = event.extendedProps;
 
             // Isi data ke dalam modal
-            document.getElementById("booking-code").textContent =
-                bookingData.code_booking || "-";
-            document.getElementById("agen-name").textContent =
-                bookingData.agen_name || "-";
-            document.getElementById("booking-type").textContent =
-                bookingData.type || "-";
-            document.getElementById("booking-status").textContent =
-                bookingData.status || "-";
-            document.getElementById("client-name").textContent =
-                bookingData.client_name || "-";
-            document.getElementById("start-date").textContent =
-                moment(bookingData.start_date).format("YYYY-MM-DD") || "-";
-            document.getElementById("end-date").textContent =
-                moment(bookingData.end_date).format("YYYY-MM-DD") || "-";
+            document.getElementById("booking-code").textContent = bookingData.code_booking || "-";
+            document.getElementById("agen-name").textContent = bookingData.agen_name || "-";
+            document.getElementById("booking-type").textContent = bookingData.type || "-";
+            document.getElementById("booking-status").textContent = bookingData.status || "-";
+            document.getElementById("client-name").textContent = bookingData.client_name || "-";
+
+            // Format tanggal
+            const startDate = moment(bookingData.start_date).format("YYYY-MM-DD") || "-";
+            const endDate = moment(bookingData.end_date).format("YYYY-MM-DD") || "-";
+
+            // Logika untuk tipe "rent" (tampilkan jam) dan non-"rent" (hanya tanggal)
+            if (bookingData.type.toLowerCase() === "rent") {
+                // Untuk tipe "rent", tampilkan tanggal dan jam
+                document.getElementById("start-date").textContent = startDate;
+                document.getElementById("start-trip").textContent =
+                    bookingData.start_trip ? moment(bookingData.start_trip, "HH:mm").format("HH:mm") : "-";
+                document.getElementById("end-date").textContent = endDate;
+                document.getElementById("end-trip").textContent =
+                    bookingData.end_trip ? moment(bookingData.end_trip, "HH:mm").format("HH:mm") : "-";
+            } else {
+                // Untuk tipe selain "rent", hanya tampilkan tanggal
+                document.getElementById("start-date").textContent = startDate;
+                document.getElementById("start-trip").textContent = ""; // Kosongkan jam
+                document.getElementById("end-date").textContent = endDate;
+                document.getElementById("end-trip").textContent = ""; // Kosongkan jam
+            }
+
+            // Format biaya
             document.getElementById("price-per-person").textContent =
                 formatCurrency(bookingData.price_person) || "-";
-            document.getElementById("total-user").textContent =
-                bookingData.total_user || "-";
+            document.getElementById("total-user").textContent = bookingData.total_user || "-";
             document.getElementById("total-cost").textContent =
                 formatCurrency(bookingData.total_price) || "-";
             document.getElementById("down-payment").textContent =
@@ -166,9 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 formatCurrency(bookingData.remaining_costs) || "-";
 
             // Tampilkan modal
-            const modal = new bootstrap.Modal(
-                document.getElementById("viewBookingData")
-            );
+            const modal = new bootstrap.Modal(document.getElementById("viewBookingData"));
             modal.show();
         }
 
@@ -228,39 +227,65 @@ document.addEventListener("DOMContentLoaded", function () {
             fetch("/bookings")
                 .then((response) => {
                     if (!response.ok) {
-                        throw new Error('Network response was not ok');
+                        throw new Error("Network response was not ok");
                     }
                     return response.json();
                 })
                 .then((data) => {
-                    //console.log("Data from backend:", data);
-                    const formattedEvents = data.map(booking => ({
-                        id: booking.id,
-                        title: booking.title, // Gunakan code_booking sebagai title
-                        start: booking.start,
-                        end: moment(booking.end).add(1, 'days').format("YYYY-MM-DD"),
-                        extendedProps: {
-                            code_booking: booking.extendedProps.code_booking,
-                            agen_name: booking.extendedProps.agen_name,
-                            type: booking.extendedProps.type,
-                            status: booking.extendedProps.status,
-                            client_name: booking.extendedProps.client_name,
-                            start_date: booking.start,
-                            end_date: booking.end,
-                            price_person: booking.extendedProps.price_person,
-                            total_user: booking.extendedProps.total_user,
-                            total_price: booking.extendedProps.total_price,
-                            down_payment: booking.extendedProps.down_payment,
-                            remaining_costs: booking.extendedProps.remaining_costs,
-                        },
-                    }));
-                    //console.log("Formatted events:", formattedEvents); // Debugging
+                    const formattedEvents = data.map((booking) => {
+                        let start, end, allDay = true;
+
+                        // Jika tipe "rent", gunakan waktu dari start_trip dan end_trip
+                        if (booking.extendedProps.type.toLowerCase() === "rent") {
+                            allDay = false;
+                            // Gabungkan start_date dengan start_trip, dan end_date dengan end_trip
+                            start = moment(
+                                `${booking.extendedProps.start_date}T${booking.extendedProps.start_trip || "00:00"}`,
+                                "YYYY-MM-DDTHH:mm"
+                            );
+                            end = moment(
+                                `${booking.extendedProps.end_date}T${booking.extendedProps.end_trip || "00:00"}`,
+                                "YYYY-MM-DDTHH:mm"
+                            );
+                        } else {
+                            // Untuk tipe lain, gunakan hanya tanggal (all-day)
+                            start = moment(booking.start, "YYYY-MM-DD");
+                            end = moment(booking.end, "YYYY-MM-DD").add(1, "days"); // Tambah 1 hari untuk all-day
+                        }
+
+                        // Jika tanggal start dan end sama untuk all-day, set end ke null
+                        if (allDay && start.isSame(end, "day")) {
+                            end = null;
+                        }
+
+                        return {
+                            id: booking.id,
+                            title: booking.title,
+                            start: start.toDate(), // Konversi ke Date object untuk FullCalendar
+                            end: end ? end.toDate() : null, // Null jika tidak ada end
+                            allDay: allDay,
+                            extendedProps: {
+                                code_booking: booking.extendedProps.code_booking,
+                                agen_name: booking.extendedProps.agen_name,
+                                type: booking.extendedProps.type,
+                                status: booking.extendedProps.status,
+                                client_name: booking.extendedProps.client_name,
+                                start_date: booking.extendedProps.start_date,
+                                end_date: booking.extendedProps.end_date,
+                                start_trip: booking.extendedProps.start_trip,
+                                end_trip: booking.extendedProps.end_trip,
+                                price_person: booking.extendedProps.price_person,
+                                total_user: booking.extendedProps.total_user,
+                                total_price: booking.extendedProps.total_price,
+                                down_payment: booking.extendedProps.down_payment,
+                                remaining_costs: booking.extendedProps.remaining_costs,
+                            },
+                        };
+                    });
 
                     let selectedTypes = selectedCalendars();
                     let selectedEvents = formattedEvents.filter((event) =>
-                        selectedTypes.includes(
-                            event.extendedProps.type.toLowerCase()
-                        )
+                        selectedTypes.includes(event.extendedProps.type.toLowerCase())
                     );
 
                     successCallback(selectedEvents);
@@ -350,14 +375,16 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         // Jump to date on sidebar(inline) calendar change
-        inlineCalInstance.config.onChange.push(function (date) {
-            calendar.changeView(
-                calendar.view.type,
-                moment(date[0]).format("YYYY-MM-DD")
-            );
-            modifyToggler();
-            appCalendarSidebar.classList.remove("show");
-            appOverlay.classList.remove("show");
-        });
+        if (inlineCalInstance) {
+            inlineCalInstance.config.onChange.push(function (date) {
+                calendar.changeView(
+                    calendar.view.type,
+                    moment(date[0]).format("YYYY-MM-DD")
+                );
+                modifyToggler();
+                appCalendarSidebar.classList.remove("show");
+                appOverlay.classList.remove("show");
+            });
+        }
     })();
 });

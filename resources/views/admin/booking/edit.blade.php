@@ -63,6 +63,13 @@
                                         aria-label="Client Name" value="{{ $booking->name }}" />
                                 </div>
                             </div>
+                            <div class="mb-6">
+                                <label class="form-label" for="basic-icon-default-message">Message</label>
+                                <div class="input-group input-group-merge">
+                                  <span id="basic-icon-default-message2" class="input-group-text"><i class="ti ti-message-dots"></i></span>
+                                  <textarea id="basic-icon-default-message" class="form-control" name="noteData"  placeholder="Tulis Pesan tambahan jika ada" aria-label="Tulis Pesan tambahan jika ada" aria-describedby="basic-icon-default-message2"></textarea>
+                                </div>
+                              </div>
                         </div>
                     </div>
                     <!-- /Product Information -->
@@ -88,7 +95,18 @@
                                         value="{{ $booking->end_date }}" />
                                 </div>
                             </div>
+                            <div class="row mb-4">
+                                <div class="col-12 col-md-6 mb-4">
+                                    <label for="modalStartTime" class="form-label">Start Time</label>
+                                    <input type="text" id="modalStartTime" class="form-control" name="startTime" value="{{ $booking->start_trip }}"/>
+                                </div>
+                                <div class="col-12 col-md-6 mb-4">
+                                    <label for="modalEndTime" class="form-label">End Time</label>
+                                    <input type="text" id="modalEndTime" class="form-control" name="endTime" value="{{ $booking->end_trip }}"/>
+                                </div>
+                            </div>
                             <!-- Base Price -->
+                            <hr>
                             <div class="row">
                                 <div class="col-12 col-md-4 mb-6">
                                     <label class="form-label" for="user-total">Total User</label>
@@ -160,6 +178,20 @@
 
             // Jalankan updatePrices saat halaman dimuat untuk memastikan nilai sudah benar
             updatePrices();
+
+            // Inisialisasi flatpickr
+            flatpickr("#modalStartTime", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true
+            });
+            flatpickr("#modalEndTime", {
+                enableTime: true,
+                noCalendar: true,
+                dateFormat: "H:i",
+                time_24hr: true
+            });
         });
     </script>
 @endsection

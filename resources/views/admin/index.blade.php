@@ -434,11 +434,17 @@
                                                         </tr>
                                                         <tr>
                                                             <th>Start Trip :</th>
-                                                            <td><span id="start-date" class="text-success"> </span></td>
+                                                            <td>
+                                                                <span id="start-date" class="text-success"></span>
+                                                                <span id="start-trip" class="text-success"></span>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <th>End Trip :</th>
-                                                            <td><span id="end-date" class="text-danger"></span></td>
+                                                            <td>
+                                                                <span id="end-date" class="text-danger"></span>
+                                                                <span id="end-trip" class="text-danger"></span>
+                                                            </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
