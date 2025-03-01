@@ -17,6 +17,7 @@ use App\Http\Controllers\Agen\Core\BookingServiceController;
 use App\Http\Controllers\Agen\Core\PackageServiceController;
 use App\Http\Controllers\Backend\Facility\FacilityController;
 use App\Http\Controllers\Backend\Custom\CustomPackageController;
+use App\Http\Controllers\Backend\Accounting\AccountingController;
 use App\Http\Controllers\Backend\Permission\PermissionController;
 use App\Http\Controllers\Backend\ReserveFee\ReserveFeeController;
 use App\Http\Controllers\Backend\ServiceFee\ServiceFeeController;
@@ -305,6 +306,12 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
 
         Route::get('/all/invoices', 'indexInvoice')->name('all.invoices');
         Route::get('/add/invoice', 'createInvoice')->name('add.invoice');
+    });
+
+    // Accounting all Route
+    Route::controller(AccountingController::class)->group(function () {
+
+        Route::get('/all/accountings', 'index')->name('all.accountings');
     });
 });
 
