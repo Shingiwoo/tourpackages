@@ -224,7 +224,15 @@ document.addEventListener("DOMContentLoaded", function () {
         // * This will be called by fullCalendar to fetch events. Also this can be used to refetch events.
         // --------------------------------------------------------------------------------------------------
         function fetchEvents(info, successCallback) {
-            fetch("/bookings")
+            // Fungsi untuk fetching bookings
+            function fetchBookings(endpoint) {
+                return fetch(endpoint, {
+                    headers: {
+                        "Accept": "application/json",
+                        "X-Requested-With": "XMLHttpRequest",
+                        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                    }
+                })
                 .then((response) => {
                     if (!response.ok) {
                         throw new Error("Network response was not ok");
@@ -235,10 +243,8 @@ document.addEventListener("DOMContentLoaded", function () {
                     const formattedEvents = data.map((booking) => {
                         let start, end, allDay = true;
 
-                        // Jika tipe "rent", gunakan waktu dari start_trip dan end_trip
                         if (booking.extendedProps.type.toLowerCase() === "rent") {
                             allDay = false;
-                            // Gabungkan start_date dengan start_trip, dan end_date dengan end_trip
                             start = moment(
                                 `${booking.extendedProps.start_date}T${booking.extendedProps.start_trip || "00:00"}`,
                                 "YYYY-MM-DDTHH:mm"
@@ -248,12 +254,10 @@ document.addEventListener("DOMContentLoaded", function () {
                                 "YYYY-MM-DDTHH:mm"
                             );
                         } else {
-                            // Untuk tipe lain, gunakan hanya tanggal (all-day)
                             start = moment(booking.start, "YYYY-MM-DD");
-                            end = moment(booking.end, "YYYY-MM-DD").add(1, "days"); // Tambah 1 hari untuk all-day
+                            end = moment(booking.end, "YYYY-MM-DD").add(1, "days");
                         }
 
-                        // Jika tanggal start dan end sama untuk all-day, set end ke null
                         if (allDay && start.isSame(end, "day")) {
                             end = null;
                         }
@@ -261,8 +265,8 @@ document.addEventListener("DOMContentLoaded", function () {
                         return {
                             id: booking.id,
                             title: booking.title,
-                            start: start.toDate(), // Konversi ke Date object untuk FullCalendar
-                            end: end ? end.toDate() : null, // Null jika tidak ada end
+                            start: start.toDate(),
+                            end: end ? end.toDate() : null,
                             allDay: allDay,
                             extendedProps: {
                                 code_booking: booking.extendedProps.code_booking,
@@ -293,6 +297,32 @@ document.addEventListener("DOMContentLoaded", function () {
                 .catch((error) => {
                     console.error("Error fetching events:", error);
                 });
+            }
+
+            // Ambil role pengguna dari API
+            fetch("/api/user", {
+                headers: {
+                    "Accept": "application/json",
+                    "X-Requested-With": "XMLHttpRequest",
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+                }
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Failed to fetch user role");
+                }
+                return response.json();
+            })
+            .then((userData) => {
+                // Pilih endpoint berdasarkan role
+                const endpoint = userData.role === "admin" ? "/bookings" : "/agen/bookings";
+                fetchBookings(endpoint);
+            })
+            .catch((error) => {
+                console.error("Error fetching user role:", error);
+                // Fallback ke endpoint default jika gagal
+                fetchBookings("/bookings");
+            });
         }
 
         // Init FullCalendar

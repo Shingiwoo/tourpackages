@@ -270,7 +270,7 @@
             <!--/ Top our Packages -->
         </div>
         <!--  Topic and Instructors  End-->
-
+        <!-- Calendar -->
         <div class="card app-calendar-wrapper">
             <div class="row g-0">
                 <!-- Calendar Sidebar -->
@@ -503,6 +503,7 @@
                 <!--/ View Data Modal -->
             </div>
         </div>
+        <!--/ Calendar End -->
     </div>
 
     <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>

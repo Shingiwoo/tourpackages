@@ -37,6 +37,7 @@ $(function () {
     bsDatepickerMultidate = $('#bs-datepicker-multidate'),
     bsDatepickerOptions = $('#bs-datepicker-options'),
     bsDatepickerAutoclose = $('#bs-datepicker-autoclose'),
+    bsDatepickerAutoclose2 = $('#bs-datepicker-autoclose2'),
     bsDatepickerInlinedate = $('#bs-datepicker-inline');
 
   // Basic
@@ -89,6 +90,15 @@ $(function () {
       clearBtn: true,
       todayHighlight: true,
       orientation: isRtl ? 'auto left' : 'auto right'
+    });
+  }
+
+  // Auto close
+  if (bsDatepickerAutoclose2.length) {
+    bsDatepickerAutoclose2.datepicker({
+      todayHighlight: true,
+      autoclose: true,
+      orientation: isRtl ? 'auto right' : 'auto left'
     });
   }
 

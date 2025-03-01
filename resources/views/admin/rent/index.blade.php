@@ -139,6 +139,13 @@
                             <input type="text" id="modalEndTime" class="form-control" name="modalEndTime" placeholder="HH:MM" required />
                         </div>
                     </div>
+                    <div class="row mb-4">
+                        <label class="form-label" for="basic-icon-default-message">Message</label>
+                        <div class="input-group input-group-merge">
+                          <span id="basic-icon-default-message2" class="input-group-text"><i class="ti ti-message-dots"></i></span>
+                          <textarea id="basic-icon-default-message" class="form-control" name="modalNote"  placeholder="Tulis Pesan tambahan jika ada" aria-label="Tulis Pesan tambahan jika ada" aria-describedby="basic-icon-default-message2"></textarea>
+                        </div>
+                      </div>
                     <div class="col-12 text-center">
                         <button type="submit" class="btn btn-primary me-3">Submit</button>
                         <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"

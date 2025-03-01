@@ -168,12 +168,23 @@ class BookingController extends Controller
                     ]);
                 }
 
+                $totalUser = $validated['modalTotalUser'];
+
                 // Ambil data
-                $unitCount = ceil($rent->max_user / $validated['modalTotalUser']);
+                $unitCount = ceil($totalUser / $rent->max_user);
                 $totalPrice = $rent->price * $unitCount;
-                $pricePerPerson = $totalPrice / $validated['modalTotalUser'];
-                $downPayment = 150000; // 150k DP unit
+                $pricePerPerson = $totalPrice / $totalUser;
+                $downPayment = 150000 * $unitCount;
                 $remainingCosts = $totalPrice - $downPayment;
+
+                Log::info('Grup harga tidak ditemukan.', [
+                    'max_user' => $rent->max_user,
+                    'harga_perunit' => $rent->price,
+                    'unitCount' => $unitCount,
+                    'totalPrice' => $totalPrice,
+                    'pricePerPerson' => $pricePerPerson,
+
+                ]);
 
             } else {
                 // Logika untuk package lainnya (twoday, dll)

@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Backend\UserController;
 use App\Http\Controllers\Backend\Agen\AgenController;
 use App\Http\Controllers\Backend\Crew\CrewController;
 use App\Http\Controllers\Backend\Meal\MealController;
@@ -38,6 +38,10 @@ Route::get('/admin/dashboard', [AdminController::class, 'index'])
 Route::get('/dashboard', [AgenServiceController::class, 'AgenDashboard'])
     ->middleware(['auth', 'roles:agen'])
     ->name('agen.dashboard');
+
+Route::middleware('auth')
+    ->get('/api/user', [UserController::class, 'getCurrentUser'])
+    ->name('api.user');
 
 // Route::middleware('auth')->group(function () {
 //     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -338,6 +342,7 @@ route::middleware(['auth','roles:agen'])->group(function(){
         Route::get('/booking/details/{id}','getBookingDetails');
         Route::post('/notifications/{id}/mark-as-read', 'markAsRead');
         Route::post('/mark-all-as-read', 'markAllAsRead');
+        Route::get('/agen/bookings','getBookings');
     });
 
 
