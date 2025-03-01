@@ -67,13 +67,14 @@ class BookingController extends Controller
             $validated = $request->validate([
                 'user_id' => 'required|integer',
                 'package_id' => 'required|integer',
-                'modalClientName' => 'required|string|max:255',
+                'modalClientName' => 'required|string',
                 'modalStartDate' => 'required|date_format:m/d/Y',
                 'modalEndDate' => 'required|date_format:m/d/Y',
-                'modalStartTrip' => 'nullable|date_format:H:i',
-                'modalEndTrip' => 'nullable|date_format:H:i',
+                'modalStartTime' => 'nullable|date_format:H:i',
+                'modalEndTime' => 'nullable|date_format:H:i',
                 'modalTotalUser' => 'nullable|integer|min:1',
                 'mealStatus' => 'nullable|boolean',
+                'modalNote' => 'nullable|string',
                 'modalPackageType' => 'nullable|string',
                 'modalHotelType' => 'nullable|string', // Untuk package 2-4 hari
             ]);
@@ -167,14 +168,23 @@ class BookingController extends Controller
                     ]);
                 }
 
+                $totalUser = $validated['modalTotalUser'];
+
                 // Ambil data
-                $unitCount = ceil($rent->max_user / $validated['modalTotalUser']);
+                $unitCount = ceil($totalUser / $rent->max_user);
                 $totalPrice = $rent->price * $unitCount;
-                $pricePerPerson = $totalPrice / $validated['modalTotalUser'];
-                $pricePerPerson = $totalPrice / $validated['modalStartTrip'];
-                $pricePerPerson = $totalPrice / $validated['modalTotalUser'];
-                $downPayment = 150000; // 150k DP unit
+                $pricePerPerson = $totalPrice / $totalUser;
+                $downPayment = 150000 * $unitCount;
                 $remainingCosts = $totalPrice - $downPayment;
+
+                Log::info('Grup harga tidak ditemukan.', [
+                    'max_user' => $rent->max_user,
+                    'harga_perunit' => $rent->price,
+                    'unitCount' => $unitCount,
+                    'totalPrice' => $totalPrice,
+                    'pricePerPerson' => $pricePerPerson,
+
+                ]);
 
             } else {
                 // Logika untuk package lainnya (twoday, dll)
@@ -367,7 +377,10 @@ class BookingController extends Controller
                 'code_booking' => $codeBooking,
                 'start_date' => $startDate,
                 'end_date' => $endDate,
+                'start_trip' => $validated['modalStartTime'],
+                'end_trip' => $validated['modalEndTime'],
                 'name' => $validated['modalClientName'],
+                'note' => $validated['modalNote'],
                 'type' => $type,
                 'total_user' => $totalUser,
                 'price_person' => $pricePerPerson,
@@ -443,11 +456,14 @@ class BookingController extends Controller
                 'ClientName' => 'required|string',
                 'startDate' => 'required|date_format:Y-m-d',
                 'endDate' => 'required|date_format:Y-m-d',
+                'startTime' => 'nullable|date_format:H:i',
+                'endTime' => 'nullable|date_format:H:i',
                 'pricePerPerson' => 'required|numeric',
                 'totalUser' => 'required|numeric',
                 'totalPrice' => 'required|numeric',
                 'downPayment' => 'required|numeric',
                 'remainingCosts' => 'required|numeric',
+                'noteData' => 'nullable|string',
                 'bookingstatus' => 'required|in:pending,booked,paid,finished',
             ])->validate();
 
@@ -459,12 +475,15 @@ class BookingController extends Controller
                 'name' => $validatedData['ClientName'],
                 'start_date' => $validatedData['startDate'],
                 'end_date' => $validatedData['endDate'],
+                'start_trip' => $validatedData['startTime'],
+                'end_trip' => $validatedData['endTime'],
                 'price_person' => $validatedData['pricePerPerson'],
                 'total_user' => $validatedData['totalUser'],
                 'total_price' => $validatedData['totalPrice'],
                 'down_paymet' => $validatedData['downPayment'],
                 'remaining_costs' => $validatedData['remainingCosts'],
                 'status' => $validatedData['bookingstatus'],
+                'note' => $validatedData['noteData'],
             ]);
 
             // Cari booking berdasarkan ID dan relasi dengan booking_list dan agen
@@ -498,25 +517,37 @@ class BookingController extends Controller
     public function getBookings()
     {
         try {
-            // Ambil data booking dengan status booked, paid, dan finished
-            $bookings = Booking::whereIn('status', ['booked', 'paid', 'finished'])
-                ->get();
+            $bookings = Booking::whereIn('status', ['booked', 'paid'])->get();
 
-            // Format data untuk FullCalendar
             $formattedBookings = $bookings->map(function ($booking) {
+                $start = $booking->start_date;
+                $end = $booking->end_date;
+
+                // Jika tipe "rent", gabungkan tanggal dengan waktu
+                if (strtolower($booking->type) === 'rent') {
+                    $start = $booking->start_date . 'T' . $booking->start_trip; // Format ISO 8601 (contoh: 2025-03-01T09:00:00)
+                    $end = $booking->end_date . 'T' . $booking->end_trip;
+                } else {
+                    // Untuk tipe lain, gunakan hanya tanggal (all-day)
+                    $end = \Carbon\Carbon::parse($booking->end_date)->addDay()->format('Y-m-d'); // Tambah 1 hari agar FullCalendar menampilkan sampai tanggal akhir
+                }
+
                 return [
                     'id' => $booking->id,
-                    'title' => $booking->code_booking, // Gunakan code_booking sebagai title
-                    'start' => $booking->start_date,
-                    'end' => $booking->end_date,
+                    'title' => $booking->code_booking,
+                    'start' => $start,
+                    'end' => $end,
+                    'allDay' => strtolower($booking->type) !== 'rent', // allDay false untuk rent, true untuk lainnya
                     'extendedProps' => [
                         'code_booking' => $booking->code_booking,
                         'agen_name' => $booking->bookingList->agen->username ?? 'N/A',
                         'type' => $booking->type,
                         'status' => $booking->status,
-                        'client_name' => $booking->name,
+                        'client_name' => $booking->name ?? 'N/A', // Tambahkan fallback jika name null
                         'start_date' => $booking->start_date,
                         'end_date' => $booking->end_date,
+                        'start_trip' => $booking->start_trip,
+                        'end_trip' => $booking->end_trip,
                         'price_person' => $booking->price_person,
                         'total_user' => $booking->total_user,
                         'total_price' => $booking->total_price,
@@ -528,7 +559,6 @@ class BookingController extends Controller
 
             return response()->json($formattedBookings);
         } catch (\Exception $e) {
-            // Log error dan kembalikan pesan error
             Log::error('Error in getBookings: ' . $e->getMessage());
             return response()->json(['error' => 'Internal Server Error'], 500);
         }

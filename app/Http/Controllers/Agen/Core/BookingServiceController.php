@@ -417,6 +417,72 @@ class BookingServiceController extends Controller
         return response()->json(['html' => $html]);
     }
 
+    public function getBookings()
+    {
+        // Mendapatkan data agen yang sedang login
+        $agen = Auth::user();
+
+        // Periksa apakah agen berhasil login
+        if (!$agen) {
+            Log::error('Agen not authenticated in getBookings.');
+            return response()->json(['error' => 'Unauthenticated.'], 401);
+        }
+
+        try {
+            // Mengambil semua data booking yang terkait dengan agen yang sedang login
+            $bookings = Booking::whereHas('bookingList', function ($query) use ($agen) {
+                    $query->where('agen_id', $agen->id);
+                })
+                ->with('bookingList') // Eager load relasi bookingList
+                ->whereIn('status', ['booked', 'paid']) // Sesuai dengan filter status sebelumnya
+                ->get();
+
+            // Format data untuk FullCalendar
+            $formattedBookings = $bookings->map(function ($booking) {
+                $start = $booking->start_date;
+                $end = $booking->end_date;
+
+                // Jika tipe "rent", gabungkan tanggal dengan waktu
+                if (strtolower($booking->type) === 'rent') {
+                    $start = $booking->start_date . 'T' . ($booking->start_trip ?? '00:00'); // Format ISO 8601
+                    $end = $booking->end_date . 'T' . ($booking->end_trip ?? '00:00');
+                } else {
+                    // Untuk tipe lain, gunakan hanya tanggal (all-day)
+                    $end = \Carbon\Carbon::parse($booking->end_date)->addDay()->format('Y-m-d');
+                }
+
+                return [
+                    'id' => $booking->id,
+                    'title' => $booking->code_booking,
+                    'start' => $start,
+                    'end' => $end,
+                    'allDay' => strtolower($booking->type) !== 'rent', // allDay false untuk rent, true untuk lainnya
+                    'extendedProps' => [
+                        'code_booking' => $booking->code_booking,
+                        'agen_name' => $booking->bookingList->agen->username ?? 'N/A',
+                        'type' => $booking->type,
+                        'status' => $booking->status,
+                        'client_name' => $booking->name ?? 'N/A',
+                        'start_date' => $booking->start_date,
+                        'end_date' => $booking->end_date,
+                        'start_trip' => $booking->start_trip,
+                        'end_trip' => $booking->end_trip,
+                        'price_person' => $booking->price_person,
+                        'total_user' => $booking->total_user,
+                        'total_price' => $booking->total_price,
+                        'down_payment' => $booking->down_paymet,
+                        'remaining_costs' => $booking->remaining_costs,
+                    ],
+                ];
+            });
+
+            return response()->json($formattedBookings);
+        } catch (\Throwable $e) {
+            Log::error('Error in getBookings: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to retrieve bookings.'], 500);
+        }
+    }
+
     public function markAsRead(Request $request, $id)
     {
         try {

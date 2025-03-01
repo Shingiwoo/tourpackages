@@ -270,19 +270,12 @@
             <!--/ Top our Packages -->
         </div>
         <!--  Topic and Instructors  End-->
-
+        <!-- Calendar -->
         <div class="card app-calendar-wrapper">
             <div class="row g-0">
                 <!-- Calendar Sidebar -->
                 <div class="col app-calendar-sidebar border-end" id="app-calendar-sidebar">
-                    <div class="border-bottom p-6 my-sm-0 mb-4">
-                        <button class="btn btn-primary btn-toggle-sidebar w-100" data-bs-toggle="offcanvas"
-                            data-bs-target="#addEventSidebar" aria-controls="addEventSidebar">
-                            <i class="ti ti-plus ti-16px me-2"></i>
-                            <span class="align-middle">Add Event</span>
-                        </button>
-                    </div>
-                    <div class="px-3 pt-2">
+                    <div class="px-3 pt-2 mt-2">
                         <!-- inline calendar (flatpicker) -->
                         <div class="inline-calendar"></div>
                     </div>
@@ -441,11 +434,17 @@
                                                         </tr>
                                                         <tr>
                                                             <th>Start Trip :</th>
-                                                            <td><span id="start-date" class="text-success"> </span></td>
+                                                            <td>
+                                                                <span id="start-date" class="text-success"></span>
+                                                                <span id="start-trip" class="text-success"></span>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <th>End Trip :</th>
-                                                            <td><span id="end-date" class="text-danger"></span></td>
+                                                            <td>
+                                                                <span id="end-date" class="text-danger"></span>
+                                                                <span id="end-trip" class="text-danger"></span>
+                                                            </td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -504,6 +503,7 @@
                 <!--/ View Data Modal -->
             </div>
         </div>
+        <!--/ Calendar End -->
     </div>
 
     <script src="{{ asset('assets/vendor/libs/flatpickr/flatpickr.js') }}"></script>

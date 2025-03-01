@@ -11,8 +11,8 @@ class Booking extends Model
 
     protected $fillable = [
         'booking_list_id', 'code_booking', 'start_date', 'end_date', 'name',
-        'type', 'total_user', 'price_person', 'total_price',
-        'down_paymet', 'remaining_costs', 'status'
+        'start_trip', 'end_trip', 'type', 'total_user', 'price_person', 'total_price',
+        'down_paymet', 'remaining_costs', 'status', 'note'
     ];
 
     public function bookingList()
