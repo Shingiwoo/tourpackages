@@ -116,6 +116,31 @@
         @endif
         <!-- Booking End -->
 
+        <!-- Accountings -->
+        @if (Auth::user()->can('accounting.menu'))
+        <li class="menu-header small">
+            <span class="menu-header-text" data-i18n="Accounting">Accounting</span>
+        </li>
+        <li class="menu-item">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons ti ti-abacus"></i>
+                <div data-i18n="Accounting Manage">Accountings Manage</div>
+            </a>
+            <!-- Accountings Manage -->
+            <ul class="menu-sub">
+                @if (Auth::user()->can('accounting.list'))
+                    <li class="menu-item">
+                        <a href="{{ route('all.accountings') }}" class="menu-link">
+                            <div data-i18n="All Accountings">All Accountings</div>
+                        </a>
+                    </li>
+                @endif
+            </ul>
+            <!-- Accountings Manage End -->
+        </li>
+    @endif
+    <!-- Accountings End -->
+
         <!-- Rents -->
         @if (Auth::user()->can('rent.menu'))
             <li class="menu-header small">

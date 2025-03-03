@@ -95,15 +95,15 @@
                 <table id="example" class="datatables-ajax table">
                     <thead>
                         <tr>
-                            <th class="align-content-center text-center">#</th>
-                            <th class="align-content-center text-center">Kode Booking</th>
-                            <th class="align-content-center text-center">Client Name</th>
-                            <th class="align-content-center text-center">Type</th>
-                            <th class="align-content-center text-center">Agen</th>
-                            <th class="align-content-center text-center">Start date</th>
-                            <th class="align-content-center text-center">End date</th>
-                            <th class="align-content-center text-center">Status</th>
-                            <th class="align-content-center">Action</th>
+                            <th class="align-content-center text-center text-primary">#</th>
+                            <th class="align-content-center text-center text-primary">Kode Booking</th>
+                            <th class="align-content-center text-center text-primary">Client Name</th>
+                            <th class="align-content-center text-center text-primary">Type</th>
+                            <th class="align-content-center text-center text-primary">Agen</th>
+                            <th class="align-content-center text-center text-primary">Start date</th>
+                            <th class="align-content-center text-center text-primary">End date</th>
+                            <th class="align-content-center text-center text-primary">Status</th>
+                            <th class="align-content-center text-primary">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -116,7 +116,9 @@
                                     class="badge bg-{{ $booking->type === 'oneday' ? 'info' : ($booking->type === 'twoday' ? 'primary' : ($booking->type === 'threeday' ? 'success' : ($booking->type === 'fourday' ? 'danger' : 'secondary'))) }} text-uppercase">
                                     {{ $booking->type }}
                                 </span></td>
-                                <td class="align-content-center text-start"><span class="text-uppercase">{{ $booking->bookingList->agen->username}}</span></td>
+                                <td class="align-content-center text-start"><span class="text-uppercase  text-warning">{{ $booking->bookingList->agen->username}}</span> <br>
+                                    <small>{{ $booking->bookingList->agen->company ?? 'Tour Packages' }}</small>
+                                </td>
                                 <td class="align-content-center text-center">
                                     {{ \Carbon\Carbon::parse($booking->start_date)->format('d/m/Y') }}</td>
                                 <td class="align-content-center text-center">
