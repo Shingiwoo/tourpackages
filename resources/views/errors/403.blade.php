@@ -19,7 +19,7 @@
     <meta name="description" content="" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="assets/img/favicon/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/logo/logo-tourpackage.svg') }}" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -64,9 +64,9 @@
     <!-- Not Authorized -->
     <div class="container-xxl container-p-y">
       <div class="misc-wrapper">
-        <h1 class="mb-2 mx-2" style="line-height: 6rem; font-size: 6rem">403</h1>
-        <h4 class="mb-2 mx-2">Forbidden! 🔐</h4>
-        <p class="mb-6 mx-2">You don’t have permission to access this page. Go Home!</p>
+        <h1 class="mx-2 mb-2" style="line-height: 6rem; font-size: 6rem">403</h1>
+        <h4 class="mx-2 mb-2">Forbidden! 🔐</h4>
+        <p class="mx-2 mb-6">You don’t have permission to access this page. Go Home!</p>
         <a href="{{ url('/') }}" class="btn btn-primary">Back to home</a>
         <div class="mt-12">
           <img
@@ -107,7 +107,7 @@
     <!-- Vendors JS -->
 
     <!-- Main JS -->
-    <script src="assets/js/main.js') }}"></script>
+    <script src="{{ asset('assets/js/main.js') }}"></script>
 
     <!-- Page JS -->
   </body>

@@ -165,7 +165,7 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" href="pages-account-settings-billing.html">
+                        <a class="dropdown-item" href="#">
                             <span class="d-flex align-items-center align-middle">
                                 <i class="flex-shrink-0 ti ti-file-dollar me-3 ti-md"></i><span
                                     class="flex-grow-1 align-middle">Billing</span>
