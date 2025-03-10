@@ -52,7 +52,7 @@ Route::middleware('auth')
 
 require __DIR__ . '/auth.php';
 
-Route::get('/admin/login', [AdminController::class, 'AdminLogin'])->name('admin.login');
+Route::get('/login', [AdminController::class, 'AdminLogin'])->name('admin.login');
 
 Route::middleware(['auth', 'roles:admin'])->group(function () {
 

@@ -2,7 +2,7 @@
     <div class="app-brand demo">
         <a href="#" class="app-brand-link">
             <span class="app-brand-logo demo">
-
+                <img width="38" height="38" src="{{ asset('assets/img/logo/logo-tourpackage.svg') }}" alt="Tour Pack" class="logo-icon me-2" />
             </span>
             <span class="app-brand-text demo menu-text fw-bold">Paket Wisata</span>
         </a>
