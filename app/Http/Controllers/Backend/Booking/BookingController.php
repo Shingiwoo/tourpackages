@@ -62,6 +62,7 @@ class BookingController extends Controller
 
     public function SaveBooking(Request $request)
     {
+        Log::info('Data request:', $request->all());
         try {
             // Validasi data
             $validated = $request->validate([
@@ -70,11 +71,11 @@ class BookingController extends Controller
                 'modalClientName' => 'required|string',
                 'modalStartDate' => 'required|date_format:m/d/Y',
                 'modalEndDate' => 'required|date_format:m/d/Y',
-                'modalStartTime' => 'nullable|date_format:H:i',
-                'modalEndTime' => 'nullable|date_format:H:i',
+                'modalStartTime' => 'sometimes|date_format:H:i',
+                'modalEndTime' => 'sometimes|date_format:H:i',
                 'modalTotalUser' => 'nullable|integer|min:1',
                 'mealStatus' => 'nullable|boolean',
-                'modalNote' => 'nullable|string',
+                'modalNote' => 'sometimes|string',
                 'modalPackageType' => 'nullable|string',
                 'modalHotelType' => 'nullable|string', // Untuk package 2-4 hari
             ]);
@@ -372,15 +373,15 @@ class BookingController extends Controller
             $startDate = Carbon::createFromFormat('m/d/Y', $validated['modalStartDate'])->format('Y-m-d');
             $endDate = Carbon::createFromFormat('m/d/Y', $validated['modalEndDate'])->format('Y-m-d');
 
-            // Simpan data booking
+            // Simpan data booking $request->modalNote ?? null,
             $booking = Booking::create([
                 'code_booking' => $codeBooking,
                 'start_date' => $startDate,
                 'end_date' => $endDate,
-                'start_trip' => $validated['modalStartTime'],
-                'end_trip' => $validated['modalEndTime'],
+                'start_trip' => $request->modalStartTime ?? null,
+                'end_trip' => $request->modalEndTime ?? null,
                 'name' => $validated['modalClientName'],
-                'note' => $validated['modalNote'],
+                'note' => $request->modalNote ?? null,
                 'type' => $type,
                 'total_user' => $totalUser,
                 'price_person' => $pricePerPerson,
