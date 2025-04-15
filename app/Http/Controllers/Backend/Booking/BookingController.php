@@ -174,14 +174,16 @@ class BookingController extends Controller
                 // Ambil data
                 $unitCount = ceil($totalUser / $rent->max_user);
                 $totalPrice = $rent->price * $unitCount;
-                $pricePerPerson = $totalPrice / $totalUser;
+                $pricePerPerson = round($totalPrice / $totalUser);
                 $downPayment = 150000 * $unitCount;
                 $remainingCosts = $totalPrice - $downPayment;
+                $note = $validated['modalNote'];
 
                 Log::info('Grup harga tidak ditemukan.', [
                     'max_user' => $rent->max_user,
                     'harga_perunit' => $rent->price,
                     'unitCount' => $unitCount,
+                    'note' => $note,
                     'totalPrice' => $totalPrice,
                     'pricePerPerson' => $pricePerPerson,
 
@@ -433,7 +435,10 @@ class BookingController extends Controller
             })
             ->findOrFail($id); // Ambil data berdasarkan ID
 
-        return view('admin.booking.edit', compact('booking'));
+        $totalUnit = ceil($booking->total_user / 4);
+        $rentPrice = $booking->total_price / $totalUnit;
+
+        return view('admin.booking.edit', ['booking' => $booking, 'totalUnit' => $totalUnit, 'rentPrice' => $rentPrice]);
     }
 
     public function UpdateBooking(Request $request, $id)
