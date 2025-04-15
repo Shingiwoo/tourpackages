@@ -246,7 +246,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Pilih semua tombol yang memicu modal
             const showButtons = document.querySelectorAll('[data-bs-target="#viewBookingData"]');
 
             showButtons.forEach(button => {
@@ -259,36 +258,62 @@
                     const clientName = this.getAttribute('data-clientName');
                     const startDate = this.getAttribute('data-startDate');
                     const endDate = this.getAttribute('data-endDate');
+                    const startTrip = this.getAttribute('data-startTrip');
+                    const endTrip = this.getAttribute('data-endTrip');
                     const pricePerPerson = this.getAttribute('data-pricePerperson') || 0;
                     const totalUser = this.getAttribute('data-totalUser');
+                    const totalUnit = this.getAttribute('data-totalUnit');
                     const totalCost = this.getAttribute('data-totalCost');
+                    const note = this.getAttribute('data-note');
                     const downPayment = this.getAttribute('data-downPayment');
                     const remainingCost = this.getAttribute('data-remainingCost');
                     const kidsCost = pricePerPerson * 0.3;
-                    const wnaCost = pricePerPerson * 0.44;
-
+                    const wnaCost = pricePerPerson * 0.44;                        
+                    
+                    // Dapatkan elemen yang perlu di-show/hide
+                    const totalUserRow = document.getElementById('total-user').closest('tr');
+                    const totalUnitRow = document.getElementById('total-unit').closest('tr');
+                    const childCostLi = document.getElementById('child-cost').closest('li');
+                    const wnaCostLi = document.getElementById('additional-cost-wna').closest('li');
 
                     // Set data ke modal
                     document.getElementById('booking-code').innerText = codeBooking;
+                    document.getElementById('note').innerText = note;
                     document.getElementById('agen-name').innerText = agenName;
                     document.getElementById('booking-type').innerText = bookingType;
                     document.getElementById('booking-status').innerText = bookingStatus;
                     document.getElementById('client-name').innerText = clientName;
                     document.getElementById('start-date').innerText = startDate;
                     document.getElementById('end-date').innerText = endDate;
+                    document.getElementById('start-trip').innerText = startTrip;
+                    document.getElementById('end-trip').innerText = endTrip;
                     document.getElementById('price-per-person').innerText =
-                        `Rp ${parseInt(pricePerPerson).toLocaleString('id-ID')}`;
-                    document.getElementById('total-user').innerText = `${totalUser} orang`;
+                        `Rp ${parseInt(pricePerPerson).toLocaleString('id-ID')}`;                    
                     document.getElementById('total-cost').innerText =
                         `Rp ${parseInt(totalCost).toLocaleString('id-ID')}`;
                     document.getElementById('down-payment').innerText =
                         `Rp ${parseInt(downPayment).toLocaleString('id-ID')}`;
                     document.getElementById('remaining-cost').innerText =
                         `Rp ${parseInt(remainingCost).toLocaleString('id-ID')}`;
-                    document.getElementById('child-cost').innerText =
-                        `Rp ${kidsCost.toLocaleString('id-ID')}`;
-                    document.getElementById('additional-cost-wna').innerText =
-                        `Rp ${wnaCost.toLocaleString('id-ID')}`;
+
+                    // Toggle tampilan berdasarkan tipe booking
+                    if (bookingType === 'rent') {
+                        totalUserRow.style.display = 'none';
+                        childCostLi.style.display = 'none';
+                        wnaCostLi.style.display = 'none';
+                        totalUnitRow.style.display = '';
+                        document.getElementById('total-unit').innerText = `${totalUnit} unit`;
+                    } else {
+                        totalUnitRow.style.display = 'none';
+                        childCostLi.style.display = '';
+                        wnaCostLi.style.display = '';
+                        totalUserRow.style.display = '';
+                        document.getElementById('child-cost').innerText =
+                            `Rp ${kidsCost.toLocaleString('id-ID')}`;
+                        document.getElementById('additional-cost-wna').innerText =
+                            `Rp ${wnaCost.toLocaleString('id-ID')}`;
+                        document.getElementById('total-user').innerText = `${totalUser} orang`;
+                    }
                 });
             });
         });
