@@ -348,18 +348,19 @@
                     <div class="text-center mb-6">
                         <h4 class="mb-2">Booking Information</h4>
                     </div>
-                    <form id="bookingModalForm" class="row g-6" method="POST" action="{{ route('booking.store') }}">
+                    <form id="allpackageModalForm" class="row g-6" method="POST"
+                        action="{{ route('booking.store') }}">
                         @csrf
                         <div class="row mb-4">
                             <input type="hidden" name="package_id" id="packageId">
                             <div class="col-12 mb-4">
                                 <label class="form-label" for="modalClientName">Client Name</label>
-                                <input type="text" id="modalClientName" name="modalClientName" class="form-control"
-                                    placeholder="johndoe007" required />
+                                <input type="text" id="modalClientName" name="modalClientName"
+                                    class="form-control" placeholder="johndoe007" required />
                             </div>
                         </div>
                         <div class="row mb-4">
-                            <div class="col mb-4">
+                            <div class="col-12 col-md-6 mb-4">
                                 <label for="modal_packageType" class="form-label">Package Type</label>
                                 <select id="modal_packageType" class="select2 form-select" data-allow-clear="true"
                                     name="modalPackageType" required>
@@ -371,12 +372,21 @@
                                     <option value="custom">Custom</option>
                                 </select>
                             </div>
-                            <div class="col mb-4" id="total_user_container">
+                            <div class="col-12 col-md-6 mb-4" id="meal_container">
+                                <div class="form-check mt-8">
+                                    <input class="form-check-input" type="checkbox" id="mealStatus" name="mealStatus"
+                                        value="1" />
+                                    <label class="form-check-label" for="mealStatus">Include Meal</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-4">
+                            <div class="col-12 col-md-6 mb-4" id="total_user_container">
                                 <label class="form-label" for="modalTotalUser">Total User</label>
                                 <input type="number" id="modalTotalUser" name="modalTotalUser" class="form-control"
                                     required />
                             </div>
-                            <div class="col mb-4" id="hotel_type_container">
+                            <div class="col-12 col-md-6 mb-4" id="hotel_type_container">
                                 <label for="modal_hotelType" class="form-label">Hotel Type</label>
                                 <select id="modal_hotelType" name="modalHotelType" class="select2 form-select"
                                     data-allow-clear="true" required aria-hidden="true">
@@ -395,12 +405,12 @@
                             </div>
                         </div>
                         <div class="row mb-4">
-                            <div class="col mb-4">
+                            <div class="col-12 col-md-6 mb-4">
                                 <label for="bs-datepicker-autoclose" class="form-label">Start Date</label>
                                 <input type="text" id="bs-datepicker-autoclose" placeholder="MM/DD/YYYY"
                                     class="form-control" name="modalStartDate" required />
                             </div>
-                            <div class="col mb-4">
+                            <div class="col-12 col-md-6 mb-4">
                                 <label for="bs-datepicker-autoclose2" class="form-label">End Date</label>
                                 <input type="text" id="bs-datepicker-autoclose2" placeholder="MM/DD/YYYY"
                                     class="form-control" name="modalEndDate" required />
@@ -420,4 +430,23 @@
     </div>
     <!--/ Booking Modal -->
 
+
+    <script>
+        // Form Booking allpackage
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('allpackageModalForm');
+            const mealStatusCheckbox = document.getElementById('nomeal'); // Ambil elemen checkbox
+            const mealStatusInput = document.createElement('input');
+
+            // Buat input hidden untuk mealStatus
+            mealStatusInput.type = 'hidden';
+            mealStatusInput.name = 'mealStatus';
+            form.appendChild(mealStatusInput);
+
+            form.addEventListener('submit', function(e) {
+                // Update nilai mealStatus sebelum submit
+                mealStatusInput.value = mealStatusCheckbox.checked ? 1 : 0;
+            });
+        });
+    </script>
 @endsection
