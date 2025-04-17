@@ -180,7 +180,7 @@ class BookingController extends Controller
                 $remainingCosts = $totalPrice - $downPayment;
                 $note = $validated['modalNote'];
 
-                Log::info('Grup harga tidak ditemukan.', [
+                Log::info('Data rent ditemukan.', [
                     'max_user' => $rent->max_user,
                     'harga_perunit' => $rent->price,
                     'unitCount' => $unitCount,

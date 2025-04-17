@@ -29,7 +29,7 @@ class BookingServiceController extends Controller
         // Ambil semua data booking berdasarkan agen_id
         $bookings = Booking::whereHas('bookingList', function ($query) use ($agen) {
             $query->where('agen_id', $agen->id);
-        })->get();
+        })->orderBy('created_at', 'desc')->get();
 
         $pendingStatus = Booking::whereHas('bookingList', function ($query) use ($agen) {
             $query->where('agen_id', $agen->id);
@@ -83,6 +83,7 @@ class BookingServiceController extends Controller
             $validated = $request->validate([
                 'package_id' => 'required|integer',
                 'modalClientName' => 'required|string|max:255',
+                'modalPackageName' => 'required|string|max:255',
                 'modalStartDate' => 'required|date_format:m/d/Y',
                 'modalEndDate' => 'required|date_format:m/d/Y',
                 'modalTotalUser' => 'nullable|integer|min:1',
@@ -361,6 +362,7 @@ class BookingServiceController extends Controller
                 'start_date' => $startDate,
                 'end_date' => $endDate,
                 'name' => $validated['modalClientName'],
+                'package_name' => $validated['modalPackageName'],
                 'type' => $type,
                 'total_user' => $totalUser,
                 'price_person' => $pricePerPerson,

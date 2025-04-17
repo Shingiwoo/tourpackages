@@ -9,7 +9,6 @@ use Illuminate\Validation\Rules;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class AgenController extends Controller

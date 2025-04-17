@@ -132,6 +132,7 @@
                                                                         class="dropdown-item text-success"
                                                                         data-bs-toggle="modal"
                                                                         data-id="{{ $package->id }}"
+                                                                        data-name="{{ $package->name_package }}"
                                                                         data-bs-target="#bookingModal"> <i
                                                                             class="ti ti-shopping-cart-plus"></i>
                                                                         Booking
@@ -167,10 +168,14 @@
                             @csrf
                             <div class="row mb-4">
                                 <input type="hidden" name="package_id" id="packageId">
-                                <div class="col-12 mb-4">
+                                <div class="col-12 col-md-6 mb-4">
                                     <label class="form-label" for="modalClientName">Client Name</label>
-                                    <input type="text" id="modalClientName" name="modalClientName"
-                                        class="form-control" placeholder="johndoe007" required />
+                                    <input type="text" id="modalClientName" name="modalClientName" class="form-control"
+                                        placeholder="johndoe007" required />
+                                </div>
+                                <div class="col-12 col-md-6 mb-4">
+                                    <label class="form-label" for="modalPackageName">Package Name</label>
+                                    <input type="text" id="modalPackageName" name="modalPackageName" class="form-control" value="{{ $package->name_package}}" readonly />
                                 </div>
                             </div>
                             <div class="row mb-4">
@@ -246,6 +251,21 @@
     </div>
 
     <script>
+        const bookingModal = document.getElementById('bookingModal');
+        bookingModal.addEventListener('show.bs.modal', event => {
+            // Tombol yang memicu modal
+            const button = event.relatedTarget;
+            // Ekstrak informasi dari atribut data-*
+            const packageName = button.getAttribute('data-name');
+            const packageId = button.getAttribute('data-id');
+            // Perbarui konten modal
+            const modalPackageNameInput = bookingModal.querySelector('#modalPackageName');
+            const modalPackageIdInput = bookingModal.querySelector('#packageId');
+    
+            modalPackageNameInput.value = packageName;
+            modalPackageIdInput.value = packageId;
+        });
+
         // Form Booking allpackage
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('allpackageModalForm');
