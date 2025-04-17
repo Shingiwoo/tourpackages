@@ -71,8 +71,8 @@ class GenerateFourdayPackageController extends Controller
 
             // Ambil data terkait
             $vehicles = Vehicle::all();
-            $hotels = Hotel::active()->byRegency($regencyId)->get(); // Gunakan scope
-            $meals = Meal::forDuration(4)->first(); // Gunakan scope
+            $hotels = Hotel::active()->byRegency($regencyId)->get();
+            $meals = Meal::forDuration(4)->byRegency($regencyId)->first();
             $crewData = Crew::all();
             $serviceFee = ServiceFee::forDuration(4)->value('mark') ?? 0.14; // Ambil nilai langsung
             $feeAgen = AgenFee::defaultFee();

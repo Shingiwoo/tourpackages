@@ -188,7 +188,7 @@ class GenerateThreedayPackageController extends Controller
             // Ambil data terkait
             $vehicles = Vehicle::all();
             $hotels = Hotel::active()->byRegency($regencyId)->get();
-            $meals = Meal::forDuration(3)->first();
+            $meals = Meal::forDuration(3)->byRegency($regencyId)->first();
             $crewData = Crew::all();
             $serviceFee = ServiceFee::forDuration(3)->value('mark') ?? 0.14;
             $feeAgen = AgenFee::defaultFee();

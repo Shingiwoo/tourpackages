@@ -77,7 +77,7 @@ class GeneratePackageController extends Controller
 
             // Ambil data terkait
             $vehicles = Vehicle::getByRegency($regencyId);
-            $meals = Meal::where('duration', '1')->first();
+            $meals = Meal::forDuration(1)->byRegency($regencyId)->first();
             $crewData = Crew::all();
             $serviceFee = ServiceFee::where('duration', '1')->first()->mark ?? 0.14;
             $feeAgen = AgenFee::find(1)->price ?? 50000;

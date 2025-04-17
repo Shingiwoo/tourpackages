@@ -71,10 +71,10 @@ class GenerateTwodayPackageController extends Controller
 
             // Ambil data terkait
             $vehicles = Vehicle::all();
-            $hotels = Hotel::active()->byRegency($regencyId)->get(); // Gunakan scope
-            $meals = Meal::forDuration(2)->first(); // Gunakan scope
+            $hotels = Hotel::active()->byRegency($regencyId)->get();
+            $meals = Meal::forDuration(2)->byRegency($regencyId)->first();
             $crewData = Crew::all();
-            $serviceFee = ServiceFee::forDuration(2)->value('mark') ?? 0.14; // Ambil nilai langsung
+            $serviceFee = ServiceFee::forDuration(2)->value('mark') ?? 0.14;
             $feeAgen = AgenFee::defaultFee();
             $reserveFees = ReserveFee::forDuration(2)->get();
             $selectedDestinations = Destination::byIdsAndRegency($destinationIds, $regencyId);
