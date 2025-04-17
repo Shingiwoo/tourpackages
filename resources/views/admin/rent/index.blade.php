@@ -20,7 +20,7 @@
                                 <tr>
                                     <th class="align-content-center text-center">#</th>
                                     <th class="align-content-center text-center">Name</th>
-                                    <th class="align-content-center text-center">Price</th>
+                                    <th class="align-content-center text-end">Price</th>
                                     <th class="align-content-center text-center">Capacity</th>
                                     @if (Auth::user()->can('agen.action'))
                                     <th class="align-content-center text-center">Actions</th>
@@ -52,7 +52,7 @@
                                                     </li>
                                                     @endif
                                                     @if (Auth::user()->can('booking.add'))
-                                                    <li><a href="javascript:void(0)" class="dropdown-item text-success" data-bs-toggle="modal" data-id="{{ $item->id }}" data-bs-target="#bookingModal"> <i class="ti ti-shopping-cart-plus"></i>
+                                                    <li><a href="javascript:void(0)" class="dropdown-item text-success" data-bs-toggle="modal" data-id="{{ $item->id }}" data-name="{{ $item->name }}" data-capacity="{{ $item->max_user }}"data-bs-target="#bookingModal"> <i class="ti ti-shopping-cart-plus"></i>
                                                             Booking
                                                         </a></li>
                                                     @endif
@@ -91,18 +91,23 @@
                     @csrf
                     <div class="row mb-4">
                         <input type="hidden" name="package_id" id="packageId">
-                        <div class="col-12 mb-4">
+                        <div class="col-12 col-md-6 mb-4">
                             <label class="form-label" for="modalClientName">Client Name</label>
                             <input type="text" id="modalClientName" name="modalClientName" class="form-control"
                                 placeholder="johndoe007" required />
                         </div>
+                        <div class="col-12 col-md-6 mb-4">
+                            <label class="form-label" for="modalPackageName">Package Name</label>
+                            <input type="text" id="modalPackageName" name="modalPackageName" class="form-control"
+                                value="{{ $item->name }}" readonly />
+                        </div>
                     </div>
                     <div class="row mb-4">
-                        <div class="col-12 col-md-4 mb-4">
+                        <div class="col-12 col-md-3 mb-4">
                             <label for="rent_packageType" class="form-label">Package Type</label>
                             <input type="text" id="rent_packageType" name="modalPackageType" class="form-control" placeholder="Rent" value="rent" readonly/>
                         </div>
-                        <div class="col-12 col-md-4 mb-4">
+                        <div class="col-12 col-md-3 mb-4">
                             <label for="modal_agenName" class="form-label">Agen</label>
                             <select id="modal_agenName" class="select2 form-select" data-allow-clear="true"
                                 name="user_id" required>
@@ -111,10 +116,15 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="col-12 col-md-4 mb-4">
+                        <div class="col-12 col-md-3 mb-4">
                             <label class="form-label" for="modalTotalUser">Total User</label>
                             <input type="number" id="modalTotalUser" name="modalTotalUser" class="form-control"
                                 required />
+                        </div>
+                        <div class="col-12 col-md-3 mb-4">
+                            <label class="form-label" for="modalTotalUnit">Total Unit</label>
+                            <input type="number" id="modalTotalUnit" name="modalTotalUnit" class="form-control"
+                            readonly/>
                         </div>
                     </div>
                     <div class="row mb-4">
@@ -160,6 +170,34 @@
 </div>
 <!--/ Booking Modal -->
 <script>
+    const bookingModal = document.getElementById('bookingModal');
+    bookingModal.addEventListener('show.bs.modal', event => {
+        // Tombol yang memicu modal
+        const button = event.relatedTarget;
+        // Ekstrak informasi dari atribut data-*
+        const packageName = button.getAttribute('data-name');
+        const packageId = button.getAttribute('data-id');
+        const capacity = button.getAttribute('data-capacity');
+
+        // Ambil elemen input di dalam modal
+        const totalUser = document.getElementById('modalTotalUser');
+        const totalUnitInput = document.getElementById('modalTotalUnit');
+
+        // Set nilai total unit
+        totalUser.addEventListener('input', function() {
+            const totalUserValue = parseInt(totalUser.value);
+            const totalUnitValue = Math.ceil(totalUserValue / capacity);
+            totalUnitInput.value = totalUnitValue;
+        });
+        
+        // Perbarui konten modal
+        const modalPackageNameInput = bookingModal.querySelector('#modalPackageName');
+        const modalPackageIdInput = bookingModal.querySelector('#packageId');
+
+        modalPackageNameInput.value = packageName;
+        modalPackageIdInput.value = packageId;
+    });
+
     // Form Booking rent Package
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('rentModalForm');

@@ -96,11 +96,10 @@
                             <tr>
                                 <th class="text-center align-content-center text-primary">#</th>
                                 <th class="text-center align-content-center text-primary">Kode Booking</th>
+                                <th class="text-center align-content-center text-primary">Package Name</th>
                                 <th class="text-center align-content-center text-primary">Client Name</th>
-                                <th class="text-center align-content-center text-primary">Type</th>
                                 <th class="text-center align-content-center text-primary">Agen</th>
-                                <th class="text-center align-content-center text-primary">Start date</th>
-                                <th class="text-center align-content-center text-primary">End date</th>
+                                <th class="text-center align-content-center text-primary">Date </th>
                                 <th class="text-center align-content-center text-primary">Status</th>
                                 <th class="align-content-center text-primary">Action</th>
                             </tr>
@@ -111,20 +110,23 @@
                                     <td class="text-center align-content-center">{{ $key + 1 }}</td>
                                     <td class="align-content-center text-start">{{ $booking->code_booking }}</td>
                                     <td class="align-content-center text-start"><span
-                                            class="text-capitalize">{{ $booking->name }}</span></td>
-                                    <td class="text-center align-content-center"><span
+                                            class="text-capitalize">{{ $booking->package_name }}</span><br><span
                                             class="badge bg-{{ $booking->type === 'oneday' ? 'info' : ($booking->type === 'twoday' ? 'primary' : ($booking->type === 'threeday' ? 'success' : ($booking->type === 'fourday' ? 'danger' : 'secondary'))) }} text-uppercase">
                                             {{ $booking->type }}
-                                        </span></td>
+                                        </span>
+                                        </td>
+                                    <td class="align-content-center text-start"><span
+                                            class="text-capitalize">{{ $booking->name }}</span></td>
                                     <td class="align-content-center text-start"><span
                                             class="text-uppercase text-warning">{{ $booking->bookingList->agen->username }}</span>
                                         <br>
                                         <small>{{ $booking->bookingList->agen->company ?? 'Tour Packages' }}</small>
                                     </td>
-                                    <td class="text-center align-content-center">
-                                        {{ \Carbon\Carbon::parse($booking->start_date)->format('d/m/Y') }}</td>
-                                    <td class="text-center align-content-center">
-                                        {{ \Carbon\Carbon::parse($booking->end_date)->format('d/m/Y') }}</td>
+                                    <td class="text-center align-content-center"> Start:
+                                        {{ \Carbon\Carbon::parse($booking->start_date)->format('d/m/Y') }}<br>
+                                        End :
+                                        {{ \Carbon\Carbon::parse($booking->end_date)->format('d/m/Y') }}
+                                    </td>
                                     <td class="text-center align-content-center"><span
                                             class="badge bg-{{ $booking->status === 'pending' ? 'danger' : ($booking->status === 'booked' ? 'info' : ($booking->status === 'paid' ? 'primary' : 'success')) }} bg-glow text-uppercase">{{ $booking->status }}</span>
                                     </td>
@@ -148,6 +150,7 @@
                                                                 data-bookingStatus="{{ $booking->status }}"
                                                                 data-note="{{ $booking->note }}"
                                                                 data-clientName="{{ $booking->name }}"
+                                                                data-packageName="{{ $booking->package_name }}"
                                                                 data-startDate="{{ \Carbon\Carbon::parse($booking->start_date)->format('d/m/Y') }}"
                                                                 data-endDate="{{ \Carbon\Carbon::parse($booking->end_date)->format('d/m/Y') }}"
                                                                 data-startTrip="{{ \Carbon\Carbon::parse($booking->start_trip)->format('H:i') }}"
@@ -211,6 +214,10 @@
                                             <tr>
                                                 <th>Code :</th>
                                                 <td id="booking-code"></td>
+                                            </tr>
+                                            <tr>
+                                                <th>Package Name :</th>
+                                                <td><span id="package-name" class="text-capitalize"></span></td>
                                             </tr>
                                             <tr>
                                                 <th>Agen :</th>

@@ -69,13 +69,14 @@ class BookingController extends Controller
                 'user_id' => 'required|integer',
                 'package_id' => 'required|integer',
                 'modalClientName' => 'required|string',
+                'modalPackageName' => 'nullable|string',
                 'modalStartDate' => 'required|date_format:m/d/Y',
                 'modalEndDate' => 'required|date_format:m/d/Y',
                 'modalStartTime' => 'sometimes|date_format:H:i',
                 'modalEndTime' => 'sometimes|date_format:H:i',
                 'modalTotalUser' => 'nullable|integer|min:1',
                 'mealStatus' => 'nullable|boolean',
-                'modalNote' => 'sometimes|string',
+                'modalNote' => 'nullable|string',
                 'modalPackageType' => 'nullable|string',
                 'modalHotelType' => 'nullable|string', // Untuk package 2-4 hari
             ]);
@@ -383,6 +384,7 @@ class BookingController extends Controller
                 'start_trip' => $request->modalStartTime ?? null,
                 'end_trip' => $request->modalEndTime ?? null,
                 'name' => $validated['modalClientName'],
+                'package_name' => $validated['modalPackageName'],
                 'note' => $request->modalNote ?? null,
                 'type' => $type,
                 'total_user' => $totalUser,

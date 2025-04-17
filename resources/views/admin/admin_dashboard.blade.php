@@ -252,6 +252,7 @@
                 button.addEventListener('click', function() {
                     // Ambil data dari atribut data-*
                     const codeBooking = this.getAttribute('data-codeBooking');
+                    const packageName = this.getAttribute('data-packageName');
                     const agenName = this.getAttribute('data-agenName');
                     const bookingType = this.getAttribute('data-bookingType');
                     const bookingStatus = this.getAttribute('data-bookingStatus');
@@ -268,8 +269,8 @@
                     const downPayment = this.getAttribute('data-downPayment');
                     const remainingCost = this.getAttribute('data-remainingCost');
                     const kidsCost = pricePerPerson * 0.3;
-                    const wnaCost = pricePerPerson * 0.44;                        
-                    
+                    const wnaCost = pricePerPerson * 0.44;
+
                     // Dapatkan elemen yang perlu di-show/hide
                     const totalUserRow = document.getElementById('total-user').closest('tr');
                     const totalUnitRow = document.getElementById('total-unit').closest('tr');
@@ -278,6 +279,7 @@
 
                     // Set data ke modal
                     document.getElementById('booking-code').innerText = codeBooking;
+                    document.getElementById('package-name').innerText = packageName;
                     document.getElementById('note').innerText = note;
                     document.getElementById('agen-name').innerText = agenName;
                     document.getElementById('booking-type').innerText = bookingType;
@@ -288,7 +290,7 @@
                     document.getElementById('start-trip').innerText = startTrip;
                     document.getElementById('end-trip').innerText = endTrip;
                     document.getElementById('price-per-person').innerText =
-                        `Rp ${parseInt(pricePerPerson).toLocaleString('id-ID')}`;                    
+                        `Rp ${parseInt(pricePerPerson).toLocaleString('id-ID')}`;
                     document.getElementById('total-cost').innerText =
                         `Rp ${parseInt(totalCost).toLocaleString('id-ID')}`;
                     document.getElementById('down-payment').innerText =

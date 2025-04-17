@@ -124,7 +124,7 @@
                                                             class="ti ti-edit"></i> Edit</a></li>
                                                 @endif
                                                 @if (Auth::user()->can('booking.add'))
-                                                <li><a href="javascript:void(0)" class="dropdown-item text-success" data-bs-toggle="modal" data-id="{{ $pack->id }}" data-bs-target="#bookingModal"> <i class="ti ti-shopping-cart-plus"></i>
+                                                <li><a href="javascript:void(0)" class="dropdown-item text-success" data-bs-toggle="modal" data-id="{{ $pack->id }}" data-name="{{ $pack->name_package }}" data-bs-target="#bookingModal"> <i class="ti ti-shopping-cart-plus"></i>
                                                         Booking
                                                     </a></li>
                                                 @endif
@@ -166,10 +166,14 @@
                     @csrf
                     <div class="row mb-4">
                         <input type="hidden" name="package_id" id="packageId">
-                        <div class="col-12 mb-4">
+                        <div class="col-12 col-md-6 mb-4">
                             <label class="form-label" for="modalClientName">Client Name</label>
                             <input type="text" id="modalClientName" name="modalClientName" class="form-control"
                                 placeholder="johndoe007" required />
+                        </div>
+                        <div class="col-12 col-md-6 mb-4">
+                            <label class="form-label" for="modalPackageName">Package Name</label>
+                            <input type="text" id="modalPackageName" name="modalPackageName" class="form-control" value="{{ $pack->name }}" readonly />
                         </div>
                     </div>
                     <div class="row mb-4">
@@ -240,7 +244,22 @@
         }
     }
 
-    // Form Booking oneday Package
+    const bookingModal = document.getElementById('bookingModal');
+    bookingModal.addEventListener('show.bs.modal', event => {
+        // Tombol yang memicu modal
+        const button = event.relatedTarget;
+        // Ekstrak informasi dari atribut data-*
+        const packageName = button.getAttribute('data-name');
+        const packageId = button.getAttribute('data-id');
+        // Perbarui konten modal
+        const modalPackageNameInput = bookingModal.querySelector('#modalPackageName');
+        const modalPackageIdInput = bookingModal.querySelector('#packageId');
+
+        modalPackageNameInput.value = packageName;
+        modalPackageIdInput.value = packageId;
+    });
+
+    // Form Booking oneday Package (kode Anda, tidak perlu diubah)
     document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('onedayModalForm');
         const mealStatusCheckbox = document.getElementById('nomeal'); // Ambil elemen checkbox
@@ -260,7 +279,6 @@
             mealStatusInput.value = mealStatusCheckbox.checked ? 1 : 0;
         });
     });
-
 </script>
 
 @endsection
