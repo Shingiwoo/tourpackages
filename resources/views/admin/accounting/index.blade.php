@@ -4,17 +4,17 @@
     <div class="content-wrapper">
         <div class="container-xxl flex-grow-1 container-p-y">
             <!-- Hour chart  -->
-            <div class="card bg-transparent shadow-none my-6 border-0">
-                <div class="card-body row p-0 pb-6 g-6">
+            <div class="my-6 bg-transparent border-0 shadow-none card">
+                <div class="p-0 pb-6 card-body row g-6">
                     <div class="col-12 col-lg-12">
                         <h5 class="mb-2">Welcome back,<span class="h4"> Felecia 👋🏻</span></h5>
                         <div class="col-12 col-lg-5">
                             <p>Your progress this week is Awesome. let's keep it up and get a lot of points reward !</p>
                         </div>
-                        <div class="d-flex justify-content-between flex-wrap gap-4 me-12">
-                            <div class="d-flex align-items-center gap-4 me-6 me-sm-0">
+                        <div class="flex-wrap gap-4 d-flex justify-content-between me-12">
+                            <div class="gap-4 d-flex align-items-center me-6 me-sm-0">
                                 <div class="avatar avatar-lg">
-                                    <div class="avatar-initial bg-label-info rounded">
+                                    <div class="rounded avatar-initial bg-label-info">
                                         <div class="text-info">
                                             <svg width="38" height="38" viewBox="0 0 38 38" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
@@ -32,12 +32,12 @@
                                 </div>
                                 <div class="content-right">
                                     <p class="mb-0 fw-medium">Booked</p>
-                                    <h4 class="text-info mb-0">82%</h4>
+                                    <h4 class="mb-0 text-info">82%</h4>
                                 </div>
                             </div>
-                            <div class="d-flex align-items-center gap-4">
+                            <div class="gap-4 d-flex align-items-center">
                                 <div class="avatar avatar-lg">
-                                    <div class="avatar-initial bg-label-primary rounded">
+                                    <div class="rounded avatar-initial bg-label-primary">
                                         <div class="text-primary">
                                             <svg width="38" height="38" viewBox="0 0 38 38" fill="none"
                                                 xmlns="http://www.w3.org/2000/svg">
@@ -56,12 +56,12 @@
                                 </div>
                                 <div class="content-right">
                                     <p class="mb-0 fw-medium">Paid</p>
-                                    <h4 class="text-primary mb-0">34h</h4>
+                                    <h4 class="mb-0 text-primary">34h</h4>
                                 </div>
                             </div>
-                            <div class="d-flex align-items-center gap-4">
+                            <div class="gap-4 d-flex align-items-center">
                                 <div class="avatar avatar-lg">
-                                    <div class="avatar-initial bg-label-warning rounded">
+                                    <div class="rounded avatar-initial bg-label-warning">
                                         <div class="text-warning">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38"
                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
@@ -79,32 +79,10 @@
                                 </div>
                                 <div class="content-right">
                                     <p class="mb-0 fw-medium">Finished</p>
-                                    <h4 class="text-warning mb-0">14</h4>
+                                    <h4 class="mb-0 text-warning">14</h4>
                                 </div>
                             </div>
-                            <div class="d-flex align-items-center gap-4">
-                                <div class="avatar avatar-lg">
-                                    <div class="avatar-initial bg-label-success rounded">
-                                        <div class="text-success">
-                                            <svg width="38" height="38" viewBox="0 0 38 38" fill="none"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <g id="Check">
-                                                    <path id="Vector" opacity="0.2"
-                                                        d="M8.08984 29.9102C6.72422 28.5445 7.62969 25.6797 6.93203 24.0023C6.23438 22.325 3.5625 20.8555 3.5625 19C3.5625 17.1445 6.20469 15.7344 6.93203 13.9977C7.65938 12.2609 6.72422 9.45547 8.08984 8.08984C9.45547 6.72422 12.3203 7.62969 13.9977 6.93203C15.675 6.23438 17.1445 3.5625 19 3.5625C20.8555 3.5625 22.2656 6.20469 24.0023 6.93203C25.7391 7.65938 28.5445 6.72422 29.9102 8.08984C31.2758 9.45547 30.3703 12.3203 31.068 13.9977C31.7656 15.675 34.4375 17.1445 34.4375 19C34.4375 20.8555 31.7953 22.2656 31.068 24.0023C30.3406 25.7391 31.2758 28.5445 29.9102 29.9102C28.5445 31.2758 25.6797 30.3703 24.0023 31.068C22.325 31.7656 20.8555 34.4375 19 34.4375C17.1445 34.4375 15.7344 31.7953 13.9977 31.068C12.2609 30.3406 9.45547 31.2758 8.08984 29.9102Z"
-                                                        fill="currentColor" />
-                                                    <path id="Vector_2"
-                                                        d="M25.5312 15.4375L16.818 23.75L12.4687 19.5937M8.08984 29.9102C6.72422 28.5445 7.62969 25.6797 6.93203 24.0023C6.23437 22.325 3.5625 20.8555 3.5625 19C3.5625 17.1445 6.20469 15.7344 6.93203 13.9977C7.65937 12.2609 6.72422 9.45547 8.08984 8.08984C9.45547 6.72422 12.3203 7.62969 13.9977 6.93203C15.675 6.23437 17.1445 3.5625 19 3.5625C20.8555 3.5625 22.2656 6.20469 24.0023 6.93203C25.7391 7.65937 28.5445 6.72422 29.9102 8.08984C31.2758 9.45547 30.3703 12.3203 31.068 13.9977C31.7656 15.675 34.4375 17.1445 34.4375 19C34.4375 20.8555 31.7953 22.2656 31.068 24.0023C30.3406 25.7391 31.2758 28.5445 29.9102 29.9102C28.5445 31.2758 25.6797 30.3703 24.0023 31.068C22.325 31.7656 20.8555 34.4375 19 34.4375C17.1445 34.4375 15.7344 31.7953 13.9977 31.068C12.2609 30.3406 9.45547 31.2758 8.08984 29.9102Z"
-                                                        stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                        stroke-linejoin="round" />
-                                                </g>
-                                            </svg>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="content-right">
-                                    <p class="mb-0 fw-medium">Completed</p>
-                                    <h4 class="text-success mb-0">14</h4>
-                                </div>
+                            <div class="gap-4 d-flex align-items-center">
                             </div>
                         </div>
                     </div>
@@ -113,56 +91,44 @@
             <!-- Hour chart End  -->
 
             <!-- Bookings datatable -->
-            <div class="card mb-6">
+            <div class="mb-6 card">
                 <h5 class="card-header">Booking List</h5>
                 <div class="mb-4">
                     <div class="card-datatable table-responsive text-nowrap">
-                        <table id="example" class="datatables-ajax table">
+                        <table id="example" class="table datatables-ajax">
                             <thead>
                                 <tr>
-                                    <th class="align-content-center text-center text-primary">#</th>
-                                    <th class="align-content-center text-center text-primary">Kode Booking</th>
-                                    <th class="align-content-center text-center text-primary">Package Name</th>
-                                    <th class="align-content-center text-center text-primary">Client Name</th>
-                                    <th class="align-content-center text-center text-primary">Type</th>
-                                    <th class="align-content-center text-center text-primary">Agen</th>
-                                    <th class="align-content-center text-center text-primary">Status</th>
-                                    <th class="align-content-center text-center text-primary">Action</th>
+                                    <th class="text-center align-content-center text-primary">#</th>
+                                    <th class="text-center align-content-center text-primary">Kode Booking</th>
+                                    <th class="text-center align-content-center text-primary">Package Name</th>
+                                    <th class="text-center align-content-center text-primary">Client Name</th>
+                                    <th class="text-center align-content-center text-primary">Agen</th>
+                                    <th class="text-center align-content-center text-primary">Status</th>
+                                    <th class="text-center align-content-center text-primary">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($bookings as $index => $booking)
                                     <tr>
-                                        <td class="align-content-center text-center">{{ $index + 1 }}</td>
-                                        <td class="align-content-center text-center">{{ $booking->code_booking }}</td>
-                                        <td class="align-content-center text-start">
-                                            @php
-                                                $packageName = 'No Data';
-                                                if ($booking->bookingList) {
-                                                    $type = $booking->type;
-                                                    $bookingList = $booking->bookingList;
-
-                                                    $packageName = match ($type) {
-                                                        'oneday' => $bookingList->packageOneDay->name_package ?? 'No Data',
-                                                        'twoday' => $bookingList->packageTwoDay->name_package ?? 'No Data',
-                                                        'threeday' => $bookingList->packageThreeDay->name_package ?? 'No Data',
-                                                        'fourday' => $bookingList->packageFourDay->name_package ?? 'No Data',
-                                                        'custom' => json_decode($bookingList->customPackage->custompackage ?? '{}', true)['package_name'] ?? 'No Data',
-                                                        'rent' => $bookingList->rentService->name ?? 'No Data',
-                                                        default => 'No Data',
-                                                    };
-                                                }
-                                            @endphp
-                                            <span class="text-uppercase">{{ $packageName }}</span>
+                                        <td class="text-center align-content-center">{{ $index + 1 }}</td>
+                                        <td class="text-center align-content-center">{{ $booking->code_booking }}</td>
+                                        <td class="text-center align-content-center text-uppercase">
+                                            <span>{{ $booking->package_name }}</span><br>
+                                            <span
+                                                class="mt-1 badge bg-{{ $booking->type === 'oneday' ? 'info' : ($booking->type === 'twoday' ? 'primary' : ($booking->type === 'threeday' ? 'success' : ($booking->type === 'fourday' ? 'danger' : 'secondary'))) }} bg-glow text-uppercase">{{ $booking->type }}</span>
                                         </td>
-                                        <td class="align-content-center text-start"><span class="text-capitalize">{{ $booking->name }}</span></td>
-                                        <td class="align-content-center text-center"><span class="badge bg-{{ $booking->type === 'oneday' ? 'info' : ($booking->type === 'twoday' ? 'primary' : ($booking->type === 'threeday' ? 'success' : ($booking->type === 'fourday' ? 'danger' : 'secondary'))) }} bg-glow text-uppercase">{{ $booking->type }}</span></td>
-                                        <td class="align-content-center text-start">
-                                            <span class="text-capitalize text-warning">{{ $booking->bookingList?->agen?->username ?? 'No Data' }}</span> <br>
+                                        <td class="text-center align-content-center"><span
+                                                class="text-capitalize">{{ $booking->name }}</span></td>
+                                        <td class="text-center align-content-center">
+                                            <span
+                                                class="text-capitalize text-warning">{{ $booking->bookingList?->agen?->username ?? 'No Data' }}</span>
+                                            <br>
                                             <small>{{ $booking->bookingList->agen->company ?? 'Tour Packages' }}</small>
                                         </td>
-                                        <td class="align-content-center text-center"><span class="badge bg-{{ $booking->status === 'pending' ? 'danger' : ($booking->status === 'booked' ? 'info' : ($booking->status === 'paid' ? 'primary' : 'success'))}} bg-glow text-uppercase">{{ $booking->status }}</span></td>
-                                        <td class="align-content-center text-center">
+                                        <td class="text-center align-content-center"><span
+                                                class="badge bg-{{ $booking->status === 'pending' ? 'danger' : ($booking->status === 'booked' ? 'info' : ($booking->status === 'paid' ? 'primary' : 'success')) }} bg-glow text-uppercase">{{ $booking->status }}</span>
+                                        </td>
+                                        <td class="text-center align-content-center">
                                             {{-- <a href="{{ route('bookings.show', $booking->id) }}" class="btn btn-sm btn-primary">View</a> --}}
                                         </td>
                                     </tr>
@@ -173,36 +139,7 @@
                 </div>
             </div>
             <!-- Bookings datatable End -->
-
-            <!-- Accountings datatable -->
-            <div class="card mb-6">
-                <h5 class="card-header">Calculate Data Progress</h5>
-                <div class="mb-4">
-                    <div class="card-datatable table-responsive text-nowrap">
-                        <table id="example2" class="datatables-ajax table">
-                            <thead>
-                                <tr>
-                                    <th class="align-content-center text-center">#</th>
-                                    <th class="align-content-center text-center">Kode Booking</th>
-                                    <th class="align-content-center text-center">Type</th>
-                                    <th class="align-content-center text-center">Progress</th>
-                                    <th class="align-content-center text-center">Action</th>
-                                </tr>
-                            </thead>
-                        </table>
-                    </div>
-                </div>
-            </div>
-            <!-- Accountings datatable End -->
         </div>
     </div>
     <!--/ Content End -->
-@endsection
-@section('scripts')
-<script>
-    $(document).ready(function() {
-        $('#example2').DataTable({
-        });
-    });
-</script>
 @endsection

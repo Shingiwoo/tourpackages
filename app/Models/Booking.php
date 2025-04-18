@@ -19,5 +19,16 @@ class Booking extends Model
     {
         return $this->belongsTo(BookingList::class, 'booking_list_id', 'id');
     }
+
+    public function costs()
+    {
+        return $this->hasMany(BookingCost::class);
+    }
+
+    public function journalEntries()
+    {
+        return $this->hasMany(JournalEntry::class);
+    }
+
 }
 
