@@ -106,6 +106,13 @@
                             </a>
                         </li>
                     @endif
+                    @if (Auth::user()->can('accounting.list'))
+                        <li class="menu-item">
+                            <a href="{{ route('all.accounts') }}" class="menu-link">
+                                <div data-i18n="Account List">Account List</div>
+                            </a>
+                        </li>
+                    @endif
                 </ul>
                 <!-- Accountings Manage End -->
             </li>
