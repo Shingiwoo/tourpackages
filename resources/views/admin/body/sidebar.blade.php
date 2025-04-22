@@ -101,8 +101,8 @@
                 <ul class="menu-sub">
                     @if (Auth::user()->can('accounting.list'))
                         <li class="menu-item">
-                            <a href="{{ route('all.accountings') }}" class="menu-link">
-                                <div data-i18n="Penjualan">Penjualan</div>
+                            <a href="{{ route('all.expenses') }}" class="menu-link">
+                                <div data-i18n="Expense Trip">Expense Trip</div>
                             </a>
                         </li>
                     @endif
@@ -110,6 +110,13 @@
                         <li class="menu-item">
                             <a href="{{ route('all.accounts') }}" class="menu-link">
                                 <div data-i18n="Account List">Account List</div>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::user()->can('accounting.list'))
+                        <li class="menu-item">
+                            <a href="{{ route('ledger.index') }}" class="menu-link">
+                                <div data-i18n="Ledger Book">Ledger Book</div>
                             </a>
                         </li>
                     @endif

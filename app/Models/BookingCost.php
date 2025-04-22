@@ -9,9 +9,9 @@ class BookingCost extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'booking_id', 'account_id', 'description', 'amount'
-    ];
+    protected $fillable = ['booking_id', 'account_id', 'description', 'amount'];
+
+    protected $table = 'booking_costs';
 
     public function booking()
     {

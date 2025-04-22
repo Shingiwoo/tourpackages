@@ -1,33 +1,34 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Backend\UserController;
+use App\Http\Controllers\Backend\Agen\AgenController;
+use App\Http\Controllers\Backend\Crew\CrewController;
+use App\Http\Controllers\Backend\Meal\MealController;
+use App\Http\Controllers\Backend\Rent\RentController;
+use App\Http\Controllers\Backend\Role\RoleController;
+use App\Http\Controllers\Backend\Admin\AdminController;
+use App\Http\Controllers\Backend\Hotel\HotelController;
 use App\Http\Controllers\Agen\Core\AgenServiceController;
+use App\Http\Controllers\Backend\Booking\BookingController;
+use App\Http\Controllers\Backend\Invoice\InvoiceController;
+use App\Http\Controllers\Backend\Vehicle\VehicleController;
 use App\Http\Controllers\Agen\Core\BookingServiceController;
 use App\Http\Controllers\Agen\Core\PackageServiceController;
-use App\Http\Controllers\Backend\Accounting\AccountController;
-use App\Http\Controllers\Backend\Accounting\AccountingController;
-use App\Http\Controllers\Backend\Admin\AdminController;
-use App\Http\Controllers\Backend\Agen\AgenController;
-use App\Http\Controllers\Backend\Booking\BookingController;
-use App\Http\Controllers\Backend\Crew\CrewController;
-use App\Http\Controllers\Backend\Custom\CustomPackageController;
-use App\Http\Controllers\Backend\Destinastion\DestinationController;
+use App\Http\Controllers\Backend\Accounting\LedgerController;
 use App\Http\Controllers\Backend\Facility\FacilityController;
-use App\Http\Controllers\Backend\Hotel\HotelController;
-use App\Http\Controllers\Backend\Invoice\InvoiceController;
-use App\Http\Controllers\Backend\Meal\MealController;
-use App\Http\Controllers\Backend\PackageTour\GenerateAllPackageController;
-use App\Http\Controllers\Backend\PackageTour\GenerateFourdayPackageController;
-use App\Http\Controllers\Backend\PackageTour\GeneratePackageController;
-use App\Http\Controllers\Backend\PackageTour\GenerateThreedayPackageController;
-use App\Http\Controllers\Backend\PackageTour\GenerateTwodayPackageController;
+use App\Http\Controllers\Backend\Accounting\AccountController;
+use App\Http\Controllers\Backend\Accounting\ExpenseController;
+use App\Http\Controllers\Backend\Custom\CustomPackageController;
 use App\Http\Controllers\Backend\Permission\PermissionController;
-use App\Http\Controllers\Backend\Rent\RentController;
 use App\Http\Controllers\Backend\ReserveFee\ReserveFeeController;
-use App\Http\Controllers\Backend\Role\RoleController;
 use App\Http\Controllers\Backend\ServiceFee\ServiceFeeController;
-use App\Http\Controllers\Backend\UserController;
-use App\Http\Controllers\Backend\Vehicle\VehicleController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Backend\Destinastion\DestinationController;
+use App\Http\Controllers\Backend\PackageTour\GeneratePackageController;
+use App\Http\Controllers\Backend\PackageTour\GenerateAllPackageController;
+use App\Http\Controllers\Backend\PackageTour\GenerateTwodayPackageController;
+use App\Http\Controllers\Backend\PackageTour\GenerateFourdayPackageController;
+use App\Http\Controllers\Backend\PackageTour\GenerateThreedayPackageController;
 
 
 Route::get('/', function () {
@@ -310,9 +311,13 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/add/invoice', 'createInvoice')->name('add.invoice');
     });
 
-    // Accounting all Route
-    Route::controller(AccountingController::class)->group(function () {
-        Route::get('/all/accountings', 'index')->name('all.accountings');
+    // Expenses all Route
+    Route::controller(ExpenseController::class)->group(function () {
+        Route::get('/all/expenses', 'index')->name('all.expenses');
+        Route::post('/store/expense', 'store')->name('expense.store');
+        Route::get('show/booking/expenses/{id}', 'show')->name('expenses.show');
+        Route::get('/edit/expense/{id}', 'edit')->name('edit.expense');
+        Route::put('/update/expense/{id}', 'update')->name('update.expense');
     });
 
     // Account all Route
@@ -320,6 +325,11 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/all/accounts', 'index')->name('all.accounts');
         Route::post('/store/accounts', 'store')->name('account.store');
         Route::put('/update/accounts/{id}', 'update')->name('update.accounts');
+    });
+
+    // Ledger all Route
+    Route::controller(LedgerController::class)->group(function () {
+        Route::get('/ledger', 'index')->name('ledger.index');
     });
 });
 
