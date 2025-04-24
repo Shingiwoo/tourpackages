@@ -61,6 +61,7 @@ class JournalService
             JournalEntry::create([
                 'journal_id' => $journal->id,
                 'account_id' => $bookingCost->account_id,
+                'booking_id' => $bookingCost->booking_id,
                 'debit' => $bookingCost->amount,
                 'credit' => 0,
             ]);
@@ -68,6 +69,7 @@ class JournalService
             JournalEntry::create([
                 'journal_id' => $journal->id,
                 'account_id' => 1, // akun Kas/Bank
+                'booking_id' => $bookingCost->booking_id,
                 'debit' => 0,
                 'credit' => $bookingCost->amount,
             ]);

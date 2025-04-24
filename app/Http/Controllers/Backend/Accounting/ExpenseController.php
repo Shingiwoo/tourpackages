@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use App\Services\JournalService;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Artisan;
 
 class ExpenseController extends Controller
 {
@@ -269,6 +270,13 @@ class ExpenseController extends Controller
         ->get();
 
         return view('admin.accounting.journals', compact('booking', 'journals'));
+    }
+
+
+    public function fixJournalEntriesBookingId()
+    {
+        Artisan::call('fix:booking-journal-entries');
+        return response()->json(['message' => 'Berhasil perbaiki journal_entries yang booking_id-nya null.']);
     }
 
 }
