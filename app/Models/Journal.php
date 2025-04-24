@@ -39,4 +39,13 @@ class Journal extends Model
     {
         return $this->entries->sum('credit');
     }
+
+    // Journal.php
+    public function scopeFromBooking($query, $bookingId)
+    {
+        return $query->whereHas('entries', function ($q) use ($bookingId) {
+            $q->where('booking_id', $bookingId);
+        });
+    }
+
 }

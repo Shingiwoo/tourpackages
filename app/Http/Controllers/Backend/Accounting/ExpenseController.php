@@ -7,6 +7,7 @@ use App\Models\Booking;
 use App\Models\Journal;
 use App\Models\BookingCost;
 use Illuminate\Http\Request;
+use App\Helpers\FinanceHelper;
 use App\Services\JournalService;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
@@ -260,17 +261,17 @@ class ExpenseController extends Controller
 
     public function showJournals($id)
     {
-        $booking = Booking::with('costs')->findOrFail($id);
+        $booking = Booking::with('journalEntries.account')->findOrFail($id);
 
-        $journals = Journal::whereHas('entries', function ($query) use ($id) {
-            $query->where('booking_id', $id);
-        })
-        ->with('entries.account')
-        ->orderBy('date', 'desc')
-        ->get();
+        $finance = FinanceHelper::calculateBookingHpp($booking);
 
-        return view('admin.accounting.journals', compact('booking', 'journals'));
+        return view('admin.accounting.journals', [
+            'booking' => $booking,
+            'journals' => $booking->journals,
+            'finance' => $finance
+        ]);
     }
+
 
 
     public function fixJournalEntriesBookingId($id)
