@@ -105,7 +105,7 @@ class ExpenseController extends Controller
             ]);
         }
     }
-    
+
     /**
      * Display the specified resource.
      *
@@ -117,9 +117,13 @@ class ExpenseController extends Controller
         try {
             // Ambil data booking berdasarkan ID, Eager load package
             $booking = Booking::findOrFail($id);
+            $accountId = $booking->account_id;
 
             // Ambil data pengeluaran (BookingCost) berdasarkan booking_id
-            $expenses = BookingCost::where('booking_id', $id)->get();
+            $expenses = BookingCost::where('booking_id', $id)
+            ->orderBy('created_at', 'desc')
+            ->with('account')
+            ->get();
 
             // Hitung total biaya
             $total_cost = $expenses->sum('amount');
@@ -132,7 +136,7 @@ class ExpenseController extends Controller
             ]);
 
             // Return view dengan data
-            return view('admin.accounting.show', compact('booking', 'expenses', 'total_cost')); 
+            return view('admin.accounting.show', compact('booking', 'expenses', 'total_cost'));
 
         } catch (\Exception $e) {
             // Log error
@@ -187,7 +191,7 @@ class ExpenseController extends Controller
                 // to get the correct ID from the request
                 // For example, if the ID is passed as 'expenses.*.id', you can access it like this:
                 // $expenseItemId = $expenseData['id'];
-                $expenseItem = BookingCost::findOrFail($id); 
+                $expenseItem = BookingCost::findOrFail($id);
 
                 $expenseDataToUpdate = [ // Array untuk update
                     'booking_id' => $expenseData['BookingId'],
@@ -196,7 +200,7 @@ class ExpenseController extends Controller
                     'amount' => $amount,
                 ];
 
-                $expenseItem->update($expenseDataToUpdate); 
+                $expenseItem->update($expenseDataToUpdate);
                 $savedItems[] = $expenseItem;
 
                 Log::info('Berhasil update:', $expenseItem->toArray());
