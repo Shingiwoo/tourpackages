@@ -3,40 +3,56 @@
     <!-- Content -->
     <div class="content-wrapper">
         <div class="container-xxl flex-grow-1 container-p-y">
-            <h4>Jurnal Biaya - Booking: {{ $booking->code_booking ?? 'N/A' }}</h4>
-
-            @if ($journals->isEmpty())
-                <p>Tidak ada data jurnal untuk booking ini.</p>
-            @else
-                <table class="table table-bordered">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>Deskripsi</th>
-                            <th>Akun</th>
-                            <th>Debit</th>
-                            <th>Kredit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($journals as $journal)
-                            <tr style="background-color:#f5f5f5">
-                                <td>{{ \Carbon\Carbon::parse($journal->date)->format('d M Y') }}</td>
-                                <td colspan="4"><strong>{{ $journal->description }}</strong></td>
-                            </tr>
-                            @foreach ($journal->entries as $entry)
+            <div
+                class="row-gap-4 mb-6 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                <div class="d-flex flex-column justify-content-center">
+                    <h4>Jurnal Biaya - Booking : <br><span class="text-primary">{{ $booking->code_booking ?? 'N/A' }}</span></h4>
+                    <p class="mb-0">Jurnal biaya operasional sesuai dengan kode akun</p>
+                </div>
+                <div class="flex-wrap gap-4 d-flex align-content-center">                    
+                    <a href="{{ route('admin.fix.journal.booking') }}" class="btn btn-primary">Fix HPP</a>
+                    <a href="{{ route('all.expenses') }}" class="btn btn-secondary">Back</a>
+                </div>
+            </div>
+            
+            <div class="mb-4 card">
+                <div class="card-body">
+                    @if ($journals->isEmpty())
+                        <p>Tidak ada data jurnal untuk booking ini.</p>
+                    @else                
+                    <div class="table-responsive text-nowrap">
+                        <table class="table table-bordered">
+                            <thead class="thead-light">
                                 <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="text-start">{{ $entry->account->name ?? '-' }}</td>
-                                    <td class="text-end">Rp {{ number_format($entry->debit, 0, ',', '.') }}</td>
-                                    <td class="text-end">Rp {{ number_format($entry->credit, 0, ',', '.') }}</td>
+                                    <th>Tanggal</th>
+                                    <th>Deskripsi</th>
+                                    <th>Akun</th>
+                                    <th>Debit</th>
+                                    <th>Kredit</th>
                                 </tr>
-                            @endforeach
-                        @endforeach
-                    </tbody>
-                </table>
-            @endif
+                            </thead>
+                            <tbody>
+                                @foreach ($journals as $journal)
+                                    <tr style="background-color:#f5f5f5">
+                                        <td>{{ \Carbon\Carbon::parse($journal->date)->format('d M Y') }}</td>
+                                        <td colspan="4"><strong>{{ $journal->description }}</strong></td>
+                                    </tr>
+                                    @foreach ($journal->entries as $entry)
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td class="text-start">{{ $entry->account->name ?? '-' }}</td>
+                                            <td class="text-end">Rp {{ number_format($entry->debit, 0, ',', '.') }}</td>
+                                            <td class="text-end">Rp {{ number_format($entry->credit, 0, ',', '.') }}</td>
+                                        </tr>
+                                    @endforeach
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                    @endif
+                </div>
+            </div>
         </div>
     </div>
     <!--/ Content End -->

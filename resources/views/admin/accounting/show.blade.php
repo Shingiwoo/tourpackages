@@ -3,12 +3,12 @@
     <div class="content-wrapper">
         <div class="container-xxl flex-grow-1 container-p-y">
             <div
-                class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center mb-6 row-gap-4">
+                class="row-gap-4 mb-6 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
                 <div class="d-flex flex-column justify-content-center">
                     <h4 class="py-3 mb-1 fw-bold">Detail Biaya Pengeluaran</h4>
                     <p class="mb-0">Rincian biaya operasional setiap trip berdasarkan code boooking </p>
                 </div>
-                <div class="d-flex align-content-center flex-wrap gap-4">
+                <div class="flex-wrap gap-4 d-flex align-content-center">
                 </div>
             </div>
             <div class="mb-4 card">
@@ -36,7 +36,7 @@
                         </table>
                     </div>
                     <div class="mt-4">
-                        <h5 class="align-content-center text-uppercase mb-1" style="padding-left: 5px">Rincian Biaya</h5>
+                        <h5 class="mb-1 align-content-center text-uppercase" style="padding-left: 5px">Rincian Biaya</h5>
                         <div class="table-responsive text-nowrap">
                             <table class="table table-bordered">
                                 @foreach ($expenses as $expense)
@@ -54,13 +54,13 @@
                                 @endforeach
                             </table>
                         </div>
-                        <div class="text-end mt-3" style="padding-right: 5px">
+                        <div class="mt-3 text-end" style="padding-right: 5px">
                             <h5>Total Biaya : Rp {{ number_format($total_cost, 0, ',', '.') }}</h6>
                         </div>
                     </div>
                 </div>
             </div>
-            <a href="{{ route('all.expenses') }}" class="btn btn-secondary">Kembali ke Daftar Biaya</a>
+            <a href="{{ route('all.expenses') }}" class="btn btn-secondary">Back</a>
         </div>
     </div>
 @endsection
