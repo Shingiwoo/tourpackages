@@ -138,17 +138,24 @@
                                                     <ul class="dropdown-menu dropdown-menu-end">
                                                         @if (Auth::user()->can('accounting.show'))
                                                             <li>
-                                                                <a href="{{ route('expenses.show', $booking->id) }}" class="dropdown-item text-info">
-                                                                    <span class="ti ti-search ti-md"></span> View
+                                                                <a href="{{ route('expenses.show', $booking->id) }}"
+                                                                    class="dropdown-item text-info">
+                                                                    <span class="ti ti-search ti-md"></span> Hpp Detail
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                                        @if (Auth::user()->can('accounting.show'))
+                                                            <li>
+                                                                <a href="{{ route('booking.journals', $booking->id) }}"
+                                                                    class="dropdown-item text-info"> <i
+                                                                        class="ti ti-search"></i> Booking Journal
                                                                 </a>
                                                             </li>
                                                         @endif
                                                         @if (Auth::user()->can('accounting.add'))
                                                             <li>
-                                                                <a href="javascript:void(0)" data-bs-toggle="modal"
-                                                                    data-id="{{ $booking->id }}"
-                                                                    data-bs-target="#addExpenseModal"
-                                                                    class="dropdown-item text-warning"> <i
+                                                                <a href="{{ route('expenses.create', $booking->id) }}"
+                                                                    class="dropdown-item text-danger"> <i
                                                                         class="ti ti-plus"></i> Add Expense
                                                                 </a>
                                                             </li>
@@ -168,155 +175,4 @@
         </div>
     </div>
     <!--/ Content End -->
-
-    <!-- Add Expense Modal -->
-    <div class="modal fade" id="addExpenseModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-simple modal-lg">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <button type="button" class="btn-close btn-pinned" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
-                    <div class="mb-6 text-center">
-                        <h4 class="mb-2">Add New Expense</h4>
-                    </div>
-                    <form id="addAccountForm" method="POST" action="{{ route('expense.store') }}">
-                        @csrf
-                        <div id="expenseItemsContainer">
-                            <!-- Item pertama -->
-                            <div class="mb-3 border rounded expense-item d-flex position-relative pe-0">
-                                <div class="p-6 row w-100">
-                                    <div class="row">
-                                        <input type="hidden" name="expenses[0][BookingId]" value="">
-                                        <div class="mb-4 col-12 col-md-6">
-                                            <label class="form-label">Account Name</label>
-                                            <select required name="expenses[0][AccountId]" class="select2 form-select">
-                                                <option value="">Account Name</option>
-                                                @foreach ($accounts as $akun)
-                                                    <option value="{{ $akun->id }}">{{ $akun->name }}</option>
-                                                @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="mb-4 col-12 col-md-6">
-                                            <label class="form-label">Cost</label>
-                                            <input type="text" class="form-control numeral-mask"
-                                                name="expenses[0][Amount]" placeholder="500000" required />
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="mb-4 col-12">
-                                            <label class="form-label">Deskripsi</label>
-                                            <textarea name="expenses[0][ExpenDescript]" class="form-control" rows="3" maxlength="255"
-                                                style="height: 30px;"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="p-1 d-flex flex-column align-items-center justify-content-between border-start">
-                                    <i class="cursor-pointer ti ti-x ti-lg remove-item-btn"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mt-2 row">
-                            <div class="col-12">
-                                <button type="button" id="addItemBtn"
-                                    class="btn btn-sm btn-primary waves-effect waves-light">
-                                    <i class="ti ti-plus ti-14px me-1_5"></i>Add Item
-                                </button>
-                            </div>
-                        </div>
-                        <hr>
-                        <div class="text-center col-12 demo-vertical-spacing">
-                            <button type="submit" class="btn btn-primary me-4">Save</button>
-                            <button type="button" class="btn btn-label-secondary"
-                                data-bs-dismiss="modal">Discard</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!--/ Add Expense Modal -->
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const container = document.getElementById('expenseItemsContainer');
-            const addButton = document.getElementById('addItemBtn');
-            let itemCount = 1;
-            let currentBookingId = '';
-
-            // Tangkap event ketika modal akan ditampilkan
-            $('#addExpenseModal').on('show.bs.modal', function(event) {
-                const button = $(event.relatedTarget);
-                currentBookingId = button.data('id');
-
-                // Update semua input BookingId yang ada
-                document.querySelectorAll('input[name^="expenses["][name$="[BookingId]"]').forEach(
-                input => {
-                    input.value = currentBookingId;
-                });
-
-                // Reset state
-                itemCount = 1;
-                const items = container.querySelectorAll('.expense-item');
-                items.forEach((item, index) => {
-                    if (index > 0) item.remove();
-                });
-
-                // Reset nilai item pertama
-                const firstItem = container.querySelector('.expense-item');
-                firstItem.querySelector('[name^="expenses["][name$="[AccountId]"]').selectedIndex = 0;
-                firstItem.querySelector('[name^="expenses["][name$="[Amount]"]').value = '';
-                firstItem.querySelector('[name^="expenses["][name$="[ExpenDescript]"]').value = '';
-            });
-
-            // Fungsi untuk menambah item baru
-            addButton.addEventListener('click', function() {
-                const newItem = container.querySelector('.expense-item').cloneNode(true);
-
-                // Update semua nama input dengan index baru
-                const inputs = newItem.querySelectorAll('[name]');
-                inputs.forEach(input => {
-                    const name = input.getAttribute('name');
-                    input.setAttribute('name', name.replace(/\[\d+\]/, `[${itemCount}]`));
-
-                    // Jika ini adalah input BookingId, set nilainya
-                    if (name.includes('BookingId')) {
-                        input.value = currentBookingId;
-                    }
-                });
-
-                // Reset nilai input lainnya
-                newItem.querySelector('[name^="expenses["][name$="[AccountId]"]').selectedIndex = 0;
-                newItem.querySelector('[name^="expenses["][name$="[Amount]"]').value = '';
-                newItem.querySelector('[name^="expenses["][name$="[ExpenDescript]"]').value = '';
-
-                // Tambahkan tombol hapus
-                const removeBtn = newItem.querySelector('.remove-item-btn');
-                removeBtn.addEventListener('click', function() {
-                    newItem.remove();
-                });
-
-                container.appendChild(newItem);
-                itemCount++;
-            });
-
-            // Tombol hapus untuk item pertama
-            container.querySelector('.remove-item-btn').addEventListener('click', function() {
-                if (container.querySelectorAll('.expense-item').length > 1) {
-                    this.closest('.expense-item').remove();
-                }
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // Tangkap tombol yang memicu modal
-            const addExpenseButton = document.querySelector('[data-bs-target="#addExpenseModal"]');
-
-            addExpenseButton.addEventListener('click', function() {
-                // Reset form modal setiap kali tombol di-klik
-                const form = document.getElementById('addExpenseForm');
-                form.reset();
-            });
-        });
-    </script>
 @endsection

@@ -44,7 +44,12 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="mt-2 btn btn-primary waves-effect waves-light ">Update</button>
+                                <div class="flex-wrap gap-4 d-flex align-content-center">
+                                    <button type="submit" class="mt-2 btn btn-primary waves-effect waves-light ">Update</button>
+                                    <div class="gap-4 d-flex">
+                                        <a href="{{ route('all.expenses') }}" type="button" class="mt-2 btn btn-secondary waves-effect waves-light">Back</a>
+                                    </div>
+                                </div>
                             </form>
                         </div>
                     </div>

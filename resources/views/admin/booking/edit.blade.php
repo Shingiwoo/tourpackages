@@ -13,7 +13,7 @@
                 </div>
                 <div class="flex-wrap gap-4 d-flex align-content-center">
                     <div class="gap-4 d-flex">
-                        <a href="{{ route('all.bookings') }}" type="button" class="btn btn-label-primary">Back</a>
+                        <a href="{{ route('all.bookings') }}" type="button" class="btn btn-label-secondary">Back</a>
                     </div>
                     <button type="submit" class="btn btn-primary">Update</button>
                 </div>

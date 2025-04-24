@@ -10,12 +10,17 @@ class Journal extends Model
     use HasFactory;
 
     protected $fillable = [
-        'description', 'date'
+        'description', 'date', 'reference_type', 'reference_id'
     ];
 
     public function entries()
     {
         return $this->hasMany(JournalEntry::class);
+    }
+    
+    public function reference()
+    {
+        return $this->morphTo();
     }
 
     // Helper accessor: Total Debit

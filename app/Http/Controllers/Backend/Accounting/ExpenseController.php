@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Backend\Accounting;
 
 use App\Models\Account;
 use App\Models\Booking;
+use App\Models\Journal;
 use App\Models\BookingCost;
 use Illuminate\Http\Request;
+use App\Services\JournalService;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 
@@ -18,6 +20,13 @@ class ExpenseController extends Controller
         $expense = BookingCost::all();
         $accounts = Account::all();
         return view('admin.accounting.index', compact('bookings','expense', 'accounts'));
+    }
+
+    public function create($id)
+    {
+        $booking = Booking::findOrFail($id);
+        $accounts = Account::all();
+        return view('admin.accounting.create', compact('booking', 'accounts'));
     }
 
     /**
@@ -35,6 +44,9 @@ class ExpenseController extends Controller
 
         try {
             $savedItems = [];
+
+            // Inisialisasi JournalService
+            $journalService = new JournalService();
 
             foreach ($validatedData['expenses'] as $index => $expense) {
                 $amount = $expense['Amount'];
@@ -58,6 +70,12 @@ class ExpenseController extends Controller
                     ]);
 
                     $savedItem = BookingCost::create($expenseData);
+
+                    if ($savedItem) {
+                        $journalService->createExpenseJournal($savedItem);
+                    }
+
+                    // Log the successful save
                     Log::info('Berhasil simpan:', $savedItem->toArray());
 
                 } catch (\Exception $e) {
@@ -150,7 +168,6 @@ class ExpenseController extends Controller
         }
     }
 
-
     /**
      * Show the form for editing the specified resource.
      */
@@ -201,6 +218,11 @@ class ExpenseController extends Controller
                 ];
 
                 $expenseItem->update($expenseDataToUpdate);
+
+                // Update the journal entry
+                $journalService = new JournalService();
+                $journalService->updateExpenseJournal($expenseItem);
+
                 $savedItems[] = $expenseItem;
 
                 Log::info('Berhasil update:', $expenseItem->toArray());
@@ -232,6 +254,21 @@ class ExpenseController extends Controller
                 'alert-type' => 'error',
             ]);
         }
+    }
+
+
+    public function showJournals($id)
+    {
+        $booking = Booking::with('costs')->findOrFail($id);
+
+        $journals = Journal::whereHas('entries', function ($query) use ($id) {
+            $query->where('booking_id', $id);
+        })
+        ->with('entries.account')
+        ->orderBy('date', 'desc')
+        ->get();
+
+        return view('admin.accounting.journals', compact('booking', 'journals'));
     }
 
 }

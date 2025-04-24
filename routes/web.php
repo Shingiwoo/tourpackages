@@ -314,8 +314,10 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     // Expenses all Route
     Route::controller(ExpenseController::class)->group(function () {
         Route::get('/all/expenses', 'index')->name('all.expenses');
+        Route::get('/add/expenses/{id}', 'create')->name('expenses.create');
         Route::post('/store/expense', 'store')->name('expense.store');
         Route::get('show/booking/expenses/{id}', 'show')->name('expenses.show');
+        Route::get('/booking/journals/{id}', 'showJournals')->name('booking.journals');
         Route::get('/edit/expense/{id}', 'edit')->name('edit.expense');
         Route::put('/update/expense/{id}', 'update')->name('update.expense');
     });
