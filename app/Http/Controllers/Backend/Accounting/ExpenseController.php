@@ -273,12 +273,12 @@ class ExpenseController extends Controller
     }
 
 
-    public function fixJournalEntriesBookingId()
+    public function fixJournalEntriesBookingId($id)
     {
         Artisan::call('fix:booking-journal-entries');
 
-        return redirect()->route('booking.journals')->with([
-            'message' =>  'Journa Entry successfully Fix',
+        return redirect()->route('booking.journals', ['id' => $id])->with([
+            'message' => 'Booking Journal Entries successfully Fixed for Booking ID ' . $id,
             'alert-type' => 'success',
         ]);
     }

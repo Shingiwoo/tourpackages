@@ -23,6 +23,11 @@ class Journal extends Model
         return $this->morphTo();
     }
 
+    public function booking()
+    {
+        return $this->belongsTo(Booking::class);
+    }
+
     // Helper accessor: Total Debit
     public function getTotalDebitAttribute()
     {

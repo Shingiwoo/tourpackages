@@ -320,7 +320,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/booking/journals/{id}', 'showJournals')->name('booking.journals');
         Route::get('/edit/expense/{id}', 'edit')->name('edit.expense');
         Route::put('/update/expense/{id}', 'update')->name('update.expense');
-        Route::get('/admin/fix-journal-booking', 'fixJournalEntriesBookingId')->name('admin.fix.journal.booking');
+        Route::get('/admin/fix-journal-booking/{id}', 'fixJournalEntriesBookingId')->name('admin.fix.journal.booking');
 
     });
 
