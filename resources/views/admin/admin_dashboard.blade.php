@@ -154,7 +154,6 @@
     <script src="{{ asset('assets/js/form-data.js') }}"></script>
     <script src="{{ asset('assets/js/form-modal-booking.js') }}"></script>
     <script src="{{ asset('assets/js/form-data-booking.js') }}"></script>
-    <script src="{{ asset('assets/js/app-expense-add.js') }}"></script>
     <script src="{{ asset('assets/js/app-invoice-add.js') }}"></script>
     <script src="{{ asset('assets/js/app-calendar-events.js') }}"></script>
     <script src="{{ asset('assets/js/app-calendar.js') }}"></script>

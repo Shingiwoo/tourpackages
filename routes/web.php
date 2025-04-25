@@ -16,6 +16,7 @@ use App\Http\Controllers\Backend\Vehicle\VehicleController;
 use App\Http\Controllers\Agen\Core\BookingServiceController;
 use App\Http\Controllers\Agen\Core\PackageServiceController;
 use App\Http\Controllers\Backend\Accounting\LedgerController;
+use App\Http\Controllers\Backend\Accounting\ReportController;
 use App\Http\Controllers\Backend\Facility\FacilityController;
 use App\Http\Controllers\Backend\Accounting\AccountController;
 use App\Http\Controllers\Backend\Accounting\ExpenseController;
@@ -335,6 +336,12 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     Route::controller(LedgerController::class)->group(function () {
         Route::get('/ledger', 'index')->name('ledger.index');
     });
+
+    // Report all Route
+    Route::controller(ReportController::class)->group(function () {
+        Route::get('report/hpp', 'hpp')->name('report.hpp');
+    });
+
 });
 
 Route::get('/login', [AgenServiceController::class, 'AgenLogin'])->name('login');

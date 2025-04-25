@@ -22,4 +22,11 @@ class BookingCost extends Model
     {
         return $this->belongsTo(Account::class);
     }
+
+    public function journal()
+    {
+        return $this->hasOne(Journal::class, 'reference_id')
+            ->where('reference_type', BookingCost::class);
+    }
+
 }

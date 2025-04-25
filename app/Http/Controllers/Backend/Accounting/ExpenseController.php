@@ -21,7 +21,7 @@ class ExpenseController extends Controller
             ->orderBy('created_at', 'desc')->get();
         $expense = BookingCost::all();
         $accounts = Account::all();
-        return view('admin.accounting.index', compact('bookings','expense', 'accounts'));
+        return view('admin.accounting.index', compact('bookings', 'expense', 'accounts'));
     }
 
     public function create($id)
@@ -79,7 +79,6 @@ class ExpenseController extends Controller
 
                     // Log the successful save
                     Log::info('Berhasil simpan:', $savedItem->toArray());
-
                 } catch (\Exception $e) {
                     Log::error('Gagal simpan BookingCost:', [
                         'message' => $e->getMessage(),
@@ -101,7 +100,6 @@ class ExpenseController extends Controller
                     : 'Expense item has been saved successfully',
                 'alert-type' => 'success',
             ]);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Expense validation failed', [
                 'error' => $e->getMessage(),
@@ -110,7 +108,6 @@ class ExpenseController extends Controller
                 'user' => auth()->user() ? auth()->user()->id : 'guest',
             ]);
             return back()->withErrors($e->validator)->withInput();
-
         } catch (\Exception $e) {
             Log::error('Expense saving failed', [
                 'error' => $e->getMessage(),
@@ -141,9 +138,9 @@ class ExpenseController extends Controller
 
             // Ambil data pengeluaran (BookingCost) berdasarkan booking_id
             $expenses = BookingCost::where('booking_id', $id)
-            ->orderBy('created_at', 'desc')
-            ->with('account')
-            ->get();
+                ->orderBy('created_at', 'desc')
+                ->with('account')
+                ->get();
 
             // Hitung total biaya
             $total_cost = $expenses->sum('amount');
@@ -157,7 +154,6 @@ class ExpenseController extends Controller
 
             // Return view dengan data
             return view('admin.accounting.show', compact('booking', 'expenses', 'total_cost'));
-
         } catch (\Exception $e) {
             // Log error
             Log::error('Error in show method', [
@@ -173,68 +169,54 @@ class ExpenseController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
-        $expense = BookingCost::findOrFail($id);
+        $expense = BookingCost::with('journal.entries')->findOrFail($id);
         $bookings = Booking::whereIn('status', ['booked', 'paid'])
-            ->orderBy('created_at', 'desc')->get();
+            ->orderBy('created_at', 'desc')
+            ->get();
         $accounts = Account::all();
+
         return view('admin.accounting.edit', compact('expense', 'bookings', 'accounts'));
     }
+
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
-            'expenses' => 'required|array|min:1',
-            'expenses.*.BookingId' => 'required|integer|exists:bookings,id',
-            'expenses.*.AccountId' => 'required|integer|exists:accounts,id',
-            'expenses.*.ExpenDescript' => 'required|string|max:255',
-            'expenses.*.Amount' => 'required|string',
+            'BookingId' => 'required|integer|exists:bookings,id',
+            'AccountId' => 'required|integer|exists:accounts,id',
+            'ExpenDescript' => 'required|string|max:255',
+            'Amount' => 'required|string',
+            'NewBookingId' => 'nullable|integer|exists:bookings,id',
         ]);
-
+    
         try {
-            $savedItems = [];
-            foreach ($validatedData['expenses'] as $index => $expenseData) {
-                $amount = str_replace(',', '', $expenseData['Amount']);
-
-                if ($amount <= 0) {
-                    throw new \Exception("Amount must be greater than 0 for item " . ($index + 1));
-                }
-
-                // Find the expense item by its ID
-                // Assuming the ID is passed in the request as part of the expense data
-                // If the ID is not part of the expense data, you need to adjust this line
-                // to get the correct ID from the request
-                // For example, if the ID is passed as 'expenses.*.id', you can access it like this:
-                // $expenseItemId = $expenseData['id'];
-                $expenseItem = BookingCost::findOrFail($id);
-
-                $expenseDataToUpdate = [ // Array untuk update
-                    'booking_id' => $expenseData['BookingId'],
-                    'account_id' => $expenseData['AccountId'],
-                    'description' => $expenseData['ExpenDescript'],
-                    'amount' => $amount,
-                ];
-
-                $expenseItem->update($expenseDataToUpdate);
-
-                // Update the journal entry
-                $journalService = new JournalService();
-                $journalService->updateExpenseJournal($expenseItem);
-
-                $savedItems[] = $expenseItem;
-
-                Log::info('Berhasil update:', $expenseItem->toArray());
-
-            }
-             return redirect()->route('all.expenses')->with([
+            $amount = str_replace(',', '', $validatedData['Amount']);
+    
+            $expense = BookingCost::findOrFail($id);
+            $oldBookingId = $expense->booking_id;
+            $newBookingId = $validatedData['NewBookingId'] ?? $oldBookingId;
+    
+            $expense->update([
+                'booking_id' => $newBookingId,
+                'account_id' => $validatedData['AccountId'],
+                'description' => $validatedData['ExpenDescript'],
+                'amount' => $amount,
+            ]);
+    
+            $journalService = new JournalService();
+            $journalService->updateExpenseJournal($expense, $oldBookingId);
+    
+            Log::info('Berhasil update:', $expense->toArray());
+    
+            return redirect()->route('all.expenses')->with([
                 'message' =>  'Expense item has been updated successfully',
                 'alert-type' => 'success',
             ]);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Expense validation failed', [
                 'error' => $e->getMessage(),
@@ -283,5 +265,4 @@ class ExpenseController extends Controller
             'alert-type' => 'success',
         ]);
     }
-
 }
