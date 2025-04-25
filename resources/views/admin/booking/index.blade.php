@@ -161,7 +161,7 @@
                                                                 data-totalCost="{{ $booking->total_price }}"
                                                                 data-downPayment="{{ $booking->down_paymet }}"
                                                                 data-remainingCost="{{ $booking->remaining_costs }}">
-                                                                <span class="ti ti-search ti-md"></span> View
+                                                                <span class="ti ti-search ti-md"></span> Detail Booking 
                                                             </a>
                                                         </li>
                                                     @endif

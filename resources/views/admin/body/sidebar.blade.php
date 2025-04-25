@@ -8,14 +8,14 @@
         </a>
 
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
-            <i class="ti menu-toggle-icon d-none d-xl-block align-middle"></i>
-            <i class="ti ti-x d-block d-xl-none ti-md align-middle"></i>
+            <i class="align-middle ti menu-toggle-icon d-none d-xl-block"></i>
+            <i class="align-middle ti ti-x d-block d-xl-none ti-md"></i>
         </a>
     </div>
 
     <div class="menu-inner-shadow"></div>
 
-    <ul class="menu-inner py-1">
+    <ul class="py-1 menu-inner">
         <!-- Dashboards -->
         <li class="menu-item">
             @if (Auth::user()->role == 'admin')
@@ -88,57 +88,68 @@
         <!-- Booking End -->
 
         <!-- Accountings -->
-
-        @if (Auth::user()->can('function.comingsoon'))
-            @if (Auth::user()->can('accounting.menu'))
-                <li class="menu-header small">
-                    <span class="menu-header-text" data-i18n="Accounting">Accounting</span>
-                </li>
+        @if (Auth::user()->can('accounting.menu'))
+            <li class="menu-header small">
+                <span class="menu-header-text" data-i18n="Accounting">Accounting</span>
+            </li>
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons ti ti-abacus"></i>
+                    <div data-i18n="Accounting Manage">Accountings Manage</div>
+                </a>
+                <!-- Accountings Manage -->
+                <ul class="menu-sub">
+                    @if (Auth::user()->can('accounting.list'))
+                        <li class="menu-item">
+                            <a href="{{ route('all.expenses') }}" class="menu-link">
+                                <div data-i18n="Expense Trip">Expense Trip</div>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::user()->can('accounting.list'))
+                        <li class="menu-item">
+                            <a href="{{ route('all.accounts') }}" class="menu-link">
+                                <div data-i18n="Account List">Account List</div>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::user()->can('accounting.list'))
+                        <li class="menu-item">
+                            <a href="{{ route('ledger.index') }}" class="menu-link">
+                                <div data-i18n="Ledger Book">Ledger Book</div>
+                            </a>
+                        </li>
+                    @endif
+                </ul>
+                <!-- Accountings Manage End -->
+            </li>
+            @if (Auth::user()->can('invoice.menu'))
+                <!-- Invoice -->
                 <li class="menu-item">
                     <a href="javascript:void(0);" class="menu-link menu-toggle">
-                        <i class="menu-icon tf-icons ti ti-abacus"></i>
-                        <div data-i18n="Accounting Manage">Accountings Manage</div>
+                        <i class="menu-icon tf-icons ti ti-file-dollar"></i>
+                        <div data-i18n="Invoice Manage">Invoice Manage</div>
                     </a>
-                    <!-- Accountings Manage -->
+                    <!-- Invoice Manage -->
                     <ul class="menu-sub">
-                        @if (Auth::user()->can('accounting.list'))
+                        @if (Auth::user()->can('invoice.list'))
                             <li class="menu-item">
-                                <a href="{{ route('all.accountings') }}" class="menu-link">
-                                    <div data-i18n="Penjuaaln">Penjualan</div>
+                                <a href="{{ route('all.invoices') }}" class="menu-link">
+                                    <div data-i18n="All Invoices">All Invoices</div>
+                                </a>
+                            </li>
+                        @endif
+                        @if (Auth::user()->can('invoice.add'))
+                            <li class="menu-item">
+                                <a href="{{ route('add.invoice') }}" class="menu-link">
+                                    <div data-i18n="Add Invoice">All Invoice</div>
                                 </a>
                             </li>
                         @endif
                     </ul>
-                    <!-- Accountings Manage End -->
+                    <!-- Invoice Manage End -->
                 </li>
-                @if (Auth::user()->can('invoice.menu'))
-                    <!-- Invoice -->
-                    <li class="menu-item">
-                        <a href="javascript:void(0);" class="menu-link menu-toggle">
-                            <i class="menu-icon tf-icons ti ti-file-dollar"></i>
-                            <div data-i18n="Invoice Manage">Invoice Manage</div>
-                        </a>
-                        <!-- Invoice Manage -->
-                        <ul class="menu-sub">
-                            @if (Auth::user()->can('invoice.list'))
-                                <li class="menu-item">
-                                    <a href="{{ route('all.invoices') }}" class="menu-link">
-                                        <div data-i18n="All Invoices">All Invoices</div>
-                                    </a>
-                                </li>
-                            @endif
-                            @if (Auth::user()->can('invoice.add'))
-                                <li class="menu-item">
-                                    <a href="{{ route('add.invoice') }}" class="menu-link">
-                                        <div data-i18n="Add Invoice">All Invoice</div>
-                                    </a>
-                                </li>
-                            @endif
-                        </ul>
-                        <!-- Invoice Manage End -->
-                    </li>
-                    <!-- Invoice End -->
-                @endif
+                <!-- Invoice End -->
             @endif
         @endif
         <!-- Accountings End -->

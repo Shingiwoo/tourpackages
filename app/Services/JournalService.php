@@ -1,0 +1,91 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Account;
+use App\Models\BookingCost;
+use App\Models\Journal;
+use App\Models\JournalEntry;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
+class JournalService
+{
+    public function createExpenseJournal($bookingCost)
+    {
+        DB::transaction(function () use ($bookingCost) {
+            $journal = Journal::create([
+                'date' => now()->toDateString(),
+                'description' => $bookingCost->description,
+                'reference_type' => 'booking_cost',
+                'reference_id' => $bookingCost->id,
+            ]);
+
+            // Debit ke akun biaya (akun beban)
+            JournalEntry::create([
+                'journal_id' => $journal->id,
+                'account_id' => $bookingCost->account_id,
+                'debit' => $bookingCost->amount,
+                'credit' => 0,
+            ]);
+
+            // Kredit ke kas/bank
+            JournalEntry::create([
+                'journal_id' => $journal->id,
+                'account_id' => 1, // ID akun Kas/Bank (1-001)
+                'debit' => 0,
+                'credit' => $bookingCost->amount,
+            ]);
+        });
+    }
+
+    public function updateExpenseJournal(BookingCost $expense, $oldBookingId = null)
+    {
+        // Hapus jurnal entry lama jika booking_id berubah
+        if ($oldBookingId && $oldBookingId != $expense->booking_id) {
+            JournalEntry::where('booking_id', $oldBookingId)
+                ->where('account_id', $expense->account_id)
+                ->where('debit', $expense->amount)
+                ->delete();
+        }
+
+        // Cari jurnal yang sudah ada untuk pengeluaran ini (by reference)
+        $journal = Journal::firstOrCreate([
+            'reference_type' => BookingCost::class,
+            'reference_id' => $expense->id,
+        ], [
+            'description' => $expense->description,
+            'date' => now(),
+        ]);
+
+        // Hapus semua entry sebelumnya (safety untuk update)
+        $journal->entries()->delete();
+
+        // Buat ulang journal entries
+        $journal->entries()->createMany([
+            [
+                'account_id' => $expense->account_id,
+                'booking_id' => $expense->booking_id,
+                'debit' => $expense->amount,
+                'credit' => 0,
+            ],
+            [
+                'account_id' => $this->getCashAccountId(),
+                'booking_id' => $expense->booking_id,
+                'debit' => 0,
+                'credit' => $expense->amount,
+            ],
+        ]);
+
+        Log::info('Jurnal berhasil diperbarui untuk BookingCost #' . $expense->id);
+    }
+
+    protected function getCashAccountId()
+    {
+        // Misalnya pakai kode akun 1-001 atau cari by name
+        return Account::where('code', '1-001')->value('id');
+    }
+
+
+
+}

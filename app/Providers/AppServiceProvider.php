@@ -5,6 +5,8 @@ namespace App\Providers;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
+use App\Models\Booking;
+use App\Observers\BookingObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,6 +23,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Booking::observe(BookingObserver::class);
+
         Paginator::useBootstrapFive();
 
         if (env('APP_ENV') !== 'local') {

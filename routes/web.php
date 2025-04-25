@@ -15,9 +15,12 @@ use App\Http\Controllers\Backend\Invoice\InvoiceController;
 use App\Http\Controllers\Backend\Vehicle\VehicleController;
 use App\Http\Controllers\Agen\Core\BookingServiceController;
 use App\Http\Controllers\Agen\Core\PackageServiceController;
+use App\Http\Controllers\Backend\Accounting\LedgerController;
+use App\Http\Controllers\Backend\Accounting\ReportController;
 use App\Http\Controllers\Backend\Facility\FacilityController;
+use App\Http\Controllers\Backend\Accounting\AccountController;
+use App\Http\Controllers\Backend\Accounting\ExpenseController;
 use App\Http\Controllers\Backend\Custom\CustomPackageController;
-use App\Http\Controllers\Backend\Accounting\AccountingController;
 use App\Http\Controllers\Backend\Permission\PermissionController;
 use App\Http\Controllers\Backend\ReserveFee\ReserveFeeController;
 use App\Http\Controllers\Backend\ServiceFee\ServiceFeeController;
@@ -27,6 +30,7 @@ use App\Http\Controllers\Backend\PackageTour\GenerateAllPackageController;
 use App\Http\Controllers\Backend\PackageTour\GenerateTwodayPackageController;
 use App\Http\Controllers\Backend\PackageTour\GenerateFourdayPackageController;
 use App\Http\Controllers\Backend\PackageTour\GenerateThreedayPackageController;
+
 
 Route::get('/', function () {
     return view('frontend.index');
@@ -308,11 +312,36 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/add/invoice', 'createInvoice')->name('add.invoice');
     });
 
-    // Accounting all Route
-    Route::controller(AccountingController::class)->group(function () {
+    // Expenses all Route
+    Route::controller(ExpenseController::class)->group(function () {
+        Route::get('/all/expenses', 'index')->name('all.expenses');
+        Route::get('/add/expenses/{id}', 'create')->name('expenses.create');
+        Route::post('/store/expense', 'store')->name('expense.store');
+        Route::get('show/booking/expenses/{id}', 'show')->name('expenses.show');
+        Route::get('/booking/journals/{id}', 'showJournals')->name('booking.journals');
+        Route::get('/edit/expense/{id}', 'edit')->name('edit.expense');
+        Route::put('/update/expense/{id}', 'update')->name('update.expense');
+        Route::get('/admin/fix-journal-booking/{id}', 'fixJournalEntriesBookingId')->name('admin.fix.journal.booking');
 
-        Route::get('/all/accountings', 'index')->name('all.accountings');
     });
+
+    // Account all Route
+    Route::controller(AccountController::class)->group(function () {
+        Route::get('/all/accounts', 'index')->name('all.accounts');
+        Route::post('/store/accounts', 'store')->name('account.store');
+        Route::put('/update/accounts/{id}', 'update')->name('update.accounts');
+    });
+
+    // Ledger all Route
+    Route::controller(LedgerController::class)->group(function () {
+        Route::get('/ledger', 'index')->name('ledger.index');
+    });
+
+    // Report all Route
+    Route::controller(ReportController::class)->group(function () {
+        Route::get('report/hpp', 'hpp')->name('report.hpp');
+    });
+
 });
 
 Route::get('/login', [AgenServiceController::class, 'AgenLogin'])->name('login');
