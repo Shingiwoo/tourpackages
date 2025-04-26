@@ -28,13 +28,13 @@ class BookingAccountingService
         }
     }
 
-    protected function deleteExistingBookingJournals(Booking $booking)
-    {
-        // Hapus journal entries dan journal yang terkait booking
-        Journal::where('reference_type', 'booking')
-               ->where('reference_id', $booking->id)
-               ->delete();
-    }
+    // protected function deleteExistingBookingJournals(Booking $booking)
+    // {
+    //     // Hapus journal entries dan journal yang terkait booking
+    //     Journal::where('reference_type', 'booking')
+    //            ->where('reference_id', $booking->id)
+    //            ->delete();
+    // }
 
     protected function handleDownPayment(Booking $booking)
     {
