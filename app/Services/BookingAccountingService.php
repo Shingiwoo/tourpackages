@@ -12,6 +12,9 @@ class BookingAccountingService
 {
     public function handle(Booking $booking)
     {
+        // Hapus semua journal terkait booking ini sebelum membuat baru
+        $this->deleteExistingBookingJournals($booking);
+
         switch ($booking->status) {
             case 'booked':
                 $this->handleDownPayment($booking);
@@ -23,6 +26,14 @@ class BookingAccountingService
                 $this->handleRevenueRecognition($booking);
                 break;
         }
+    }
+
+    protected function deleteExistingBookingJournals(Booking $booking)
+    {
+        // Hapus journal entries dan journal yang terkait booking
+        Journal::where('reference_type', 'booking')
+               ->where('reference_id', $booking->id)
+               ->delete();
     }
 
     protected function handleDownPayment(Booking $booking)
