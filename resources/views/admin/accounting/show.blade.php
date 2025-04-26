@@ -43,6 +43,7 @@
                                     <tr>
                                         <td style="width: 10%"><a type="button" href="{{ route('edit.expense', $expense->id) }}" class="badge bg-danger bg-glow"> <i class="ti ti-edit"></i> Edit
                                             </a></td>
+                                        <td class="text-center align-content-center text-uppercase">{{ $expense->date }}</td>
                                         <td class="text-start align-content-center text-uppercase">
                                             <b>{{ $expense->description }}</b> <br>
                                             {{ $expense->account->code }} | {{ $expense->account->name }}

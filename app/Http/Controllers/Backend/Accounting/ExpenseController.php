@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Backend\Accounting;
 
+use Carbon\Carbon;
 use App\Models\Account;
 use App\Models\Booking;
-use App\Models\Journal;
 use App\Models\BookingCost;
 use Illuminate\Http\Request;
 use App\Helpers\FinanceHelper;
@@ -38,6 +38,7 @@ class ExpenseController extends Controller
     {
         $validatedData = $request->validate([
             'expenses' => 'required|array|min:1',
+            'expenses.*.Date' => 'required',
             'expenses.*.BookingId' => 'required|integer|exists:bookings,id',
             'expenses.*.AccountId' => 'required|integer|exists:accounts,id',
             'expenses.*.ExpenDescript' => 'required|string|max:255',
@@ -53,12 +54,14 @@ class ExpenseController extends Controller
             foreach ($validatedData['expenses'] as $index => $expense) {
                 $amount = $expense['Amount'];
                 $amount = str_replace(',', '', $amount);
+                $date = Carbon::createFromFormat('m/d/Y', $expense['Date'])->format('Y-m-d');
 
                 if ($amount <= 0) {
                     throw new \Exception("Amount must be greater than 0 for item " . ($index + 1));
                 }
 
                 $expenseData = [
+                    'date' => $date,
                     'booking_id' => $expense['BookingId'],
                     'account_id' => $expense['AccountId'],
                     'description' => $expense['ExpenDescript'],
@@ -187,32 +190,35 @@ class ExpenseController extends Controller
     public function update(Request $request, $id)
     {
         $validatedData = $request->validate([
+            'Date' => 'required',
             'BookingId' => 'required|integer|exists:bookings,id',
             'AccountId' => 'required|integer|exists:accounts,id',
             'ExpenDescript' => 'required|string|max:255',
             'Amount' => 'required|string',
             'NewBookingId' => 'nullable|integer|exists:bookings,id',
         ]);
-    
+
         try {
             $amount = str_replace(',', '', $validatedData['Amount']);
-    
+            $date = Carbon::createFromFormat('m/d/Y', $validatedData['Date'])->format('Y-m-d');
+
             $expense = BookingCost::findOrFail($id);
             $oldBookingId = $expense->booking_id;
             $newBookingId = $validatedData['NewBookingId'] ?? $oldBookingId;
-    
+
             $expense->update([
+                'date' => $date,
                 'booking_id' => $newBookingId,
                 'account_id' => $validatedData['AccountId'],
                 'description' => $validatedData['ExpenDescript'],
                 'amount' => $amount,
             ]);
-    
+
             $journalService = new JournalService();
             $journalService->updateExpenseJournal($expense, $oldBookingId);
-    
+
             Log::info('Berhasil update:', $expense->toArray());
-    
+
             return redirect()->route('all.expenses')->with([
                 'message' =>  'Expense item has been updated successfully',
                 'alert-type' => 'success',
@@ -222,7 +228,6 @@ class ExpenseController extends Controller
                 'error' => $e->getMessage(),
                 'stack' => $e->getTraceAsString(),
                 'request' => $request->except('_token'),
-                'user' => auth()->user() ? auth()->user()->id : 'guest',
             ]);
             return back()->withErrors($e->validator)->withInput();
         } catch (\Exception $e) {

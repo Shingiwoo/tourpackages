@@ -14,7 +14,13 @@
                                     <div class="p-6 row w-100">
                                         <div class="row">
                                             <input type="hidden" name="BookingId" value="{{ $expense->booking_id }}">
-                                            <div class="mb-4 col-12 col-md-6">
+
+                                            <div class="mb-4 col-12 col-md-4">
+                                                <label for="bs-datepicker-autoclose" class="form-label">Date</label>
+                                                <input type="text" id="bs-datepicker-autoclose" placeholder="MM/DD/YYYY" value="{{ $expense->date }}"
+                                                    class="form-control" name="Date" required />
+                                            </div>
+                                            <div class="mb-4 col-12 col-md-4">
                                                 <label class="form-label">Account Name</label>
                                                 <select required name="AccountId" class="select2 form-select">
                                                     <option value="">Account Name</option>
@@ -25,7 +31,7 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div class="mb-4 col-12 col-md-6">
+                                            <div class="mb-4 col-12 col-md-4">
                                                 <label class="form-label">Cost</label>
                                                 <input type="text" class="form-control numeral-mask" name="Amount"
                                                     value="{{ $expense->amount }}" required />
@@ -56,7 +62,7 @@
                                                 <select name="NewBookingId" class="select form-select">
                                                     <option value="">-- Tidak Dipindah --</option>
                                                     @foreach ($bookings as $booking)
-                                                        <option value="{{ $booking->id }}" 
+                                                        <option value="{{ $booking->id }}"
                                                         {{ $booking->id == $expense->booking_id ? 'selected' : '' }}>
                                                         {{ $booking->code_booking }} - {{ $booking->package_name }}
                                                         </option>
