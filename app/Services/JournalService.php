@@ -14,11 +14,12 @@ class JournalService
     public function createExpenseJournal(BookingCost $bookingCost)
     {
         DB::transaction(function () use ($bookingCost) {
-            // Hapus journal lama dengan reference_id yang sama
+            // Hapus semua journal dengan reference_id yang sama sebelum membuat baru
             Journal::where('reference_type', 'booking_cost')
-                   ->where('reference_id', $bookingCost->id)
-                   ->delete();
+                ->where('reference_id', $bookingCost->id)
+                ->delete();
 
+            // Buat journal baru
             $journal = Journal::create([
                 'date' => $bookingCost->date,
                 'description' => $bookingCost->description,
