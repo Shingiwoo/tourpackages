@@ -30,10 +30,10 @@ class BookingAccountingService
 
     protected function deleteExistingBookingJournals(Booking $booking)
     {
-        // Hapus journal entries dan journal yang terkait booking
+        // Hapus semua journal dan entries terkait booking ini
         Journal::where('reference_type', 'booking')
-               ->where('reference_id', $booking->id)
-               ->delete();
+            ->where('reference_id', $booking->id)
+            ->delete();
     }
 
     protected function handleDownPayment(Booking $booking)
