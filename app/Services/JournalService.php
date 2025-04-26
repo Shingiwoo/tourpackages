@@ -11,9 +11,14 @@ use Illuminate\Support\Facades\Log;
 
 class JournalService
 {
-    public function createExpenseJournal($bookingCost)
+    public function createExpenseJournal(BookingCost $bookingCost)
     {
         DB::transaction(function () use ($bookingCost) {
+            // Hapus journal lama dengan reference_id yang sama
+            Journal::where('reference_type', 'booking_cost')
+                   ->where('reference_id', $bookingCost->id)
+                   ->delete();
+
             $journal = Journal::create([
                 'date' => $bookingCost->date,
                 'description' => $bookingCost->description,
@@ -21,18 +26,19 @@ class JournalService
                 'reference_id' => $bookingCost->id,
             ]);
 
-            // Debit ke akun biaya (akun beban)
+            // Buat journal entries
             JournalEntry::create([
                 'journal_id' => $journal->id,
                 'account_id' => $bookingCost->account_id,
+                'booking_id' => $bookingCost->booking_id,
                 'debit' => $bookingCost->amount,
                 'credit' => 0,
             ]);
 
-            // Kredit ke kas/bank
             JournalEntry::create([
                 'journal_id' => $journal->id,
-                'account_id' => 1, // ID akun Kas/Bank (1-001)
+                'account_id' => $this->getCashAccountId(),
+                'booking_id' => $bookingCost->booking_id,
                 'debit' => 0,
                 'credit' => $bookingCost->amount,
             ]);
