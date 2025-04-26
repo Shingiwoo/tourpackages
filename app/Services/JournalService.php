@@ -15,7 +15,7 @@ class JournalService
     {
         DB::transaction(function () use ($bookingCost) {
             $journal = Journal::create([
-                'date' => now()->toDateString(),
+                'date' => $bookingCost->date,
                 'description' => $bookingCost->description,
                 'reference_type' => 'booking_cost',
                 'reference_id' => $bookingCost->id,
@@ -49,16 +49,28 @@ class JournalService
                 ->delete();
         }
 
-        // Cari jurnal yang sudah ada untuk pengeluaran ini (by reference)
-        $journal = Journal::firstOrCreate([
-            'reference_type' => BookingCost::class,
-            'reference_id' => $expense->id,
-        ], [
-            'description' => $expense->description,
-            'date' => now(),
-        ]);
+        // Cari jurnal yang sudah ada
+        $journal = Journal::where('reference_type', BookingCost::class)
+            ->where('reference_id', $expense->id)
+            ->first();
 
-        // Hapus semua entry sebelumnya (safety untuk update)
+        if ($journal) {
+            // Update date dan description kalau jurnal sudah ada
+            $journal->update([
+                'description' => $expense->description,
+                'date' => $expense->date,
+            ]);
+        } else {
+            // Kalau belum ada, buat baru
+            $journal = Journal::create([
+                'description' => $expense->description,
+                'date' => $expense->date,
+                'reference_type' => BookingCost::class,
+                'reference_id' => $expense->id,
+            ]);
+        }
+
+        // Hapus semua entry sebelumnya
         $journal->entries()->delete();
 
         // Buat ulang journal entries
@@ -79,6 +91,7 @@ class JournalService
 
         Log::info('Jurnal berhasil diperbarui untuk BookingCost #' . $expense->id);
     }
+
 
     protected function getCashAccountId()
     {

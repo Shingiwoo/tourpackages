@@ -23,7 +23,12 @@
                                 <div class="p-6 row w-100">
                                     <div class="row">
                                         <input type="hidden" name="expenses[0][BookingId]" value="{{ $booking->id ?? '' }}">
-                                        <div class="mb-4 col-12 col-md-6">
+                                        <div class="mb-4 col-12 col-md-4">
+                                            <label for="bs-datepicker-autoclose" class="form-label">Date</label>
+                                            <input type="text" id="bs-datepicker-autoclose" placeholder="MM/DD/YYYY"
+                                                class="form-control" name="expenses[0][Date]" required />
+                                        </div>
+                                        <div class="mb-4 col-12 col-md-4">
                                             <label class="form-label">Account Name</label>
                                             <select required name="expenses[0][AccountId]" class="select form-select">
                                                 <option value="">Select Account</option>
@@ -32,7 +37,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
-                                        <div class="mb-4 col-12 col-md-6">
+                                        <div class="mb-4 col-12 col-md-4">
                                             <label class="form-label">Cost</label>
                                             <input type="text" class="form-control numeral-mask" name="expenses[0][Amount]" placeholder="500,000" required />
                                         </div>
@@ -73,9 +78,9 @@
             const expenseItemsContainer = document.getElementById('expenseItemsContainer');
             const originalItem = expenseItemsContainer.querySelector('.expense-item');
             const bookingId = "{{ $booking->id ?? '' }}";
-    
+
             let itemCount = expenseItemsContainer.querySelectorAll('.expense-item').length;
-    
+
             function initNumeralMask() {
                 const numeralMaskInputs = document.querySelectorAll('.numeral-mask');
                 numeralMaskInputs.forEach(input => {
@@ -90,11 +95,11 @@
                     });
                 });
             }
-    
+
             addItemButton.addEventListener('click', function() {
                 const newItem = originalItem.cloneNode(true);
                 itemCount++;
-    
+
                 const inputs = newItem.querySelectorAll('input, select, textarea');
                 inputs.forEach(input => {
                     const name = input.getAttribute('name');
@@ -107,25 +112,25 @@
                         input.selectedIndex = 0;
                     }
                 });
-    
+
                 // Secara eksplisit set nilai BookingId pada item baru
                 const bookingIdInput = newItem.querySelector('[name^="expenses[' + (itemCount - 1) + '][BookingId]"]');
                 if (bookingIdInput) {
                     bookingIdInput.value = bookingId;
                 }
-    
+
                 if (!newItem.querySelector('.remove-item')) {
                     const removeButton = document.createElement('div');
                     removeButton.classList.add('p-1', 'd-flex', 'flex-column', 'align-items-center', 'justify-content-between', 'border-start');
                     removeButton.innerHTML = '<i class="cursor-pointer ti ti-x ti-lg remove-item"></i>';
                     newItem.appendChild(removeButton);
                 }
-    
+
                 expenseItemsContainer.appendChild(newItem);
                 addRemoveItemListeners();
                 initNumeralMask();
             });
-    
+
             function addRemoveItemListeners() {
                 const removeItemButtons = document.querySelectorAll('.remove-item');
                 removeItemButtons.forEach(button => {
@@ -135,7 +140,7 @@
                     });
                 });
             }
-    
+
             addRemoveItemListeners();
             initNumeralMask();
         });
