@@ -45,6 +45,13 @@ class AccountSeeder extends Seeder
             ['code' => '5-001-005', 'name' => 'Beban Penginapan', 'type' => 'expense', 'category' => 'Cost of Sales'],
             ['code' => '5-001-006', 'name' => 'Beban Tiket', 'type' => 'expense', 'category' => 'Cost of Sales'],
             ['code' => '5-001-007', 'name' => 'Beban Gaji Supir perJob', 'type' => 'expense', 'category' => 'Cost of Sales'],
+            ['code' => '5-001-008', 'name' => 'Beban Transport Team ', 'type' => 'expense', 'category' => 'Cost of Sales'],
+            ['code' => '5-001-009', 'name' => 'Beban Konsumsi Team', 'type' => 'expense', 'category' => 'Cost of Sales'],
+            ['code' => '5-001-010', 'name' => 'Beban Penginapan Team', 'type' => 'expense', 'category' => 'Cost of Sales'],
+            ['code' => '5-001-011', 'name' => 'Beban bbm Team', 'type' => 'expense', 'category' => 'Cost of Sales'],
+            ['code' => '5-001-012', 'name' => 'Beban Baju Kerja Team', 'type' => 'expense', 'category' => 'Cost of Sales'],
+            ['code' => '5-001-013', 'name' => 'Beban Biaya Alat Pendukung', 'type' => 'expense', 'category' => 'Cost of Sales'],
+            ['code' => '5-001-014', 'name' => 'Beban Fasilitas Tour', 'type' => 'expense', 'category' => 'Cost of Sales'],
 
             // BIAYA OPERASIONAL
             ['code' => '5-002-001', 'name' => 'Beban Marketing', 'type' => 'expense', 'category' => 'Operating Expense'],

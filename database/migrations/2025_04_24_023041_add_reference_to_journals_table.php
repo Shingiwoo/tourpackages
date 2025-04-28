@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('journals', function (Blueprint $table) {
             $table->string('reference_type')->nullable()->after('description');
             $table->unsignedBigInteger('reference_id')->nullable()->after('reference_type');
-            
+
 
 
             // Optional: index untuk performa
@@ -28,7 +28,8 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('journals', function (Blueprint $table) {
-            //
+            $table->dropColumn('reference_type');
+            $table->dropColumn('reference_id');
         });
     }
 };

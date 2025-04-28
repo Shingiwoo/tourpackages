@@ -322,6 +322,7 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/edit/expense/{id}', 'edit')->name('edit.expense');
         Route::put('/update/expense/{id}', 'update')->name('update.expense');
         Route::get('/admin/fix-journal-booking/{id}', 'fixJournalEntriesBookingId')->name('admin.fix.journal.booking');
+        Route::delete('/delete/expense/{id}', 'destroy')->name('delete.expense');
 
     });
 

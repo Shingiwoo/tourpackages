@@ -10,7 +10,6 @@
                     <p class="mb-0">Jurnal biaya operasional sesuai dengan kode akun</p>                    
                 </div>
                 <div class="flex-wrap gap-4 d-flex align-content-center">                    
-                    <a href="{{ route('admin.fix.journal.booking', ['id' => $booking->id]) }}" class="btn btn-primary">Fix HPP</a>
                     <a href="{{ route('all.expenses') }}" class="btn btn-secondary">Back</a>
                 </div>
             </div>

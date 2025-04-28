@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('booking_costs', function (Blueprint $table) {
-            $table->date('date')->nullable()->after('id');;
+        Schema::table('journals', function (Blueprint $table) {
+            $table->string('journal_type', 50)->nullable()->after('reference_id')->index();
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('booking_costs', function (Blueprint $table) {
-            $table->dropColumn('date');
+        Schema::table('journals', function (Blueprint $table) {
+            $table->dropColumn('journal_type');
         });
     }
 };

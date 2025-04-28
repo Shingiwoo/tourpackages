@@ -24,9 +24,9 @@
                                     <div class="row">
                                         <input type="hidden" name="expenses[0][BookingId]" value="{{ $booking->id ?? '' }}">
                                         <div class="mb-4 col-12 col-md-4">
-                                            <label for="bs-datepicker-autoclose" class="form-label">Date</label>
-                                            <input type="text" id="bs-datepicker-autoclose" placeholder="MM/DD/YYYY"
-                                                class="form-control" name="expenses[0][Date]" required />
+                                            <label for="bs-datepicker-autoclose-0" class="form-label">Date</label>
+                                            <input type="text" id="bs-datepicker-autoclose-0" placeholder="MM/DD/YYYY"
+                                                class="form-control datepicker" name="expenses[0][Date]" required />
                                         </div>
                                         <div class="mb-4 col-12 col-md-4">
                                             <label class="form-label">Account Name</label>
@@ -50,7 +50,7 @@
                                     </div>
                                 </div>
                                 <div class="p-1 d-flex flex-column align-items-center justify-content-between border-start">
-                                    <i class="cursor-pointer ti ti-x ti-lg" data-repeater-delete></i>
+                                    <i class="cursor-pointer ti ti-x ti-lg remove-item"></i>
                                 </div>
                             </div>
                         </div>
@@ -81,25 +81,64 @@
 
             let itemCount = expenseItemsContainer.querySelectorAll('.expense-item').length;
 
-            function initNumeralMask() {
-                const numeralMaskInputs = document.querySelectorAll('.numeral-mask');
-                numeralMaskInputs.forEach(input => {
-                    new Cleave(input, {
-                        numeral: true,
-                        numeralThousandsGroupStyle: 'thousand',
-                        delimiter: ',',
-                        numeralDecimalMark: '.',
-                        onValueChanged: function (e) {
-                            // Anda mungkin perlu melakukan sesuatu dengan nilai yang diformat di sini
-                        }
+            // Fungsi untuk menginisialisasi datepicker
+            function initDatepicker() {
+                const datepickerInputs = document.querySelectorAll('.datepicker');
+                datepickerInputs.forEach((input, index) => {
+                    // Pastikan ID unik untuk setiap datepicker
+                    input.id = `bs-datepicker-autoclose-${index}`;
+                    // Hancurkan instance datepicker sebelumnya jika ada
+                    if ($(input).data('datepicker')) {
+                        $(input).datepicker('destroy');
+                    }
+                    // Inisialisasi datepicker
+                    $(input).datepicker({
+                        autoclose: true,
+                        format: 'mm/dd/yyyy'
                     });
                 });
             }
 
+            // Fungsi untuk menginisialisasi numeral mask
+            function initNumeralMask() {
+                const numeralMaskInputs = document.querySelectorAll('.numeral-mask');
+                numeralMaskInputs.forEach(input => {
+                    // Hancurkan instance Cleave sebelumnya jika ada
+                    if (input.cleave) {
+                        input.cleave.destroy();
+                    }
+                    // Inisialisasi Cleave
+                    new Cleave(input, {
+                        numeral: true,
+                        numeralThousandsGroupStyle: 'thousand',
+                        delimiter: ',',
+                        numeralDecimalMark: '.'
+                    });
+                });
+            }
+
+            // Fungsi untuk menambahkan event listener tombol hapus
+            function addRemoveItemListeners() {
+                const removeItemButtons = document.querySelectorAll('.remove-item');
+                removeItemButtons.forEach(button => {
+                    button.removeEventListener('click', removeItemHandler); // Hindari duplikasi listener
+                    button.addEventListener('click', removeItemHandler);
+                });
+            }
+
+            function removeItemHandler(event) {
+                event.target.closest('.expense-item').remove();
+                itemCount--;
+                // Update ulang ID datepicker untuk menjaga urutan
+                initDatepicker();
+            }
+
+            // Event listener untuk tombol "Add Item"
             addItemButton.addEventListener('click', function() {
                 const newItem = originalItem.cloneNode(true);
                 itemCount++;
 
+                // Update nama dan nilai input
                 const inputs = newItem.querySelectorAll('input, select, textarea');
                 inputs.forEach(input => {
                     const name = input.getAttribute('name');
@@ -113,36 +152,34 @@
                     }
                 });
 
-                // Secara eksplisit set nilai BookingId pada item baru
-                const bookingIdInput = newItem.querySelector('[name^="expenses[' + (itemCount - 1) + '][BookingId]"]');
+                // Set nilai BookingId
+                const bookingIdInput = newItem.querySelector(`[name="expenses[${itemCount - 1}][BookingId]"]`);
                 if (bookingIdInput) {
                     bookingIdInput.value = bookingId;
                 }
 
-                if (!newItem.querySelector('.remove-item')) {
-                    const removeButton = document.createElement('div');
-                    removeButton.classList.add('p-1', 'd-flex', 'flex-column', 'align-items-center', 'justify-content-between', 'border-start');
-                    removeButton.innerHTML = '<i class="cursor-pointer ti ti-x ti-lg remove-item"></i>';
-                    newItem.appendChild(removeButton);
+                // Pastikan tombol hapus ada
+                let removeButton = newItem.querySelector('.remove-item');
+                if (!removeButton) {
+                    const removeButtonDiv = document.createElement('div');
+                    removeButtonDiv.classList.add('p-1', 'd-flex', 'flex-column', 'align-items-center', 'justify-content-between', 'border-start');
+                    removeButtonDiv.innerHTML = '<i class="cursor-pointer ti ti-x ti-lg remove-item"></i>';
+                    newItem.appendChild(removeButtonDiv);
                 }
 
+                // Tambahkan item baru ke container
                 expenseItemsContainer.appendChild(newItem);
-                addRemoveItemListeners();
+
+                // Inisialisasi ulang plugin
+                initDatepicker();
                 initNumeralMask();
+                addRemoveItemListeners();
             });
 
-            function addRemoveItemListeners() {
-                const removeItemButtons = document.querySelectorAll('.remove-item');
-                removeItemButtons.forEach(button => {
-                    button.addEventListener('click', function(event) {
-                        event.target.closest('.expense-item').remove();
-                        itemCount--;
-                    });
-                });
-            }
-
-            addRemoveItemListeners();
+            // Inisialisasi awal
+            initDatepicker();
             initNumeralMask();
+            addRemoveItemListeners();
         });
     </script>
 @endsection

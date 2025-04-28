@@ -10,14 +10,14 @@ class Journal extends Model
     use HasFactory;
 
     protected $fillable = [
-        'description', 'date', 'reference_type', 'reference_id'
+        'description', 'date', 'reference_type', 'reference_id', 'journal_type'
     ];
 
     public function entries()
     {
         return $this->hasMany(JournalEntry::class);
     }
-    
+
     public function reference()
     {
         return $this->morphTo();
