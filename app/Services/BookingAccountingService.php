@@ -3,89 +3,132 @@
 namespace App\Services;
 
 use App\Models\Booking;
-use App\Models\Journal;
-use App\Models\JournalEntry;
-use App\Models\Account;
+use App\Services\Accounting\JournalBuilderService;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class BookingAccountingService
 {
-    public function handle(Booking $booking)
-    {
-        // Hapus semua journal terkait booking ini sebelum membuat baru
-        $this->deleteExistingBookingJournals($booking);
+    protected $journalBuilder;
 
-        switch ($booking->status) {
-            case 'booked':
-                $this->handleDownPayment($booking);
-                break;
-            case 'paid':
-                $this->handleFullPayment($booking);
-                break;
-            case 'finished':
-                $this->handleRevenueRecognition($booking);
-                break;
+    public function __construct(JournalBuilderService $journalBuilder)
+    {
+        $this->journalBuilder = $journalBuilder;
+    }
+
+    /**
+     * Handle booking accounting based on status
+     */
+    public function handle(Booking $booking): void
+    {
+        try {
+            match ($booking->status) {
+                'booked' => $this->handleDownPayment($booking),
+                'paid' => $this->handleFullPayment($booking),
+                'finished' => $this->handleRevenueRecognition($booking),
+                default => Log::warning('Status booking tidak dikenali', [
+                    'booking_id' => $booking->id,
+                    'status' => $booking->status
+                ])
+            };
+        } catch (\Exception $e) {
+            Log::error('Gagal memproses akuntansi booking', [
+                'booking_id' => $booking->id,
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
         }
     }
 
-    protected function deleteExistingBookingJournals(Booking $booking)
+    protected function handleDownPayment(Booking $booking): void
     {
-        // Hapus semua journal dan entries terkait booking ini
-        Journal::where('reference_type', 'booking')
-            ->where('reference_id', $booking->id)
-            ->delete();
-    }
-
-    protected function handleDownPayment(Booking $booking)
-    {
-        $journal = Journal::create([
+        $this->journalBuilder->create([
+            'date' => Carbon::now(),
             'description' => 'DP Booking #' . $booking->code_booking,
-            'date' => Carbon::now(),
+            'reference_type' => Booking::class,
+            'reference_id' => $booking->id,
+            'journal_type' => 'dp', // <-- ini
+            'entries' => [
+                [
+                    'account_code' => '1-001',
+                    'booking_id' => $booking->id,
+                    'debit' => $booking->down_paymet,
+                    'credit' => 0,
+                ],
+                [
+                    'account_code' => '2-001',
+                    'booking_id' => $booking->id,
+                    'debit' => 0,
+                    'credit' => $booking->down_paymet,
+                ],
+            ],
         ]);
-
-        $this->createEntry($journal->id, $booking->id, '1-001', $booking->down_paymet, 0); // Kas
-        $this->createEntry($journal->id, $booking->id, '2-001', 0, $booking->down_paymet); // Utang DP
     }
 
-    protected function handleFullPayment(Booking $booking)
+    protected function handleFullPayment(Booking $booking): void
     {
-        $journal = Journal::create([
+        $this->journalBuilder->create([
+            'date' => Carbon::now(),
             'description' => 'Pelunasan Booking #' . $booking->code_booking,
-            'date' => Carbon::now(),
+            'reference_type' => Booking::class,
+            'reference_id' => $booking->id,
+            'journal_type' => 'pelunasan',
+            'entries' => [
+                [
+                    'account_code' => '1-001',
+                    'booking_id' => $booking->id,
+                    'debit' => $booking->remaining_costs,
+                    'credit' => 0,
+                ],
+                [
+                    'account_code' => '2-001',
+                    'booking_id' => $booking->id,
+                    'debit' => 0,
+                    'credit' => $booking->remaining_costs,
+                ],
+            ],
         ]);
-
-        $this->createEntry($journal->id, $booking->id, '1-001', $booking->remaining_costs, 0); // Kas
-        $this->createEntry($journal->id, $booking->id, '2-001', 0, $booking->remaining_costs); // Utang DP
     }
 
-    protected function handleRevenueRecognition(Booking $booking)
+    protected function handleRevenueRecognition(Booking $booking): void
     {
-        $journal = Journal::create([
-            'description' => 'Pengakuan Pendapatan Booking #' . $booking->code_booking,
-            'date' => Carbon::now(),
-        ]);
+        $entries = [
+            [
+                'account_code' => '2-001',
+                'booking_id' => $booking->id,
+                'debit' => $booking->total_price,
+                'credit' => 0,
+            ],
+            [
+                'account_code' => '4-001',
+                'booking_id' => $booking->id,
+                'debit' => 0,
+                'credit' => $booking->total_price,
+            ],
+        ];
 
-        // Pendapatan
-        $this->createEntry($journal->id, $booking->id, '2-001', $booking->total_price, 0); // DP dikurangi
-        $this->createEntry($journal->id, $booking->id, '4-001', 0, $booking->total_price); // Pendapatan
-
-        // HPP (BookingCost)
         foreach ($booking->costs as $cost) {
-            $this->createEntry($journal->id, $booking->id, $cost->account->code, $cost->amount, 0);
-            $this->createEntry($journal->id, $booking->id, '1-001', 0, $cost->amount); // Kredit kas
+            $entries[] = [
+                'account_code' => $cost->account->code,
+                'booking_id' => $booking->id,
+                'debit' => $cost->amount,
+                'credit' => 0,
+            ];
+            $entries[] = [
+                'account_code' => '1-001',
+                'booking_id' => $booking->id,
+                'debit' => 0,
+                'credit' => $cost->amount,
+            ];
         }
-    }
 
-    protected function createEntry($journalId, $bookingId, $accountCode, $debit, $credit)
-    {
-        $account = Account::where('code', $accountCode)->firstOrFail();
-
-        JournalEntry::create([
-            'journal_id' => $journalId,
-            'booking_id' => $bookingId,
-            'account_id' => $account->id,
-            'debit' => $debit,
-            'credit' => $credit,
+        $this->journalBuilder->create([
+            'date' => Carbon::now(),
+            'description' => 'Pengakuan Pendapatan Booking #' . $booking->code_booking,
+            'reference_type' => Booking::class,
+            'reference_id' => $booking->id,
+            'journal_type' => 'revenue',
+            'entries' => $entries,
         ]);
     }
 }

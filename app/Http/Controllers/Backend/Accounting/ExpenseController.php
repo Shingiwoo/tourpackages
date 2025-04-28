@@ -8,10 +8,12 @@ use App\Models\Booking;
 use App\Models\BookingCost;
 use Illuminate\Http\Request;
 use App\Helpers\FinanceHelper;
-use App\Services\JournalService;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Artisan;
+use App\Services\Accounting\BookingCostService;
+use App\Services\Accounting\JournalBuilderService;
 
 class ExpenseController extends Controller
 {
@@ -49,7 +51,7 @@ class ExpenseController extends Controller
             $savedItems = [];
 
             // Inisialisasi JournalService
-            $journalService = new JournalService();
+            $journalBuilder = app(JournalBuilderService::class);
 
             foreach ($validatedData['expenses'] as $index => $expense) {
                 $amount = $expense['Amount'];
@@ -77,7 +79,8 @@ class ExpenseController extends Controller
                     $savedItem = BookingCost::create($expenseData);
 
                     if ($savedItem) {
-                        $journalService->createExpenseJournal($savedItem);
+                        $bookingCostService = new BookingCostService($journalBuilder);
+                        $bookingCostService->save($savedItem, $expenseData);
                     }
 
                     // Log the successful save
@@ -183,7 +186,6 @@ class ExpenseController extends Controller
         return view('admin.accounting.edit', compact('expense', 'bookings', 'accounts'));
     }
 
-
     /**
      * Update the specified resource in storage.
      */
@@ -200,27 +202,29 @@ class ExpenseController extends Controller
 
         try {
             $amount = str_replace(',', '', $validatedData['Amount']);
-            $date = Carbon::createFromFormat('m/d/Y', $validatedData['Date'])->format('Y-m-d');
 
             $expense = BookingCost::findOrFail($id);
             $oldBookingId = $expense->booking_id;
             $newBookingId = $validatedData['NewBookingId'] ?? $oldBookingId;
 
-            $expense->update([
-                'date' => $date,
-                'booking_id' => $newBookingId,
-                'account_id' => $validatedData['AccountId'],
-                'description' => $validatedData['ExpenDescript'],
-                'amount' => $amount,
-            ]);
+            DB::transaction(function () use ($expense, $validatedData, $amount, $newBookingId) {
+                $expense->update([
+                    'date' => $validatedData['Date'],
+                    'booking_id' => $newBookingId,
+                    'account_id' => $validatedData['AccountId'],
+                    'description' => $validatedData['ExpenDescript'],
+                    'amount' => $amount,
+                ]);
 
-            $journalService = new JournalService();
-            $journalService->updateExpenseJournal($expense, $oldBookingId);
+                // Gunakan dependency injection daripada instantiasi manual
+                $journalBuilder = app(JournalBuilderService::class);
+                $journalBuilder->createBookingCostJournal($expense);
+            });
 
             Log::info('Berhasil update:', $expense->toArray());
 
             return redirect()->route('all.expenses')->with([
-                'message' =>  'Expense item has been updated successfully',
+                'message' => 'Expense item has been updated successfully',
                 'alert-type' => 'success',
             ]);
         } catch (\Illuminate\Validation\ValidationException $e) {
@@ -245,7 +249,6 @@ class ExpenseController extends Controller
         }
     }
 
-
     public function showJournals($id)
     {
         $booking = Booking::with('journalEntries.account')->findOrFail($id);
@@ -259,15 +262,35 @@ class ExpenseController extends Controller
         ]);
     }
 
-
-
-    public function fixJournalEntriesBookingId($id)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($id)
     {
-        Artisan::call('fix:booking-journal-entries');
+        try {
+            $expense = BookingCost::findOrFail($id);
+            $expense->delete();
 
-        return redirect()->route('booking.journals', ['id' => $id])->with([
-            'message' => 'Booking Journal Entries successfully Fixed for Booking ID ' . $id,
-            'alert-type' => 'success',
-        ]);
+            // Hapus jurnal terkait
+            $journalBuilder = new JournalBuilderService();
+            $journalBuilder->cleanupOldJournals($expense);
+
+            // Respons untuk AJAX
+            return response()->json([
+                'message' => 'Expense item has been deleted successfully',
+                'alert-type' => 'success',
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Failed to delete expense', [
+                'error' => $e->getMessage(),
+                'stack' => $e->getTraceAsString(),
+            ]);
+
+            // Respons untuk AJAX
+            return response()->json([
+                'error' => 'Failed to delete expense: ' . $e->getMessage(),
+                'alert-type' => 'error',
+            ], 500);
+        }
     }
 }

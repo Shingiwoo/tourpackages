@@ -30,5 +30,12 @@ Tour packages management application is accessible, powerful, and provides tools
 - For local test change APP_ENV=local/production
 - For Show Bug APP_DEBUG=true if you in production APP_DEBUG=false
 
+
+## Command
+Fix JournalOldData
+Cara Pakai di Terminal
+php artisan journals:fix-old-data
+(Cuma lihat aja duplikatnya)
+
 ## License
 The Tour packages management application the software licensed under the MIT license.
