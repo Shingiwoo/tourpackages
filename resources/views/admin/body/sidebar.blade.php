@@ -136,6 +136,11 @@
                                 <div data-i18n="All Supplier">All Supplier</div>
                             </a>
                         </li>
+                        <li class="menu-item">
+                            <a href="{{ route('all.supplier-deposits') }}" class="menu-link">
+                                <div data-i18n="All Supplier Deposit">All Supplier Deposit</div>
+                            </a>
+                        </li>
                     @endif
                 </ul>
                 <!-- Supplier End -->
@@ -202,6 +207,14 @@
             <li class="menu-header small">
                 <span class="menu-header-text" data-i18n="Packages">Packages</span>
             </li>
+            @if (Auth::user()->can('package.generate'))
+                <li class="menu-item">
+                    <a href="{{ route('price.search') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-search"></i>
+                        <div data-i18n="Package Search">Package Search</div>
+                    </a>
+                </li>
+            @endif
             @if (Auth::user()->can('package.generate'))
                 <li class="menu-item">
                     <a href="{{ route('generate.all.packages') }}" class="menu-link">

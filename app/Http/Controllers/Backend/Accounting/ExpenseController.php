@@ -11,7 +11,6 @@ use App\Helpers\FinanceHelper;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Artisan;
 use App\Services\Accounting\BookingCostService;
 use App\Services\Accounting\JournalBuilderService;
 
@@ -216,9 +215,9 @@ class ExpenseController extends Controller
                     'amount' => $amount,
                 ]);
 
-                // Gunakan dependency injection daripada instantiasi manual
+                // Gunakan dependency injection
                 $journalBuilder = app(JournalBuilderService::class);
-                $journalBuilder->createBookingCostJournal($expense);
+                $journalBuilder->updateExpenseJournal($expense);
             });
 
             Log::info('Berhasil update');
