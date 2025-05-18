@@ -11,7 +11,6 @@ use App\Helpers\FinanceHelper;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Artisan;
 use App\Services\Accounting\BookingCostService;
 use App\Services\Accounting\JournalBuilderService;
 
@@ -84,12 +83,14 @@ class ExpenseController extends Controller
                     }
 
                     // Log the successful save
-                    Log::info('Berhasil simpan:', $savedItem->toArray());
+                    Log::info('Berhasil simpan');
+                    // Log::info('Berhasil simpan:', $savedItem->toArray());
+
                 } catch (\Exception $e) {
                     Log::error('Gagal simpan BookingCost:', [
                         'message' => $e->getMessage(),
                         'trace' => $e->getTraceAsString(),
-                        'data' => $expenseData,
+                        //'data' => $expenseData,
                     ]);
                 }
 
@@ -100,7 +101,7 @@ class ExpenseController extends Controller
                 $savedItems[] = $savedItem;
             }
 
-            return redirect()->route('all.expenses')->with([
+            return redirect()->back()->with([
                 'message' => count($savedItems) > 1
                     ? 'All expense items have been saved successfully'
                     : 'Expense item has been saved successfully',
@@ -110,16 +111,14 @@ class ExpenseController extends Controller
             Log::error('Expense validation failed', [
                 'error' => $e->getMessage(),
                 'stack' => $e->getTraceAsString(),
-                'request' => $request->except('_token'),
-                'user' => auth()->user() ? auth()->user()->id : 'guest',
+                //'request' => $request->except('_token'),
             ]);
             return back()->withErrors($e->validator)->withInput();
         } catch (\Exception $e) {
             Log::error('Expense saving failed', [
                 'error' => $e->getMessage(),
                 'stack' => $e->getTraceAsString(),
-                'request' => $request->except('_token'),
-                'user' => auth()->user() ? auth()->user()->id : 'guest',
+                //'request' => $request->except('_token'),
             ]);
 
             return back()->withInput()->with([
@@ -216,14 +215,15 @@ class ExpenseController extends Controller
                     'amount' => $amount,
                 ]);
 
-                // Gunakan dependency injection daripada instantiasi manual
+                // Gunakan dependency injection
                 $journalBuilder = app(JournalBuilderService::class);
-                $journalBuilder->createBookingCostJournal($expense);
+                $journalBuilder->updateExpenseJournal($expense);
             });
 
-            Log::info('Berhasil update:', $expense->toArray());
+            Log::info('Berhasil update');
+            //Log::info('Berhasil update:', $expense->toArray());
 
-            return redirect()->route('all.expenses')->with([
+            return redirect()->back()->with([
                 'message' => 'Expense item has been updated successfully',
                 'alert-type' => 'success',
             ]);
@@ -231,15 +231,14 @@ class ExpenseController extends Controller
             Log::error('Expense validation failed', [
                 'error' => $e->getMessage(),
                 'stack' => $e->getTraceAsString(),
-                'request' => $request->except('_token'),
+                //'request' => $request->except('_token'),
             ]);
             return back()->withErrors($e->validator)->withInput();
         } catch (\Exception $e) {
             Log::error('Expense saving failed', [
                 'error' => $e->getMessage(),
                 'stack' => $e->getTraceAsString(),
-                'request' => $request->except('_token'),
-                'user' => auth()->user() ? auth()->user()->id : 'guest',
+                //'request' => $request->except('_token'),
             ]);
 
             return back()->withInput()->with([

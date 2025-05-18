@@ -23,7 +23,7 @@ class AccountController extends Controller
      */
     public function store(Request $request)
     {
-        Log::info('Request Data:', $request->all());
+        //Log::info('Request Data:', $request->all());
 
         // Validasi data input
         $validatedData = $request->validate([
@@ -33,7 +33,7 @@ class AccountController extends Controller
             'AccountCategory' => 'required|string',
         ]);
 
-        Log::info('Check Data Validasi:', $validatedData);
+        //Log::info('Check Data Validasi:', $validatedData);
 
         // Mapping nama input form ke nama kolom database
         $accountData = [

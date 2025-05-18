@@ -95,21 +95,21 @@
             <li class="menu-item">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons ti ti-abacus"></i>
-                    <div data-i18n="Accounting Manage">Accountings Manage</div>
+                    <div data-i18n="Accounting">Accounting</div>
                 </a>
-                <!-- Accountings Manage -->
+                <!-- Accounting -->
                 <ul class="menu-sub">
                     @if (Auth::user()->can('accounting.list'))
                         <li class="menu-item">
-                            <a href="{{ route('all.expenses') }}" class="menu-link">
-                                <div data-i18n="Expense Trip">Expense Trip</div>
+                            <a href="{{ route('all.accounts') }}" class="menu-link">
+                                <div data-i18n="Account List">Account List</div>
                             </a>
                         </li>
                     @endif
                     @if (Auth::user()->can('accounting.list'))
                         <li class="menu-item">
-                            <a href="{{ route('all.accounts') }}" class="menu-link">
-                                <div data-i18n="Account List">Account List</div>
+                            <a href="{{ route('all.expenses') }}" class="menu-link">
+                                <div data-i18n="Expense Trip">Expense Trip</div>
                             </a>
                         </li>
                     @endif
@@ -121,7 +121,30 @@
                         </li>
                     @endif
                 </ul>
-                <!-- Accountings Manage End -->
+                <!-- Accounting End -->
+            </li>
+            <li class="menu-item">
+                <a href="javascript:void(0);" class="menu-link menu-toggle">
+                    <i class="menu-icon tf-icons ti ti-brand-deliveroo"></i>
+                    <div data-i18n="Supplier">Supplier</div>
+                </a>
+                <!-- Supplier -->
+                <ul class="menu-sub">
+                    @if (Auth::user()->can('accounting.list'))
+                        <li class="menu-item">
+                            <a href="{{ route('all.suppliers') }}" class="menu-link">
+                                <div data-i18n="All Supplier">All Supplier</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{{ route('all.supplier-deposits') }}" class="menu-link">
+                                <div data-i18n="All Supplier Deposit">All Supplier Deposit</div>
+                            </a>
+                        </li>
+                    @endif
+                </ul>
+                <!-- Supplier End -->
+
             </li>
             @if (Auth::user()->can('invoice.menu'))
                 <!-- Invoice -->
@@ -184,6 +207,14 @@
             <li class="menu-header small">
                 <span class="menu-header-text" data-i18n="Packages">Packages</span>
             </li>
+            @if (Auth::user()->can('package.generate'))
+                <li class="menu-item">
+                    <a href="{{ route('price.search') }}" class="menu-link">
+                        <i class="menu-icon tf-icons ti ti-search"></i>
+                        <div data-i18n="Package Search">Package Search</div>
+                    </a>
+                </li>
+            @endif
             @if (Auth::user()->can('package.generate'))
                 <li class="menu-item">
                     <a href="{{ route('generate.all.packages') }}" class="menu-link">

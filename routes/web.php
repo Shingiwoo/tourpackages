@@ -20,13 +20,18 @@ use App\Http\Controllers\Backend\Accounting\ReportController;
 use App\Http\Controllers\Backend\Facility\FacilityController;
 use App\Http\Controllers\Backend\Accounting\AccountController;
 use App\Http\Controllers\Backend\Accounting\ExpenseController;
+use App\Http\Controllers\Backend\Accounting\SupplierController;
 use App\Http\Controllers\Backend\Custom\CustomPackageController;
+use App\Http\Controllers\Backend\PackageTour\PackagePriceFilter;
 use App\Http\Controllers\Backend\Permission\PermissionController;
 use App\Http\Controllers\Backend\ReserveFee\ReserveFeeController;
 use App\Http\Controllers\Backend\ServiceFee\ServiceFeeController;
 use App\Http\Controllers\Backend\Destinastion\DestinationController;
+use App\Http\Controllers\Backend\Accounting\SupplierDepositController;
+use App\Http\Controllers\Backend\Accounting\SupplierPaymentController;
 use App\Http\Controllers\Backend\PackageTour\GeneratePackageController;
 use App\Http\Controllers\Backend\PackageTour\GenerateAllPackageController;
+use App\Http\Controllers\Backend\Accounting\SupplierDepositReportController;
 use App\Http\Controllers\Backend\PackageTour\GenerateTwodayPackageController;
 use App\Http\Controllers\Backend\PackageTour\GenerateFourdayPackageController;
 use App\Http\Controllers\Backend\PackageTour\GenerateThreedayPackageController;
@@ -326,6 +331,36 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
 
     });
 
+    // Supplier all Route
+    Route::controller(SupplierController::class)->group(function () {
+        Route::get('/all/suppliers', 'index')->name('all.suppliers');
+        Route::post('/store/supplier', 'store')->name('supplier.store');
+        Route::put('/update/supplier/{id}', 'update')->name('update.supplier');
+        Route::delete('/delete/supplier/{id}', 'destroy')->name('delete.supplier');
+    });
+
+    // Supplier Deposit Controller
+    Route::controller(SupplierDepositController::class)->group(function () {
+        Route::get('/all/supplier-deposits', 'index')->name('all.supplier-deposits');
+        Route::post('/store/supplier-deposits', 'store')->name('store.supplier-deposits');
+        Route::get('/edit/supplier-deposit/{id}', 'edit')->name('edit.supplier-deposit');
+        Route::patch('/update/supplier-deposit/{id}', 'update')->name('update.supplier-deposit');
+        Route::get('/suppliers/{id}/deposit', 'listBySupplier')->name('supplier.deposits');
+        Route::delete('/supplier-deposit/{id}', 'destroy')->name('delete.supplier-deposit');
+    });
+
+    // Supplier Payment all Route
+    Route::controller(SupplierPaymentController::class)->group(function () {
+        Route::get('/all/supplier-payments', 'index')->name('all.supplier.payments');
+        Route::post('/store/supplier-payment', 'store')->name('supplier.payment.store');
+        Route::get('/show/supplier-payment/{id}', 'show')->name('show.supplier.payment');
+    });
+
+    // Supplier Deposit Report
+    Route::controller(SupplierDepositReportController::class)->group(function () {
+        Route::get('reports/supplier-deposits', 'index')->name('reports.supplier-deposits');
+    });
+
     // Account all Route
     Route::controller(AccountController::class)->group(function () {
         Route::get('/all/accounts', 'index')->name('all.accounts');
@@ -341,6 +376,15 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     // Report all Route
     Route::controller(ReportController::class)->group(function () {
         Route::get('report/hpp', 'hpp')->name('report.hpp');
+    });
+
+    // Rent all Route
+    Route::controller(PackagePriceFilter::class)->group(function () {
+        Route::get('/filter-price', 'filter')->name('price.search');
+        Route::get('/all/onedays', 'allDataOneDay')->name('all.onedays');
+        Route::get('/all/twodays', 'allDataTwoDay')->name('all.twodays');
+        Route::get('/all/threedays', 'allDataThreeDay')->name('all.threedays');
+        Route::get('/all/fourdays', 'allDataFourDay')->name('all.fourdays');
     });
 
 });
