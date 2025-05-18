@@ -310,7 +310,7 @@ class PackagePriceFilter extends Controller
                 $match = $match && ($groupPrice['vehicle'] == $price['vehicle']);
 
                 // Compare all accommodation types
-                $accommodationTypes = ['WithoutAccomodation', 'Homestay', 'ThreeStar'];
+                $accommodationTypes = ['WithoutAccomodation', 'Cottage', 'Homestay', 'ThreeStar', 'FourStar'];
                 foreach ($accommodationTypes as $type) {
                     if (isset($groupPrice[$type]) && isset($price[$type])) {
                         $match = $match && ($groupPrice[$type] == $price[$type]);
