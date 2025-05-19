@@ -110,6 +110,7 @@
 
                             <!-- Prices -->
                             @if (isset($package['grouped_prices']) && !empty($package['grouped_prices']))
+                                <!-- Multi-day package prices -->
                                 @foreach ($package['grouped_prices'] as $type => $pricesByParticipant)
                                     @if (!empty($pricesByParticipant))
                                         <div class="mt-3 row">
@@ -119,43 +120,88 @@
                                         </div>
 
                                         @foreach ($pricesByParticipant as $participantCount => $price)
-                                            @if (isset($price['WithoutAccomodation']))
-                                                <div class="row">
-                                                    <div class="my-1 col-sm-3 align-content-center"><b>Peserta</b></div>
-                                                    <div class="my-1 col-sm-3 align-content-center">{{ $participantCount }}
-                                                        Pax</div>
-                                                    <div class="my-1 col-sm-3 align-content-center"><b>Tanpa Penginapan</b>
-                                                    </div>
-                                                    <div class="my-1 col-sm-3 align-content-center">Rp
-                                                        {{ number_format($price['WithoutAccomodation'], 0, ',', '.') }}
-                                                        /orang</div>
+                                            <div class="row">
+                                                <div class="my-1 col-sm-3 align-content-center"><b>Kendaraan</b></div>
+                                                <div class="my-1 col-sm-3 align-content-center">{{ $price['vehicle'] }}
                                                 </div>
-                                                <div class="row">
-                                                    <div class="my-1 col-sm-3 align-content-center"><b>Cottage</b></div>
-                                                    <div class="my-1 col-sm-3 align-content-center">Rp
-                                                        {{ number_format($price['Cottage'] ?? 0, 0, ',', '.') }} /orang
-                                                    </div>
-                                                    <div class="my-1 col-sm-3 align-content-center"><b>Homestay</b></div>
-                                                    <div class="my-1 col-sm-3 align-content-center">Rp
-                                                        {{ number_format($price['Homestay'] ?? 0, 0, ',', '.') }} /orang
-                                                    </div>
+                                                <div class="my-1 col-sm-3 align-content-center"><b>Peserta</b></div>
+                                                <div class="my-1 col-sm-3 align-content-center">{{ $participantCount }} Pax
                                                 </div>
+                                            </div>
+
+                                            @php
+                                                $accommodations = [
+                                                    'WithoutAccomodation' => 'Tanpa Penginapan',
+                                                    'Cottage' => 'Cottage',
+                                                    'Homestay' => 'Homestay',
+                                                    'Villa' => 'Villa',
+                                                    'Guesthouse' => 'Guesthouse',
+                                                    'ThreeStar' => 'Hotel Bintang 3',
+                                                    'FourStar' => 'Hotel Bintang 4',
+                                                ];
+
+                                                $availableAccommodations = array_filter(
+                                                    $accommodations,
+                                                    fn($key) => isset($price[$key]),
+                                                    ARRAY_FILTER_USE_KEY,
+                                                );
+
+                                                $chunks = array_chunk($availableAccommodations, 2, true);
+                                            @endphp
+
+                                            @foreach ($chunks as $chunk)
                                                 <div class="row">
-                                                    <div class="my-1 col-sm-3 align-content-center"><b>Hotel *3</b></div>
-                                                    <div class="my-1 col-sm-3 align-content-center">Rp
-                                                        {{ number_format($price['ThreeStar'] ?? 0, 0, ',', '.') }} /orang
-                                                    </div>
-                                                    <div class="my-1 col-sm-3 align-content-center"><b>Hotel *4</b></div>
-                                                    <div class="my-1 col-sm-3 align-content-center">Rp
-                                                        {{ number_format($price['FourStar'] ?? 0, 0, ',', '.') }} /orang
-                                                    </div>
+                                                    @foreach ($chunk as $accKey => $accName)
+                                                        @if (isset($price[$accKey]))
+                                                            <div class="my-1 col-sm-3 align-content-center">
+                                                                <b>{{ $accName }}</b></div>
+                                                            <div class="my-1 col-sm-3 align-content-center">
+                                                                Rp {{ number_format($price[$accKey], 0, ',', '.') }} /orang
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
                                                 </div>
-                                            @endif
+                                            @endforeach
                                         @endforeach
 
                                         @if (!$loop->last)
                                             <hr>
                                         @endif
+                                    @endif
+                                @endforeach
+                                <!-- One-day package prices -->
+                            @elseif(isset($package['prices']) && !empty($package['prices']))
+                                <div class="mt-3 row">
+                                    <div class="text-center col-sm-12 align-content-center">
+                                        <h5><b>HARGA PAKET</b></h5>
+                                    </div>
+                                </div>
+
+                                @foreach ($package['prices'] as $price)
+                                    <div class="row">
+                                        <div class="my-1 col-sm-3 align-content-center"><b>Kendaraan</b></div>
+                                        <div class="my-1 col-sm-3 align-content-center">{{ $price['vehicle'] }}</div>
+                                        <div class="my-1 col-sm-3 align-content-center"><b>Peserta</b></div>
+                                        <div class="my-1 col-sm-3 align-content-center">{{ $price['user'] }} Pax</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="my-1 col-sm-3 align-content-center"><b>Harga Normal</b></div>
+                                        <div class="my-1 col-sm-3 align-content-center">Rp
+                                            {{ number_format($price['price'], 0, ',', '.') }} /orang</div>
+                                        <div class="my-1 col-sm-3 align-content-center"><b>Tanpa Makan</b></div>
+                                        <div class="my-1 col-sm-3 align-content-center">Rp
+                                            {{ number_format($price['nomeal'], 0, ',', '.') }} /orang</div>
+                                    </div>
+                                    @if (isset($price['wnaCost']))
+                                        <div class="row">
+                                            <div class="my-1 col-sm-3 align-content-center"><b>Biaya WNA</b></div>
+                                            <div class="my-1 col-sm-3 align-content-center">Rp
+                                                {{ number_format($price['wnaCost'], 0, ',', '.') }} /orang</div>
+                                        </div>
+                                    @endif
+
+                                    @if (!$loop->last)
+                                        <hr>
                                     @endif
                                 @endforeach
                             @else
