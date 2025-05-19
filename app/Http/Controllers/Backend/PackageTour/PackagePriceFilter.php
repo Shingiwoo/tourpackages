@@ -123,7 +123,7 @@ class PackagePriceFilter extends Controller
             // Check if any price matches the filter criteria
             foreach ($priceData as $price) {
                 if (!isset($price['user'])) continue;
-
+                
                 if ($min_peserta && $max_peserta) {
                     if ($price['user'] >= $min_peserta && $price['user'] <= $max_peserta) {
                         return true;
@@ -140,7 +140,7 @@ class PackagePriceFilter extends Controller
                     return true;
                 }
             }
-
+            
             return false;
         })->map(function ($package) use ($min_peserta, $max_peserta) {
             $priceData = $package->prices->price_data;
@@ -150,7 +150,7 @@ class PackagePriceFilter extends Controller
 
             $filteredPrices = array_filter($priceData, function ($price) use ($min_peserta, $max_peserta) {
                 if (!isset($price['user'])) return false;
-
+                
                 if ($min_peserta && $max_peserta) {
                     return $price['user'] >= $min_peserta && $price['user'] <= $max_peserta;
                 } elseif ($min_peserta) {
@@ -220,38 +220,50 @@ class PackagePriceFilter extends Controller
 
             return false;
         })->map(function ($package) use ($min_peserta, $max_peserta) {
-            $priceData = $this->extractPriceData($package->prices->prices);
-            $priceTypes = $this->getPriceTypes($package->prices->prices);
+            $priceGroups = is_string($package->prices->prices) 
+                ? json_decode($package->prices->prices, true) 
+                : $package->prices->prices;
 
-            // First filter by participant count
-            $filteredPrices = array_filter($priceData, function ($price) use ($min_peserta, $max_peserta) {
-                if (!isset($price['user'])) return false;
-
-                if ($min_peserta && $max_peserta) {
-                    return $price['user'] >= $min_peserta && $price['user'] <= $max_peserta;
-                } elseif ($min_peserta) {
-                    return $price['user'] == $min_peserta;
-                } elseif ($max_peserta) {
-                    return $price['user'] == $max_peserta;
-                }
-                return true;
-            });
-
-            // Then group by type and participant count
             $groupedPrices = [];
-            foreach ($priceTypes as $type) {
+            $priceTypes = [];
+            $accommodationTypes = ['WithoutAccomodation', 'Cottage', 'Homestay', 'Villa', 'Guesthouse', 'ThreeStar', 'FourStar'];
+
+            foreach ($priceGroups as $group) {
+                if (!isset($group['Price Type']) || !isset($group['data']) || !is_array($group['data'])) {
+                    continue;
+                }
+
+                $type = $group['Price Type'];
+                $priceTypes[] = $type;
                 $groupedPrices[$type] = [];
 
-                // Get all prices for this type
-                $typePrices = array_filter($filteredPrices, function ($price) use ($type, $package) {
-                    return $this->priceBelongsToType($price, $type, $package->prices->prices);
-                });
+                foreach ($group['data'] as $price) {
+                    if (!isset($price['user'])) continue;
 
-                // Group by participant count
-                foreach ($typePrices as $price) {
-                    $participantCount = $price['user'];
-                    if (!isset($groupedPrices[$type][$participantCount])) {
-                        $groupedPrices[$type][$participantCount] = $price;
+                    $matchesFilter = false;
+                    if ($min_peserta && $max_peserta) {
+                        $matchesFilter = $price['user'] >= $min_peserta && $price['user'] <= $max_peserta;
+                    } elseif ($min_peserta) {
+                        $matchesFilter = $price['user'] == $min_peserta;
+                    } elseif ($max_peserta) {
+                        $matchesFilter = $price['user'] == $max_peserta;
+                    } else {
+                        $matchesFilter = true;
+                    }
+
+                    if ($matchesFilter) {
+                        $participantCount = $price['user'];
+                        $filteredPrice = [
+                            'vehicle' => $price['vehicle'] ?? '-'
+                        ];
+                        
+                        foreach ($accommodationTypes as $accType) {
+                            if (isset($price[$accType])) {
+                                $filteredPrice[$accType] = $price[$accType];
+                            }
+                        }
+                        
+                        $groupedPrices[$type][$participantCount] = $filteredPrice;
                     }
                 }
             }
@@ -269,7 +281,7 @@ class PackagePriceFilter extends Controller
                     return ['name' => $facility->name];
                 })->toArray(),
                 'grouped_prices' => $groupedPrices,
-                'price_types' => $priceTypes,
+                'price_types' => array_unique($priceTypes),
                 'created_at' => $package->created_at->toDateTimeString(),
                 'updated_at' => $package->updated_at->toDateTimeString(),
             ];
@@ -284,47 +296,47 @@ class PackagePriceFilter extends Controller
      * @param  array|string  $allPrices
      * @return bool
      */
-    private function priceBelongsToType($price, $priceType, $allPrices)
-    {
-        if (is_string($allPrices)) {
-            $allPrices = json_decode($allPrices, true);
-        }
+    // private function priceBelongsToType($price, $priceType, $allPrices)
+    // {
+    //     if (is_string($allPrices)) {
+    //         $allPrices = json_decode($allPrices, true);
+    //     }
 
-        foreach ($allPrices as $group) {
-            if (!isset($group['Price Type']) || $group['Price Type'] != $priceType) {
-                continue;
-            }
+    //     foreach ($allPrices as $group) {
+    //         if (!isset($group['Price Type']) || $group['Price Type'] != $priceType) {
+    //             continue;
+    //         }
 
-            if (!isset($group['data']) || !is_array($group['data'])) {
-                continue;
-            }
+    //         if (!isset($group['data']) || !is_array($group['data'])) {
+    //             continue;
+    //         }
 
-            foreach ($group['data'] as $groupPrice) {
-                if (!isset($groupPrice['user']) || !isset($groupPrice['vehicle'])) {
-                    continue;
-                }
+    //         foreach ($group['data'] as $groupPrice) {
+    //             if (!isset($groupPrice['user']) || !isset($groupPrice['vehicle'])) {
+    //                 continue;
+    //             }
 
-                // Match by user count, vehicle, and all relevant fields
-                $match = true;
-                $match = $match && ($groupPrice['user'] == $price['user']);
-                $match = $match && ($groupPrice['vehicle'] == $price['vehicle']);
+    //             // Match by user count, vehicle, and all relevant fields
+    //             $match = true;
+    //             $match = $match && ($groupPrice['user'] == $price['user']);
+    //             $match = $match && ($groupPrice['vehicle'] == $price['vehicle']);
 
-                // Compare all accommodation types
-                $accommodationTypes = ['WithoutAccomodation', 'Cottage', 'Homestay', 'ThreeStar', 'FourStar'];
-                foreach ($accommodationTypes as $type) {
-                    if (isset($groupPrice[$type]) && isset($price[$type])) {
-                        $match = $match && ($groupPrice[$type] == $price[$type]);
-                    }
-                }
+    //             // Compare all accommodation types
+    //             $accommodationTypes = ['WithoutAccomodation', 'Villa','Cottage', 'Homestay', 'ThreeStar', 'FourStar'];
+    //             foreach ($accommodationTypes as $type) {
+    //                 if (isset($groupPrice[$type]) && isset($price[$type])) {
+    //                     $match = $match && ($groupPrice[$type] == $price[$type]);
+    //                 }
+    //             }
 
-                if ($match) {
-                    return true;
-                }
-            }
-        }
+    //             if ($match) {
+    //                 return true;
+    //             }
+    //         }
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 
     /**
      * Extract price data from the prices array.
@@ -387,7 +399,7 @@ class PackagePriceFilter extends Controller
     public function allDataOneDay()
     {
         // Ambil semua paket oneday
-        $oneDay = PackageOneDay::with(['destinations', 'facilities', 'prices'])->paginate(5);
+        $oneDay = PackageOneDay::with(['destinations', 'facilities', 'prices'])->paginate(4);
 
         // Urai price_data untuk setiap item
         $oneDay->getCollection()->transform(function ($package) {
@@ -425,10 +437,10 @@ class PackagePriceFilter extends Controller
     public function allDataTwoDay()
     {
         // Ambil semua paket twoday
-        $oneDay = PackageTwoDay::with(['destinations', 'facilities', 'prices'])->paginate(1);
+        $twoDay = PackageTwoDay::with(['destinations', 'facilities', 'prices'])->paginate(4);
 
         // Urai price_data untuk setiap item
-        $oneDay->getCollection()->transform(function ($package) {
+        $twoDay->getCollection()->transform(function ($package) {
             return [
                 'id' => $package->id,
                 'name_package' => $package->name_package,
@@ -454,19 +466,19 @@ class PackagePriceFilter extends Controller
         return response()->json([
             "response" => [
                 "status"    => 200,
-                "message"   => "List Data Posts"
+                "message"   => "List Data Posts Twodays"
             ],
-            "data" => $oneDay
+            "data" => $twoDay
         ], 200);
     }
 
     public function allDataThreeDay()
     {
         // Ambil semua paket ThreeDay
-        $oneDay = PackageThreeDay::with(['destinations', 'facilities', 'prices'])->paginate(1);
+        $threeDay = PackageThreeDay::with(['destinations', 'facilities', 'prices'])->paginate(4);
 
         // Urai price_data untuk setiap item
-        $oneDay->getCollection()->transform(function ($package) {
+        $threeDay->getCollection()->transform(function ($package) {
             return [
                 'id' => $package->id,
                 'name_package' => $package->name_package,
@@ -492,16 +504,16 @@ class PackagePriceFilter extends Controller
         return response()->json([
             "response" => [
                 "status"    => 200,
-                "message"   => "List Data Posts"
+                "message"   => "List Data Posts ThreeDays"
             ],
-            "data" => $oneDay
+            "data" => $threeDay
         ], 200);
     }
 
     public function allDataFourDay()
     {
         // Ambil semua paket FourDay
-        $fourDay = PackageFourDay::with(['destinations', 'facilities', 'prices'])->paginate(1);
+        $fourDay = PackageFourDay::with(['destinations', 'facilities', 'prices'])->paginate(4);
 
         // Urai price_data untuk setiap item
         $fourDay->getCollection()->transform(function ($package) {
