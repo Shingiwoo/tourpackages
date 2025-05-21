@@ -84,30 +84,6 @@
                                 </div>
                             </div>
 
-                            <!-- Destinations -->
-                            {{-- <div class="mt-3 row">
-                                <div class="col-12">
-                                    <h5><b>Destinasi:</b></h5>
-                                    <ul>
-                                        @foreach ($package['destinations'] as $destination)
-                                            <li>{{ $destination['name'] }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            </div> --}}
-
-                            <!-- Facilities -->
-                            {{-- <div class="mt-3 row">
-                                <div class="col-12">
-                                    <h5><b>Fasilitas:</b></h5>
-                                    <ul>
-                                        @foreach ($package['facilities'] as $facility)
-                                            <li>{{ $facility['name'] }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            </div> --}}
-
                             <!-- Prices -->
                             @if (isset($package['grouped_prices']) && !empty($package['grouped_prices']))
                                 <!-- Multi-day package prices -->
@@ -120,7 +96,7 @@
                                         </div>
 
                                         @foreach ($pricesByParticipant as $participantCount => $price)
-                                            <div class="row">
+                                            <div class="row mb-4">
                                                 <div class="my-1 col-sm-3 align-content-center"><b>Kendaraan</b></div>
                                                 <div class="my-1 col-sm-3 align-content-center">{{ $price['vehicle'] }}
                                                 </div>
@@ -150,13 +126,23 @@
                                             @endphp
 
                                             @foreach ($chunks as $chunk)
-                                                <div class="row">
+                                                <div class="row mb-4">
                                                     @foreach ($chunk as $accKey => $accName)
                                                         @if (isset($price[$accKey]))
                                                             <div class="my-1 col-sm-3 align-content-center">
                                                                 <b>{{ $accName }}</b></div>
                                                             <div class="my-1 col-sm-3 align-content-center">
-                                                                Rp {{ number_format($price[$accKey], 0, ',', '.') }} /orang
+                                                                <span class="price-value"
+                                                                      data-label="{{ $accName }}"
+                                                                      data-price="{{ $price[$accKey] }}">
+                                                                    Rp {{ number_format($price[$accKey], 0, ',', '.') }} /orang
+                                                                </span>
+                                                                <button class="btn btn-sm btn-outline-secondary copy-btn"
+                                                                        data-label="{{ $accName }}"
+                                                                        data-price="{{ $price[$accKey] }}"
+                                                                        title="Salin ke clipboard">
+                                                                    <i class="ti ti-file-check"></i>
+                                                                </button>
                                                             </div>
                                                         @endif
                                                     @endforeach
@@ -178,28 +164,60 @@
                                 </div>
 
                                 @foreach ($package['prices'] as $price)
-                                    <div class="row">
+                                    <div class="row mb-4">
                                         <div class="my-1 col-sm-3 align-content-center"><b>Kendaraan</b></div>
                                         <div class="my-1 col-sm-3 align-content-center">{{ $price['vehicle'] }}</div>
                                         <div class="my-1 col-sm-3 align-content-center"><b>Peserta</b></div>
                                         <div class="my-1 col-sm-3 align-content-center">{{ $price['user'] }} Pax</div>
                                     </div>
-                                    <div class="row">
+                                    <div class="row mb-4">
                                         <div class="my-1 col-sm-3 align-content-center"><b>Harga Normal</b></div>
-                                        <div class="my-1 col-sm-3 align-content-center">Rp
-                                            {{ number_format($price['price'], 0, ',', '.') }} /orang</div>
+                                        <div class="my-1 col-sm-3 align-content-center">
+                                            <span class="price-value"
+                                                  data-label="Harga Normal"
+                                                  data-price="{{ $price['price'] }}">
+                                                Rp {{ number_format($price['price'], 0, ',', '.') }} /orang
+                                            </span>
+                                            <button class="btn btn-sm btn-outline-secondary copy-btn"
+                                                    data-label="Harga Normal"
+                                                    data-price="{{ $price['price'] }}"
+                                                    title="Salin ke clipboard">
+                                                <i class="ti ti-file-check"></i>
+                                            </button>
+                                        </div>
                                         <div class="my-1 col-sm-3 align-content-center"><b>Tanpa Makan</b></div>
-                                        <div class="my-1 col-sm-3 align-content-center">Rp
-                                            {{ number_format($price['nomeal'], 0, ',', '.') }} /orang</div>
+                                        <div class="my-1 col-sm-3 align-content-center">
+                                            <span class="price-value"
+                                                  data-label="Tanpa Makan"
+                                                  data-price="{{ $price['nomeal'] }}">
+                                                Rp {{ number_format($price['nomeal'], 0, ',', '.') }} /orang
+                                            </span>
+                                            <button class="btn btn-sm btn-outline-secondary copy-btn"
+                                                    data-label="Tanpa Makan"
+                                                    data-price="{{ $price['nomeal'] }}"
+                                                    title="Salin ke clipboard">
+                                                <i class="ti ti-file-check"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                     @if (isset($price['wnaCost']))
-                                        <div class="row">
+                                        <div class="row mb-4">
                                             <div class="my-1 col-sm-3 align-content-center"><b>Biaya WNA</b></div>
-                                            <div class="my-1 col-sm-3 align-content-center">Rp
-                                                {{ number_format($price['wnaCost'], 0, ',', '.') }} /orang</div>
+                                            <div class="my-1 col-sm-3 align-content-center">
+                                                <span class="price-value"
+                                                      data-label="Biaya WNA"
+                                                      data-price="{{ $price['wnaCost'] }}">
+                                                    Rp {{ number_format($price['wnaCost'], 0, ',', '.') }} /orang
+                                                </span>
+                                                <button class="btn btn-sm btn-outline-secondary copy-btn"
+                                                        data-label="Biaya WNA"
+                                                        data-price="{{ $price['wnaCost'] }}"
+                                                        title="Salin ke clipboard">
+                                                    <i class="ti ti-file-check"></i>
+                                                </button>
+                                            </div>
                                         </div>
                                     @endif
-
                                     @if (!$loop->last)
                                         <hr>
                                     @endif
@@ -227,8 +245,8 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Existing form validation code
             const form = document.querySelector('form');
-
             form.addEventListener('submit', function(e) {
                 const durasi = document.getElementById('durasi_paket').value;
                 const agen = document.getElementById('agen_name').value;
@@ -258,6 +276,34 @@
                     e.preventDefault();
                     return;
                 }
+            });
+
+            // Enhanced copy to clipboard functionality
+            document.querySelectorAll('.copy-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const label = this.getAttribute('data-label');
+                    const price = this.getAttribute('data-price');
+                    const formattedPrice = 'Rp ' + parseInt(price).toLocaleString('id-ID');
+                    const textToCopy = `${label}\n${formattedPrice} /orang`;
+
+                    navigator.clipboard.writeText(textToCopy).then(() => {
+                        // Change button appearance temporarily
+                        const originalInnerHTML = this.innerHTML;
+                        this.innerHTML = '<i class="ti ti-file-check"></i>';
+                        this.classList.remove('btn-outline-secondary');
+                        this.classList.add('btn-outline-success');
+
+                        // Revert after 2 seconds
+                        setTimeout(() => {
+                            this.innerHTML = originalInnerHTML;
+                            this.classList.remove('btn-outline-success');
+                            this.classList.add('btn-outline-secondary');
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                        alert('Gagal menyalin ke clipboard');
+                    });
+                });
             });
         });
     </script>
