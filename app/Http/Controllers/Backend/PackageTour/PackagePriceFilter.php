@@ -123,7 +123,7 @@ class PackagePriceFilter extends Controller
             // Check if any price matches the filter criteria
             foreach ($priceData as $price) {
                 if (!isset($price['user'])) continue;
-                
+
                 if ($min_peserta && $max_peserta) {
                     if ($price['user'] >= $min_peserta && $price['user'] <= $max_peserta) {
                         return true;
@@ -140,7 +140,7 @@ class PackagePriceFilter extends Controller
                     return true;
                 }
             }
-            
+
             return false;
         })->map(function ($package) use ($min_peserta, $max_peserta) {
             $priceData = $package->prices->price_data;
@@ -150,7 +150,7 @@ class PackagePriceFilter extends Controller
 
             $filteredPrices = array_filter($priceData, function ($price) use ($min_peserta, $max_peserta) {
                 if (!isset($price['user'])) return false;
-                
+
                 if ($min_peserta && $max_peserta) {
                     return $price['user'] >= $min_peserta && $price['user'] <= $max_peserta;
                 } elseif ($min_peserta) {
@@ -220,8 +220,8 @@ class PackagePriceFilter extends Controller
 
             return false;
         })->map(function ($package) use ($min_peserta, $max_peserta) {
-            $priceGroups = is_string($package->prices->prices) 
-                ? json_decode($package->prices->prices, true) 
+            $priceGroups = is_string($package->prices->prices)
+                ? json_decode($package->prices->prices, true)
                 : $package->prices->prices;
 
             $groupedPrices = [];
@@ -256,13 +256,13 @@ class PackagePriceFilter extends Controller
                         $filteredPrice = [
                             'vehicle' => $price['vehicle'] ?? '-'
                         ];
-                        
+
                         foreach ($accommodationTypes as $accType) {
                             if (isset($price[$accType])) {
                                 $filteredPrice[$accType] = $price[$accType];
                             }
                         }
-                        
+
                         $groupedPrices[$type][$participantCount] = $filteredPrice;
                     }
                 }
@@ -287,56 +287,6 @@ class PackagePriceFilter extends Controller
             ];
         });
     }
-
-    /**
-     * Check if the price belongs to the specified type.
-     *
-     * @param  array  $price
-     * @param  string  $priceType
-     * @param  array|string  $allPrices
-     * @return bool
-     */
-    // private function priceBelongsToType($price, $priceType, $allPrices)
-    // {
-    //     if (is_string($allPrices)) {
-    //         $allPrices = json_decode($allPrices, true);
-    //     }
-
-    //     foreach ($allPrices as $group) {
-    //         if (!isset($group['Price Type']) || $group['Price Type'] != $priceType) {
-    //             continue;
-    //         }
-
-    //         if (!isset($group['data']) || !is_array($group['data'])) {
-    //             continue;
-    //         }
-
-    //         foreach ($group['data'] as $groupPrice) {
-    //             if (!isset($groupPrice['user']) || !isset($groupPrice['vehicle'])) {
-    //                 continue;
-    //             }
-
-    //             // Match by user count, vehicle, and all relevant fields
-    //             $match = true;
-    //             $match = $match && ($groupPrice['user'] == $price['user']);
-    //             $match = $match && ($groupPrice['vehicle'] == $price['vehicle']);
-
-    //             // Compare all accommodation types
-    //             $accommodationTypes = ['WithoutAccomodation', 'Villa','Cottage', 'Homestay', 'ThreeStar', 'FourStar'];
-    //             foreach ($accommodationTypes as $type) {
-    //                 if (isset($groupPrice[$type]) && isset($price[$type])) {
-    //                     $match = $match && ($groupPrice[$type] == $price[$type]);
-    //                 }
-    //             }
-
-    //             if ($match) {
-    //                 return true;
-    //             }
-    //         }
-    //     }
-
-    //     return false;
-    // }
 
     /**
      * Extract price data from the prices array.
@@ -372,28 +322,6 @@ class PackagePriceFilter extends Controller
         }
 
         return $priceData;
-    }
-
-    /**
-     * Get unique price types from the prices array.
-     *
-     * @param  array|string  $prices
-     * @return array
-     */
-    private function getPriceTypes($prices)
-    {
-        if (is_string($prices)) {
-            $prices = json_decode($prices, true);
-        }
-
-        $types = [];
-        foreach ($prices as $priceGroup) {
-            if (isset($priceGroup['Price Type'])) {
-                $types[] = $priceGroup['Price Type'];
-            }
-        }
-
-        return array_unique($types);
     }
 
     public function allDataOneDay()
