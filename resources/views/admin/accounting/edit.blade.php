@@ -16,9 +16,8 @@
                                             <input type="hidden" name="BookingId" value="{{ $expense->booking_id }}">
 
                                             <div class="mb-4 col-12 col-md-4">
-                                                <label for="bs-datepicker-autoclose" class="form-label">Date</label>
-                                                <input type="text" id="bs-datepicker-autoclose" placeholder="MM/DD/YYYY" value="{{ $expense->date }}"
-                                                    class="form-control" name="Date" required />
+                                                <label for="date" class="form-label">Date</label>
+                                                <input type="date" id="date" value="{{ $expense->date }}" class="form-control" name="Date" required />
                                             </div>
                                             <div class="mb-4 col-12 col-md-4">
                                                 <label class="form-label">Account Name</label>
