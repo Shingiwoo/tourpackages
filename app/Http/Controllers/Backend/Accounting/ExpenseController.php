@@ -205,7 +205,7 @@ class ExpenseController extends Controller
             $expense = BookingCost::findOrFail($id);
             $oldBookingId = $expense->booking_id;
             $newBookingId = $validatedData['NewBookingId'] ?? $oldBookingId;
-            $date = Carbon::createFromFormat('m/d/Y', $expense['Date'])->format('Y-m-d');
+            $date = Carbon::createFromFormat('m/d/Y', $validatedData['Date'])->format('Y-m-d');
 
             DB::transaction(function () use ($expense, $validatedData, $amount, $newBookingId, $date) {
                 $expense->update([
