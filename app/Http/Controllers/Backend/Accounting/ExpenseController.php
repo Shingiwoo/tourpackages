@@ -18,7 +18,7 @@ class ExpenseController extends Controller
 {
     public function index()
     {
-        $bookings = Booking::whereIn('status', ['booked', 'paid'])
+        $bookings = Booking::whereIn('status', ['booked', 'paid', 'finished'])
             ->orderBy('created_at', 'desc')->get();
         $expense = BookingCost::all();
         $accounts = Account::all();
@@ -205,6 +205,7 @@ class ExpenseController extends Controller
             $expense = BookingCost::findOrFail($id);
             $oldBookingId = $expense->booking_id;
             $newBookingId = $validatedData['NewBookingId'] ?? $oldBookingId;
+            // $date = Carbon::createFromFormat('m/d/Y', $validatedData['Date'])->format('Y-m-d');
 
             DB::transaction(function () use ($expense, $validatedData, $amount, $newBookingId) {
                 $expense->update([
