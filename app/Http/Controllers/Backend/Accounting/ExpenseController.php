@@ -251,7 +251,9 @@ class ExpenseController extends Controller
 
     public function showJournals($id)
     {
-        $booking = Booking::with('journalEntries.account')->findOrFail($id);
+        $booking = Booking::with(['journalEntries.account', 'journals' => function($query) {
+            $query->orderBy('date', 'asc');
+        }])->findOrFail($id);
 
         $finance = FinanceHelper::calculateBookingHpp($booking);
 
