@@ -51,7 +51,7 @@
                             <tbody>
                                 @foreach ($journals as $journal)
                                     <tr style="background-color:#f5f5f5">
-                                        <td>{{ \Carbon\Carbon::parse($journal->date)->format('d M Y') }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($journal->date)->format('j F Y') }}</td>
                                         <td colspan="4"><strong>{{ $journal->description }}</strong></td>
                                     </tr>
                                     @foreach ($journal->entries as $entry)
