@@ -20,6 +20,7 @@ use App\Http\Controllers\Backend\Accounting\ReportController;
 use App\Http\Controllers\Backend\Facility\FacilityController;
 use App\Http\Controllers\Backend\Accounting\AccountController;
 use App\Http\Controllers\Backend\Accounting\ExpenseController;
+use App\Http\Controllers\Backend\Accounting\JournalController;
 use App\Http\Controllers\Backend\Accounting\SupplierController;
 use App\Http\Controllers\Backend\Custom\CustomPackageController;
 use App\Http\Controllers\Backend\PackageTour\PackagePriceFilter;
@@ -371,6 +372,12 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
     // Ledger all Route
     Route::controller(LedgerController::class)->group(function () {
         Route::get('/ledger', 'index')->name('ledger.index');
+    });
+
+    // Journal all Route
+    Route::controller(JournalController::class)->group(function () {
+        Route::get('/journal', 'index')->name('journal.index');
+        Route::put('/journal/{id}', 'update')->name('journal.update');
     });
 
     // Report all Route

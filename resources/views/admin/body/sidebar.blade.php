@@ -115,6 +115,13 @@
                     @endif
                     @if (Auth::user()->can('accounting.list'))
                         <li class="menu-item">
+                            <a href="{{ route('journal.index') }}" class="menu-link">
+                                <div data-i18n="Journal">Journal</div>
+                            </a>
+                        </li>
+                    @endif
+                    @if (Auth::user()->can('accounting.list'))
+                        <li class="menu-item">
                             <a href="{{ route('ledger.index') }}" class="menu-link">
                                 <div data-i18n="Ledger Book">Ledger Book</div>
                             </a>
