@@ -21,6 +21,7 @@ use App\Http\Controllers\Backend\Facility\FacilityController;
 use App\Http\Controllers\Backend\Accounting\AccountController;
 use App\Http\Controllers\Backend\Accounting\ExpenseController;
 use App\Http\Controllers\Backend\Accounting\JournalController;
+use App\Http\Controllers\Backend\Accounting\PaymentController;
 use App\Http\Controllers\Backend\Accounting\SupplierController;
 use App\Http\Controllers\Backend\Custom\CustomPackageController;
 use App\Http\Controllers\Backend\PackageTour\PackagePriceFilter;
@@ -393,6 +394,16 @@ Route::middleware(['auth', 'roles:admin'])->group(function () {
         Route::get('/all/threedays', 'allDataThreeDay')->name('all.threedays');
         Route::get('/all/fourdays', 'allDataFourDay')->name('all.fourdays');
     });
+
+    Route::prefix('bookings/{booking}')->group(function () {
+    Route::get('payments/create', [PaymentController::class, 'create'])->name('bookings.payments.create');
+    Route::resource('payments', PaymentController::class)->except(['edit', 'update']);
+    Route::get('payments/{payment}/edit', [PaymentController::class, 'edit'])->name('bookings.payments.edit');
+    Route::put('payments/{payment}', [PaymentController::class, 'update'])->name('bookings.payments.update');
+    Route::post('payments/{payment}/upload-proof', [PaymentController::class, 'uploadProof'])->name('bookings.payments.upload_proof');
+    Route::post('payments/{payment}/confirm', [PaymentController::class, 'confirmPayment'])->name('bookings.payments.confirm');
+    Route::post('payments/{payment}/cancel', [PaymentController::class, 'cancelPayment'])->name('bookings.payments.cancel');
+});
 
 });
 
