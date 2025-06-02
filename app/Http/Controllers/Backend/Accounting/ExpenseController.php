@@ -151,11 +151,7 @@ class ExpenseController extends Controller
             $total_cost = $expenses->sum('amount');
 
             // Log data yang diambil
-            Log::info('Show Expense Data', [
-                'booking' => $booking->toArray(),
-                'expenses' => $expenses->toArray(),
-                'total_cost' => $total_cost,
-            ]);
+            Log::info('Show Expense Data', ['total_cost' => $total_cost]);
 
             // Return view dengan data
             return view('admin.accounting.show', compact('booking', 'expenses', 'total_cost'));

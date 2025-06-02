@@ -37,7 +37,7 @@
                                             <th class="text-center align-content-center text-primary">Tanggal Pembayaran
                                             </th>
                                             @if (Auth::user()->can('payment.actions'))
-                                            <th class="text-center align-content-center text-primary">Action</th>
+                                                <th class="text-start align-content-center text-primary">Action</th>
                                             @endif
                                         </tr>
                                     </thead>
@@ -53,7 +53,7 @@
                                                 <td class="text-center align-content-center">
                                                     <span class="text-uppercase">{{ $data->type }}</span>
                                                     @if ($data->type == 'dp')
-                                                        <span class="badge bg-success">ke -
+                                                        <span class="badge bg-label-warning">ke -
                                                             {{ $data->dp_installment }}</span>
                                                     @endif
                                                 </td>
@@ -64,7 +64,7 @@
                                                 <td class="text-center align-content-center">
                                                     {{ $data->payment_at ?? 'Belum Dibayar' }}</td>
                                                 @if (Auth::user()->can('payment.actions'))
-                                                    <td class="text-center align-content-center">
+                                                    <td class="align-content-center">
                                                         <div class="col-lg-3 col-sm-6 col-12">
                                                             <div class="btn-group">
                                                                 <button type="button"
@@ -77,9 +77,37 @@
                                                                         <li>
                                                                             <a href="{{ route('bookings.payments.edit', [$booking->id, $data->id]) }}"
                                                                                 class="dropdown-item text-info">
-                                                                                <span class="ti ti-pencil ti-md"></span> Edit
+                                                                                <span class="ti ti-pencil ti-md"></span>
+                                                                                Edit
                                                                             </a>
                                                                         </li>
+                                                                    @endif
+                                                                    @if (Auth::user()->can('payment.show'))
+                                                                        @if ($data->status === 'waiting' && $data->method === 'transfer')
+                                                                            <li>
+                                                                                <a href="{{ route('payments.show', [$booking->id, $data->id]) }}"
+                                                                                    type="submit"
+                                                                                    class="dropdown-item text-success">
+                                                                                    <i class="ti ti-search ti-md"></i>
+                                                                                    Show
+                                                                                </a>
+                                                                            </li>
+                                                                        @endif
+                                                                    @endif
+                                                                    @if (Auth::user()->can('payment.cancel'))
+                                                                        @if ($data->status !== 'waiting')
+                                                                        <form action="{{ route('bookings.payments.cancel', [$booking->id, $data->id]) }}" method="POST">
+                                                                            @csrf          
+                                                                            <li>
+                                                                                <a href=""
+                                                                                    type="submit"
+                                                                                    class="dropdown-item text-warning">
+                                                                                    <i class="ti ti-brand-xamarin ti-md"></i>
+                                                                                    Cancel
+                                                                                </a>
+                                                                            </li>
+                                                                        </form>
+                                                                        @endif
                                                                     @endif
                                                                     @if ($booking->status !== 'finished')
                                                                         @if (Auth::user()->can('payment.delete'))

@@ -10,6 +10,10 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
+use App\Services\Accounting\AccountMappingService;
+use App\Services\Accounting\BookingPaymentService;
+use App\Services\Accounting\JournalBuilderService;
 
 class PaymentController extends Controller
 {
@@ -20,7 +24,7 @@ class PaymentController extends Controller
     }
 
     public function create(Booking $booking)
-    {        
+    {
         return view('admin.payments.add', compact('booking'));
     }
 
@@ -69,6 +73,7 @@ class PaymentController extends Controller
 
             // Create payment
             $payment = Payment::create($paymentData);
+            // Log the payment creation
             Log::info('Payment created successfully.', ['payment_id' => $payment->id]);
 
             $notification = [
@@ -77,7 +82,6 @@ class PaymentController extends Controller
             ];
 
             return redirect()->route('payments.index', $booking)->with($notification);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Validation exception in payment store.', ['error' => $e->getMessage()]);
 
@@ -88,7 +92,6 @@ class PaymentController extends Controller
                     'alert-type' => 'error',
                 ])
                 ->withInput();
-
         } catch (\Illuminate\Database\QueryException $e) {
             Log::error('Database error in payment store.', ['error' => $e->getMessage()]);
             $notification = [
@@ -127,11 +130,11 @@ class PaymentController extends Controller
     }
 
     public function update(Request $request, Booking $booking, Payment $payment)
-    {        
+    {
         try {
 
             if ($payment->booking_id !== $booking->id) {
-            abort(403, 'Unauthorized action.');
+                abort(403, 'Unauthorized action.');
             }
 
             Log::info('Payment update method initiated.', ['booking_id' => $booking->id]);
@@ -184,7 +187,6 @@ class PaymentController extends Controller
             ];
 
             return redirect()->route('payments.index', $booking)->with($notification);
-
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::error('Validation exception in payment update.', ['error' => $e->getMessage()]);
 
@@ -195,7 +197,6 @@ class PaymentController extends Controller
                     'alert-type' => 'error',
                 ])
                 ->withInput();
-
         } catch (\Illuminate\Database\QueryException $e) {
             Log::error('Database error in payment update.', ['error' => $e->getMessage()]);
             $notification = [
@@ -252,29 +253,77 @@ class PaymentController extends Controller
         Log::info('Pembayaran waiting yang melewati batas waktu telah dibatalkan.');
     }
 
-    // Fitur Upload Bukti Transfer (jika belum ada di store/update)
+    // Fitur Upload Bukti Transfer
     public function uploadProof(Request $request, Booking $booking, Payment $payment)
     {
-        if ($payment->booking_id !== $booking->id || $payment->method !== 'transfer') {
-            abort(403, 'Unauthorized action.');
-        }
-
-        $request->validate([
-            'proof_of_transfer' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
-        if ($request->hasFile('proof_of_transfer')) {
-            // Hapus bukti transfer lama jika ada
-            if ($payment->proof_of_transfer) {
-                Storage::disk('public')->delete($payment->proof_of_transfer);
+        try {
+            // Validasi authorization
+            if ($payment->booking_id !== $booking->id || $payment->method !== 'transfer') {
+                abort(403, 'Unauthorized action.');
             }
-            $path = $request->file('proof_of_transfer')->store('proof_of_transfers', 'public');
-            $payment->update(['proof_of_transfer' => $path]);
 
-            return redirect()->back()->with('success', 'Bukti transfer berhasil diupload.');
+            // Validasi input
+            $request->validate([
+                'payment_proof' => [
+                    'required',
+                    'image',
+                    'mimes:jpg,jpeg,png',
+                    'max:2048'
+                ],
+            ], [
+                'payment_proof.required' => 'File bukti pembayaran wajib diisi',
+                'payment_proof.image' => 'File harus berupa gambar',
+                'payment_proof.mimes' => 'Format file harus jpg, jpeg, png',
+                'payment_proof.max' => 'Ukuran file maksimal 2MB'
+            ]);
+
+            if ($request->hasFile('payment_proof')) {
+                // Debugging
+                Log::info('File details', [
+                    'original_name' => $request->file('payment_proof')->getClientOriginalName(),
+                    'mime' => $request->file('payment_proof')->getMimeType()
+                ]);
+
+                // Hapus bukti transfer lama jika ada
+                if ($payment->proof_of_transfer) {
+                    Storage::disk('payment_proof')->delete($payment->proof_of_transfer);
+                }
+
+                // Simpan file
+                $file = $request->file('payment_proof');
+                $filename = date('YmdHi') . '_' . $file->getClientOriginalName();
+                $path = $file->storeAs('', $filename, 'payment_proof');
+
+                // Update database
+                $payment->update(['proof_of_transfer' => 'payment_proof/'.$path]);
+
+                return redirect()->back()->with([
+                    'message' => 'Bukti pembayaran berhasil diupload',
+                    'alert-type' => 'success'
+                ]);
+            }
+
+            return redirect()->back()->with([
+                'message' => 'Tidak ada file yang diupload',
+                'alert-type' => 'error'
+            ]);
+
+        } catch (ValidationException $e) {
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->with([
+                    'message' => 'Validasi gagal: ' . implode(', ', $e->validator->errors()->all()),
+                    'alert-type' => 'error'
+                ])
+                ->withInput();
+
+        } catch (\Exception $e) {
+            Log::error('Payment proof upload error: '.$e->getMessage());
+            return redirect()->back()->with([
+                'message' => 'Gagal mengupload bukti pembayaran: '.$e->getMessage(),
+                'alert-type' => 'error'
+            ]);
         }
-
-        return redirect()->back()->with('error', 'Gagal mengupload bukti transfer.');
     }
 
     // Fitur Konfirmasi Pembayaran (Admin)
@@ -286,7 +335,49 @@ class PaymentController extends Controller
 
         $payment->update(['status' => 'terbayar', 'payment_at' => now()]);
 
-        return redirect()->back()->with('success', 'Pembayaran berhasil dikonfirmasi.');
+        // Inisialisasi JournalService
+        $journalBuilder = app(JournalBuilderService::class);
+        $accountMappingService = app(AccountMappingService::class);
+        $bookingPaymentService = new BookingPaymentService($journalBuilder, $accountMappingService);
+
+
+        // Jika pembayaran adalah dp ke - 2 dst, buat journal untuk DP
+        if ($payment->type === 'dp' && $payment->dp_installment > 1) {
+            // Buat jurnal untuk DP
+            $bookingPaymentService->handle($booking, $payment);
+
+            // Update down payment dan remaining costs pada booking            
+            $updatedDPBooking = $booking->down_paymet + $payment->ammount;
+            $booking->update(['down_paymet' => $updatedDPBooking]);
+
+            $updatedBookingRemainingCost = $booking->remaining_costs - $booking->down_paymet;
+            $booking->update(['remaining_costs' => $updatedBookingRemainingCost]);
+
+            // Log informasi jurnal
+            Log::info('DP payment confirmed and journal created.', [
+                'payment_id' => $payment->id,
+                'booking_id' => $booking->id,
+                'dp_installment' => $payment->dp_installment
+            ]);
+        }
+        // Jika pembayaran adalah DP, update booking status
+        if ($payment->type === 'dp' && $payment->dp_installment > 0) {
+            $booking->update(['status' => 'booked']);
+        }
+        // Jika pembayaran adalah pelunasan, update booking status
+        elseif ($payment->type === 'pelunasan') {
+            $booking->update(['status' => 'paid']);
+        }
+
+        Log::info('Payment confirmed successfully.', ['payment_id' => $payment->id, 'booking_id' => $booking->id]);
+
+        // Kirim notifikasi toast
+        $notification = [
+            'message' => 'Pembayaran berhasil dikonfirmasi.',
+            'alert-type' => 'success'
+        ];
+
+        return redirect()->route('all.bookings')->with($notification);
     }
 
     // Fitur Pembatalan Manual (Admin)

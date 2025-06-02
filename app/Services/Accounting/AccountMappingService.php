@@ -21,7 +21,7 @@ class AccountMappingService
             case 'penjualan_tiket':
                 return [
                     'debit' => $this->getAccountIdByCode('5-001-006'), // HPP Tiket
-                    'credit' => $this->getAccountIdByCode('1-003'),     // Deposit ke Supplier
+                    'credit' => $this->getAccountIdByCode('1-003'),    // Deposit ke Supplier
                 ];
 
             case 'uang_muka_pelanggan':
@@ -39,7 +39,13 @@ class AccountMappingService
             case 'biaya_operasional':
                 return [
                     'debit' => $this->getAccountIdByCode('5-002-001'), // Beban Marketing (default)
-                    'credit' => $this->getAccountIdByCode('1-001'),     // Kas/Bank
+                    'credit' => $this->getAccountIdByCode('1-001'),    // Kas/Bank
+                ];
+
+            case 'hutang_usaha':
+                return [
+                    'debit' => $this->getAccountIdByCode('2-003'),  // Utang Usaha
+                    'credit' => $this->getAccountIdByCode('1-001'), // Kas/Bank
                 ];
 
             default:

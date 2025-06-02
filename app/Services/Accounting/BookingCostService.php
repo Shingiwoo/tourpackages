@@ -36,7 +36,7 @@ class BookingCostService
                 throw $e;
             }
         });
-    }
+    }      
 
     public function delete(BookingCost $bookingCost): void
     {

@@ -144,7 +144,7 @@ class JournalBuilderService
      */
     protected function createJournalEntry(Journal $journal, array $entryData): JournalEntry
     {
-        $account = Account::where('code', $entryData['account_code'])->firstOrFail();
+        $account = Account::findOrFail($entryData['account_id']);
 
         return JournalEntry::create([
             'journal_id' => $journal->id,
