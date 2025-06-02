@@ -152,13 +152,15 @@
                                                                 </a>
                                                             </li>
                                                         @endif
-                                                        @if (Auth::user()->can('accounting.add'))
-                                                            <li>
-                                                                <a href="{{ route('expenses.create', $booking->id) }}"
-                                                                    class="dropdown-item text-danger"> <i
-                                                                        class="ti ti-plus"></i> Add Expense
-                                                                </a>
-                                                            </li>
+                                                        @if ( $booking->status !== 'finished')
+                                                            @if (Auth::user()->can('accounting.add'))
+                                                                <li>
+                                                                    <a href="{{ route('expenses.create', $booking->id) }}"
+                                                                        class="dropdown-item text-danger"> <i
+                                                                            class="ti ti-plus"></i> Add Expense
+                                                                    </a>
+                                                                </li>
+                                                            @endif
                                                         @endif
                                                     </ul>
                                                 </div>

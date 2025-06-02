@@ -114,7 +114,7 @@
                                             class="badge bg-{{ $booking->type === 'oneday' ? 'info' : ($booking->type === 'twoday' ? 'primary' : ($booking->type === 'threeday' ? 'success' : ($booking->type === 'fourday' ? 'danger' : 'secondary'))) }} text-uppercase">
                                             {{ $booking->type }}
                                         </span>
-                                        </td>
+                                    </td>
                                     <td class="align-content-center text-start"><span
                                             class="text-capitalize">{{ $booking->name }}</span></td>
                                     <td class="align-content-center text-start"><span
@@ -161,7 +161,7 @@
                                                                 data-totalCost="{{ $booking->total_price }}"
                                                                 data-downPayment="{{ $booking->down_paymet }}"
                                                                 data-remainingCost="{{ $booking->remaining_costs }}">
-                                                                <span class="ti ti-search ti-md"></span> Detail Booking 
+                                                                <span class="ti ti-search ti-md"></span> Detail Booking
                                                             </a>
                                                         </li>
                                                     @endif
@@ -180,6 +180,27 @@
                                                                 data-url="{{ route('delete.booking', $booking->id) }}"> <i
                                                                     class="ti ti-trash"></i> Delete
                                                             </a></li>
+                                                    @endif
+                                                    <li class="dropdown-divider"></li>
+                                                    @if (Auth::user()->can('payment.actions'))
+                                                        @if (Auth::user()->can('payment.menu'))
+                                                            <li>
+                                                                <a href="{{ route('payments.index', $booking->id) }}"
+                                                                    class="dropdown-item  text-success">
+                                                                    <i class="ti ti-cash-register"></i> Index Payment
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                                        @if (Auth::user()->can('payment.add'))
+                                                            @if ($booking->status === 'pending' || $booking->status === 'booked')
+                                                                <li>
+                                                                    <a href="{{ route('payments.create', $booking->id) }}"
+                                                                        class="dropdown-item  text-primary">
+                                                                        <i class="ti ti-file-diff"></i> Add
+                                                                    </a>
+                                                                </li>
+                                                            @endif
+                                                        @endif
                                                     @endif
                                                 </ul>
                                             </div>
@@ -239,11 +260,13 @@
                                             </tr>
                                             <tr>
                                                 <th>Start Trip :</th>
-                                                <td><span id="start-date" class="text-success"></span> <span id="start-trip" class="text-success"></span></td>
+                                                <td><span id="start-date" class="text-success"></span> <span
+                                                        id="start-trip" class="text-success"></span></td>
                                             </tr>
                                             <tr>
                                                 <th>End Trip :</th>
-                                                <td><span id="end-date" class="text-danger"></span> <span id="end-trip" class="text-danger"></span></td>
+                                                <td><span id="end-date" class="text-danger"></span> <span id="end-trip"
+                                                        class="text-danger"></span></td>
                                             </tr>
                                         </tbody>
                                     </table>

@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Foundation\Application;
+use Illuminate\Console\Scheduling\Schedule;
+use App\Console\Commands\CancelWaitingPayments;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 
@@ -10,6 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    ->withCommands([
+        CancelWaitingPayments::class, // Daftarkan command di sini
+    ])
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
             // 'roles' => \App\Http\Middleware\RoleMiddleware::class,
@@ -22,4 +27,9 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
+    })->withSchedule(function (Schedule $schedule) {
+        // Jalankan setiap jam
+        // $schedule->command(CancelWaitingPayments::class)->hourly();
+        // Atau, jalankan setiap hari pada waktu tertentu:
+        $schedule->command(CancelWaitingPayments::class)->dailyAt('03:00');
     })->create();

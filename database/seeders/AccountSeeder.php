@@ -48,8 +48,8 @@ class AccountSeeder extends Seeder
             ['code' => '5-001-008', 'name' => 'Beban Transport Team ', 'type' => 'expense', 'category' => 'Cost of Sales'],
             ['code' => '5-001-009', 'name' => 'Beban Konsumsi Team', 'type' => 'expense', 'category' => 'Cost of Sales'],
             ['code' => '5-001-010', 'name' => 'Beban Penginapan Team', 'type' => 'expense', 'category' => 'Cost of Sales'],
-            ['code' => '5-001-011', 'name' => 'Beban bbm Team', 'type' => 'expense', 'category' => 'Cost of Sales'],
-            ['code' => '5-001-012', 'name' => 'Beban Baju Kerja Team', 'type' => 'expense', 'category' => 'Cost of Sales'],
+            ['code' => '5-001-011', 'name' => 'Beban BBM Team', 'type' => 'expense', 'category' => 'Cost of Sales'],
+            ['code' => '5-001-012', 'name' => 'Beban Seragam Team', 'type' => 'expense', 'category' => 'Cost of Sales'],
             ['code' => '5-001-013', 'name' => 'Beban Biaya Alat Pendukung', 'type' => 'expense', 'category' => 'Cost of Sales'],
             ['code' => '5-001-014', 'name' => 'Beban Fasilitas Tour', 'type' => 'expense', 'category' => 'Cost of Sales'],
 
