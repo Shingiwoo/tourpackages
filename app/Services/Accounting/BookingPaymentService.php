@@ -42,8 +42,8 @@ class BookingPaymentService
 
     protected function handleDownPaymentInstallment(Booking $booking, Payment $payment): void
     {
-        if ($this->hasJournal($booking, 'dp ke -' . $payment->dp_installment)) {
-            Log::info('Tidak dibuat ulang, karena Jurnal DP ke -' . $payment->dp_installment . 'sudah ada' . ['booking_id' => $booking->id]);
+        if ($this->hasJournal($booking, 'dp ke - ' . $payment->dp_installment)) {
+            Log::info('Tidak dibuat ulang, karena Jurnal DP ke - ' . $payment->dp_installment . ' sudah ada' . [', booking_id : ' => $booking->id]);
             return;
         }
 
@@ -51,10 +51,10 @@ class BookingPaymentService
 
         $this->journalBuilder->create([
             'date' => Carbon::now(),
-            'description' => 'DP Booking ke -' . $payment->dp_installment . 'Booking #' . $booking->code_booking,
+            'description' => 'DP Booking ke - ' . $payment->dp_installment . ' Booking #' . $booking->code_booking,
             'reference_type' => Booking::class,
             'reference_id' => $booking->id,
-            'journal_type' => 'dp ke -' . $payment->dp_installment,
+            'journal_type' => 'dp ke - ' . $payment->dp_installment,
             'entries' => [
                 [
                     'account_id' => $accounts['debit'],
