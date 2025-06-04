@@ -113,7 +113,6 @@ class CustomPackageController extends Controller
         return redirect()->route('calculate.custom.package')->with($notification);
     }
 
-
     private function calculatePrices(
         $vehicle,
         $hotelPrice,

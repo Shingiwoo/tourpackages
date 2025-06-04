@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\SupplierInvoice;
 use App\Http\Controllers\Controller;
 use App\Services\SupplierPaymentSettlementService;
+use App\Services\Accounting\SupplierInvoiceJournalService;
 
 class SupplierInvoiceController extends Controller
 {
@@ -36,6 +37,9 @@ class SupplierInvoiceController extends Controller
         ]);
 
         $invoice = SupplierInvoice::create($validated);
+
+        // Setelah create invoice
+        SupplierInvoiceJournalService::create($invoice);
 
         // Setelah invoice dibuat, langsung settle dari DP!
         SupplierPaymentSettlementService::settle($invoice, $invoice->amount);

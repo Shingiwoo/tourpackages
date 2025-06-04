@@ -10,7 +10,7 @@
                             <div class="text-center head-label">
                                 <h5 class="mb-0 card-title">Supplier List</h5>
                             </div>
-                            <div class="pt-6 dt-action-buttons text-end pt-md-0">
+                            <div class="pt-6 text-center dt-action-buttons pt-md-0">
                                 <div class="btn-group">
                                 </div>
                                 @if (Auth::user()->can('accounting.add'))
@@ -25,70 +25,72 @@
                             </div>
                         </div>
                         <div class="card-datatable text-nowrap">
-                            <table id="example" class="table datatables-ajax">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center align-content-center text-primary">No</th>
-                                        <th class="text-center align-content-center text-primary">Name</th>
-                                        <th class="text-center align-content-center text-primary">Contact</th>
-                                        <th class="text-center align-content-center text-primary">Bank</th>
-                                        <th class="text-center align-content-center text-primary">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="table-border-bottom-0">
-                                    @foreach ($suppliers as $index => $supplier)
+                            <div class="table-responsive">
+                                <table id="example" class="table datatables-ajax">
+                                    <thead>
                                         <tr>
-                                            <td class="text-center align-content-center">{{ $index + 1 }}</td>
-                                            <td class="text-center align-content-center text-uppercase">
-                                                <span style="16px" class="text-bold">{{ $supplier->name }}</span><br><span
-                                                    style="font-size: 12px">{{ Str::limit($supplier->address, 30, '...') }}</span><br><span
-                                                    style="font-size: 12px">{{ $supplier->phone }} |
-                                                    {{ $supplier->email }}</span>
-                                            </td>
-                                            <td class="text-center align-content-center text-uppercase">
-                                                {{ $supplier->contact_person }}
-                                                <br> {{ $supplier->contact_phone }} <br>
-                                                {{ $supplier->contact_email }}
-                                            </td>
-                                            <td class="text-center align-content-center text-uppercase">
-                                                {{ $supplier->bank_name }}
-                                                <br> {{ $supplier->account_name }} <br>
-                                                {{ Str::limit($supplier->bank_account, 10, '...') }}
-                                            </td>
-                                            @if (Auth::user()->can('accounting.action'))
-                                                <td class="text-center align-content-center">
-                                                    <div class="dropdown">
-                                                        <button type="button" class="p-0 btn dropdown-toggle hide-arrow"
-                                                            data-bs-toggle="dropdown">
-                                                            <i class="ti ti-dots-vertical"></i>
-                                                        </button>
-                                                        <div class="dropdown-menu">
-                                                            @if (Auth::user()->can('accounting.add'))
-                                                                <a class="dropdown-item button" data-bs-toggle="modal"
-                                                                    data-bs-target="#editSupplierModal"
-                                                                    data-id="{{ $supplier->id }}"
-                                                                    data-address="{{ $supplier->address }}"
-                                                                    data-name="{{ $supplier->name }}"
-                                                                    data-phone="{{ $supplier->phone }}"
-                                                                    data-emailSupplier="{{ $supplier->email }}"
-                                                                    data-accountName="{{ $supplier->account_name }}"
-                                                                    data-accountNumber="{{ $supplier->bank_account }}"
-                                                                    data-bankName="{{ $supplier->bank_name }}"
-                                                                    data-contactPerson="{{ $supplier->contact_person }}"
-                                                                    data-contactPhone="{{ $supplier->contact_phone }}"
-                                                                    data-contactEmail="{{ $supplier->contact_email }}"
-                                                                    data-notes="{{ $supplier->notes }}">
-                                                                    <i class="ti ti-pencil me-1"></i> Edit
-                                                                </a>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            @endif
+                                            <th class="text-center align-content-center text-primary">No</th>
+                                            <th class="text-center align-content-center text-primary">Name</th>
+                                            <th class="text-center align-content-center text-primary">Contact</th>
+                                            <th class="text-center align-content-center text-primary">Bank</th>
+                                            <th class="text-center align-content-center text-primary">Action</th>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody class="table-border-bottom-0">
+                                        @foreach ($suppliers as $index => $supplier)
+                                            <tr>
+                                                <td class="text-center align-content-center">{{ $index + 1 }}</td>
+                                                <td class="text-center align-content-center text-uppercase">
+                                                    <span style="16px" class="text-bold">{{ $supplier->name }}</span><br><span
+                                                        style="font-size: 12px">{{ Str::limit($supplier->address, 30, '...') }}</span><br><span
+                                                        style="font-size: 12px">{{ $supplier->phone }} |
+                                                        {{ $supplier->email }}</span>
+                                                </td>
+                                                <td class="text-center align-content-center text-uppercase">
+                                                    {{ $supplier->contact_person }}
+                                                    <br> {{ $supplier->contact_phone }} <br>
+                                                    {{ $supplier->contact_email }}
+                                                </td>
+                                                <td class="text-center align-content-center text-uppercase">
+                                                    {{ $supplier->bank_name }}
+                                                    <br> {{ $supplier->account_name }} <br>
+                                                    {{ Str::limit($supplier->bank_account, 10, '...') }}
+                                                </td>
+                                                @if (Auth::user()->can('accounting.action'))
+                                                    <td class="text-center align-content-center">
+                                                        <div class="dropdown">
+                                                            <button type="button" class="p-0 btn dropdown-toggle hide-arrow"
+                                                                data-bs-toggle="dropdown">
+                                                                <i class="ti ti-dots-vertical"></i>
+                                                            </button>
+                                                            <div class="dropdown-menu">
+                                                                @if (Auth::user()->can('accounting.add'))
+                                                                    <a class="dropdown-item button" data-bs-toggle="modal"
+                                                                        data-bs-target="#editSupplierModal"
+                                                                        data-id="{{ $supplier->id }}"
+                                                                        data-address="{{ $supplier->address }}"
+                                                                        data-name="{{ $supplier->name }}"
+                                                                        data-phone="{{ $supplier->phone }}"
+                                                                        data-emailSupplier="{{ $supplier->email }}"
+                                                                        data-accountName="{{ $supplier->account_name }}"
+                                                                        data-accountNumber="{{ $supplier->bank_account }}"
+                                                                        data-bankName="{{ $supplier->bank_name }}"
+                                                                        data-contactPerson="{{ $supplier->contact_person }}"
+                                                                        data-contactPhone="{{ $supplier->contact_phone }}"
+                                                                        data-contactEmail="{{ $supplier->contact_email }}"
+                                                                        data-notes="{{ $supplier->notes }}">
+                                                                        <i class="ti ti-pencil me-1"></i> Edit
+                                                                    </a>
+                                                                @endif
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                @endif
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -216,9 +218,6 @@
                                 <label class="form-label" for="modalSupplierName">Name</label>
                                 <input type="text" id="modalSupplierName" name="SupplierName" class="form-control"
                                     required />
-                            </div>
-                            <div class="mb-4 col-12 col-md-6">
-
                             </div>
                         </div>
                         <div class="row">

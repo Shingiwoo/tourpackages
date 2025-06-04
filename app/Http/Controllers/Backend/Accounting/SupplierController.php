@@ -73,7 +73,6 @@ class SupplierController extends Controller
             Log::error('Supplier validation failed', [
                 'error' => $e->getMessage(),
                 'stack' => $e->getTraceAsString(),
-                //'request' => $request->except('_token'),
             ]);
             return back()->withErrors($e->validator)->withInput();
 
@@ -81,7 +80,6 @@ class SupplierController extends Controller
             Log::error('Error saving supplier data', [
                 'error' => $e->getMessage(),
                 'stack' => $e->getTraceAsString(),
-                //'request' => $request->except('_token'),
             ]);
             return redirect()->back()->with([
                 'message' => 'Error saving supplier data. Please try again.',

@@ -42,4 +42,9 @@ class SupplierInvoice extends Model
     {
         return $this->hasMany(SupplierPaymentHistory::class);
     }
+
+    public function journal()
+    {
+        return $this->hasOne(Journal::class, 'reference_id')->where('reference_type', self::class);
+    }
 }

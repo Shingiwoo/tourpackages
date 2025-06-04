@@ -530,7 +530,7 @@ class AdminController extends Controller
             ]);
         } catch (\Exception $e) {
             return response()->json([
-                'success' => false,
+                'warning' => false,
                 'message' => 'Failed to delete Admin data',
             ], 500);
         }

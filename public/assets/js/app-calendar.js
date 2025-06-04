@@ -50,10 +50,7 @@ document.addEventListener("DOMContentLoaded", function () {
             ),
             inlineCalendar = document.querySelector(".inline-calendar");
 
-        let eventToUpdate,
-            currentEvents = [], // Assign app-calendar-events.js file events (assume events from API) to currentEvents (browser store/object) to manage and update calender events
-            isFormValid = false,
-            inlineCalInstance;
+        let inlineCalInstance;
 
         // Init event Offcanvas
         let bsAddEventSidebar;
