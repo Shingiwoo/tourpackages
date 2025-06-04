@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Accounting;
 
+use App\Models\SupplierDeposit;
 use App\Models\SupplierInvoice;
 use App\Models\SupplierPayment;
-use App\Models\SupplierPaymentHistory;
-use App\Models\SupplierDeposit;
 use Illuminate\Support\Facades\DB;
+use App\Models\SupplierPaymentHistory;
 
 class SupplierPaymentSettlementService
 {
+    
     public static function settle(SupplierInvoice $invoice, float $paymentAmount, ?string $notes = null)
     {
         DB::transaction(function () use ($invoice, $paymentAmount, $notes) {
