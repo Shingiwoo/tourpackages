@@ -1,7 +1,7 @@
 // Form Facility Page
-$(document).ready(function () {
+jQuery(function () {
     $("#type_facility")
-        .change(function () {
+        .on('change', function () {
             var selectedValue = $(this).val();
             var priceContainer = $("#price_facility_container");
             var maxuserContainer = $("#maxuser_facility_container");
@@ -23,12 +23,12 @@ $(document).ready(function () {
 });
 
 // Form Hotel Page
-$(document).ready(function () {
+jQuery(function () {
     // Ambil old value menggunakan Blade dan konversi ke format JavaScript
     var oldValue = "{{ old('hotelCapacity', $hotel->capacity ?? '') }}";
 
     $("#hotel_type")
-        .change(function () {
+        .on('change', function () {
             var selectedValue = $(this).val();
             var capacityContainer = $("#capacity").closest(".col"); // Ambil container input capacity
             var capacityInput = $("#capacity");
@@ -53,55 +53,10 @@ $(document).ready(function () {
         .trigger("change"); // Panggil trigger untuk inisialisasi saat load
 });
 
-// Form Custom Page
-$(document).ready(function() {
-    // Handler untuk checkbox IncludeMakan
-    $('#IncludeMakan').change(function() {
-        var isChecked = $(this).is(':checked');
-        var mealCostRow = $('#mealCost').closest('.row');
-        var mealCostInput = $('#mealCost');
-        var totalMealInput = $('#totalMeal');
-
-        if (isChecked) {
-            mealCostRow.show();
-            mealCostInput.val('');
-            totalMealInput.val('');
-        } else {
-            mealCostRow.hide();
-            mealCostInput.val(0);
-            totalMealInput.val(1);
-        }
-    }).trigger('change'); // Inisialisasi saat load
-
-    // Handler untuk checkbox IncludeHotel
-    $('#IncludeHotel').change(function() {
-        var isChecked = $(this).is(':checked');
-        var hotelRow = $('#hotelPrice').closest('.row');
-        var hotelPriceInput = $('#hotelPrice');
-        var nightInput = $('#night');
-        var capacityHotelInput = $('#capacityHotel');
-        var extraBedPriceInput = $('#extraBedPrice');
-
-        if (isChecked) {
-            hotelRow.show();
-            hotelPriceInput.val('');
-            nightInput.val('0');
-            capacityHotelInput.val('');
-            extraBedPriceInput.val('');
-        } else {
-            hotelRow.hide();
-            hotelPriceInput.val(0);
-            nightInput.val(0);
-            capacityHotelInput.val(1);
-            extraBedPriceInput.val(500);
-        }
-    }).trigger('change');
-});
-
 // Form booking Page
-$(document).ready(function () {
+jQuery(function () {
     $("#modal_packageType")
-        .change(function () {
+        .on('change', function () {
             var selectedValue = $(this).val();
             var hotelContainer = $("#hotel_type_container");
 

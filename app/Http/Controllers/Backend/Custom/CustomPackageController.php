@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Custom;
 
 use App\Models\User;
+use App\Models\Hotel;
 use App\Models\Custom;
 use App\Models\Regency;
 use App\Models\Vehicle;
@@ -11,9 +12,20 @@ use App\Models\Destination;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
+use App\Services\Calculate\CustomPackageCalculatorService;
 
 class CustomPackageController extends Controller
 {
+    protected $calculatorService;
+
+    // Injeksi Service melalui constructor
+    public function __construct(CustomPackageCalculatorService $calculatorService)
+    {
+        $this->calculatorService = $calculatorService;
+    }
+
     public function CustomDashboard()
     {
         $destinations = Destination::all();
@@ -21,295 +33,249 @@ class CustomPackageController extends Controller
         $vehicles = Vehicle::all();
         $facilities = Facility::all();
         $allagens = User::where('role', 'agen')->get();
+        $hotels = Hotel::active()->get();
 
-        $customPackage = Custom::first(); // Ambil data pertama
+        $customPackage = Custom::first(); 
         $prices = $customPackage ? json_decode($customPackage->custompackage, true) : null;
 
-        return view('admin.custom.calculate', compact('destinations', 'regencies', 'vehicles', 'facilities','prices', 'allagens'));
+        return view('admin.custom.calculate', compact('destinations', 'regencies', 'vehicles', 'facilities', 'prices', 'allagens', 'hotels'));
     }
+
 
     public function StoreData(Request $request)
     {
-        Log::info('Mulai Menghitung Custom Paket!');
-        // Validasi data input
-        $validatedData = $request->validate([
-            'facilities' => 'required|array',
-            'facilities.*' => 'exists:facilities,id',
-            'destinations' => 'required|array',
-            'destinations.*' => 'exists:destinations,id',
-            'DurationPackage' => 'required',
-            'vehicleName' => 'required',
-            'night' => 'required',
-            'mealCost' => 'required',
-            'totalMeal' => 'required',
-            'otherFee' => 'required',
-            'reservedFee' => 'required',
-            'hotelPrice' => 'required',
-            'extraBedPrice' => 'required',
-            'capacityHotel' => 'required',
-            'totalUser' => 'required',
-        ]);
+        try {
+            Log::info('Mulai Menghitung Custom Paket!');
 
-        Log::info('Cek Validasi:', $validatedData);
+            // --- Validasi awal untuk SEMUA input yang mungkin ada ---
+            // Input yang bisa di-disabled harus tetap 'nullable' di sini.
+            $request->validate([
+                'facilities' => 'required|array',
+                'facilities.*' => 'exists:facilities,id',
+                'destinations' => 'required|array',
+                'destinations.*' => 'exists:destinations,id',
+                'DurationPackage' => 'required|integer|min:1',
+                'vehicleName' => 'required|exists:vehicles,id',
+                'totalUser' => 'required|integer|min:1',
 
-        $validatedData['otherFee'] = str_replace(',', '', $validatedData['otherFee']);
-        $validatedData['mealCost'] = str_replace(',', '', $validatedData['mealCost']);
-        $validatedData['reservedFee'] = str_replace(',', '', $validatedData['reservedFee']);
-        $validatedData['hotelPrice'] = str_replace(',', '', $validatedData['hotelPrice']);
+                // Field Meal (bisa disabled, jadi nullable)
+                'mealCost' => 'nullable',
+                'totalMeal' => 'nullable|integer|min:1',
 
-        // Ambil data dari request
-        $destinationIds = $validatedData['destinations'];
-        $facilityIds = $validatedData['facilities'];
-        $vehicleId = $validatedData['vehicleName'];
-        $hotelPrice = $validatedData['hotelPrice'];
-        $otherFee = $validatedData['otherFee'];
-        $DurationPackage = $validatedData['DurationPackage'];
-        $night = $validatedData['night'];
-        $reservedFee = $validatedData['reservedFee'];
-        $capacityHotel = $validatedData['capacityHotel'];
-        $extraBedPrice = $validatedData['extraBedPrice'];
-        $participants = $validatedData['totalUser'];
-        $mealCost = $validatedData['mealCost'];
-        $totalMeal = $validatedData['totalMeal'];
+                // Field Hotel Manual (bisa disabled, jadi nullable)
+                'hotelPrice' => 'nullable',
+                'night' => 'nullable|integer|min:0',
+                'capacityHotel' => 'nullable|integer|min:1',
+                'extraBedPrice' => 'nullable', 
 
-        $vehicle = Vehicle::find($vehicleId);
-        $selectedDestinations = Destination::whereIn('id', $destinationIds)->get();
-        $selectedFacilities = Facility::whereIn('id', $facilityIds)->get();
+                // Field Hotel Advanced (bisa disabled, jadi nullable)
+                'selectedHotels' => 'nullable|array',
+                'selectedHotels.*' => 'exists:hotels,id',
+                'advancedExtraBedPrice' => 'nullable',
+                'nightAdvanced' => 'nullable|integer|min:0', 
 
-        // Hitung harga
-        $prices = $this->calculatePrices(
-            $vehicle,
-            $hotelPrice,
-            $extraBedPrice,
-            $otherFee,
-            $DurationPackage,
-            $night,
-            $reservedFee,
-            $mealCost,
-            $totalMeal,
-            $selectedDestinations,
-            $selectedFacilities,
-            $capacityHotel,
-            $participants
-        );
+                'otherFee' => 'required',
+                'reservedFee' => 'required',
+            ]);
 
-        Log::info('Cek Prices data :', $prices);
+            // Setelah validasi dasar, ambil semua input
+            $inputData = $request->all();
+            Log::info('Validasi dasar berhasil. Input mentah:', $inputData);
 
-        // Simpan data ke tabel customs
-        $customData = Custom::first(); // Ambil data pertama
-        if ($customData) {
-            $customData->update(['custompackage' => json_encode($prices)]);
-        } else {
-            Custom::create(['custompackage' => json_encode($prices)]);
-        }
+            // --- TENTUKAN status IncludeMeal ---
+            $includeMeal = $request->has('mealCost'); // Jika mealCost terkirim, berarti include meal
+            Log::debug('Status IncludeMeal:', ['status' => $includeMeal]);
 
-        // Kirim notifikasi berhasil
-        $notification = [
-            'message' => 'Calculations Successfully!',
-            'alert-type' => 'success',
-        ];
+            // --- TENTUKAN accommodationType BERDASARKAN INPUT YANG DITERIMA ---
+            $accommodationType = 'none'; 
+            $hasHotelPrice = $request->has('hotelPrice') && !empty($request->input('hotelPrice'));
+            $hasSelectedHotels = $request->has('selectedHotels') && is_array($request->input('selectedHotels')) && !empty($request->input('selectedHotels'));
 
-        // Redirect ke halaman destinasi dengan notifikasi
-        return redirect()->route('calculate.custom.package')->with($notification);
-    }
-
-    private function calculatePrices(
-        $vehicle,
-        $hotelPrice,
-        $extraBedPrice,
-        $otherFee,
-        $DurationPackage,
-        $night,
-        $reservedFee,
-        $mealCost,
-        $totalMeal,
-        $selectedDestinations,
-        $selectedFacilities,
-        $capacityHotel,
-        $participants
-    ) {
-        $transportCost = $vehicle->price * $DurationPackage;
-
-        [$totalCostWNI, $totalCostWNA, $parkingCost] = $this->calculateDestinationCosts($selectedDestinations, $participants, $vehicle);
-
-        $totalFacilityCost = $this->calculateFacilityCosts($selectedFacilities, $participants, $DurationPackage);
-
-        $numUnits = floor($participants / $capacityHotel);
-        $remainingParticipants = $participants % $capacityHotel;
-
-        // Perbaikan: Tangani kasus kapasitas > peserta
-        if ($capacityHotel > $participants) {
-            $numUnits = 1;
-            $remainingParticipants = 0;
-            $totalHotelCost = $hotelPrice * $numUnits * $night; // Biaya 1 unit
-        } else {
-            $totalHotelCost = $hotelPrice * $numUnits * $night; // Biaya unit seperti biasa
-        }
+            if ($hasHotelPrice) {
+                $accommodationType = 'manual';
+            } elseif ($hasSelectedHotels) {
+                $accommodationType = 'advanced';
+            }
+            Log::info('Accommodation Type terdeteksi:', ['type' => $accommodationType]);
 
 
-        if ($remainingParticipants > 0) {
-            if ($remainingParticipants <= 2) {
-                $totalHotelCost += ($remainingParticipants * $extraBedPrice * $night);
+            // --- LAKUKAN VALIDASI KONDISIONAL SECARA MANUAL ---
+            $errors = [];
+
+            // Validasi untuk Meal jika diaktifkan
+            if ($includeMeal) {
+                if (!isset($inputData['mealCost']) || $inputData['mealCost'] === '' || $inputData['mealCost'] === null) {
+                    $errors['mealCost'] = 'Biaya Makan per orang wajib diisi.';
+                }
+                if (!isset($inputData['totalMeal']) || $inputData['totalMeal'] === '' || $inputData['totalMeal'] === null) {
+                    $errors['totalMeal'] = 'Jumlah Makan per hari wajib diisi.';
+                }
             } else {
-                $totalHotelCost += ($hotelPrice ?? 0) * $night;
-                $remainingParticipants -= $capacityHotel;
+                // Jika tidak include meal, pastikan nilai default untuk perhitungan
+                $inputData['mealCost'] = 0;
+                $inputData['totalMeal'] = 0;
+            }
 
-                if ($remainingParticipants > 0) {
-                    $totalHotelCost += ($remainingParticipants <= 2 ? $remainingParticipants * $extraBedPrice * $night : 2 * $extraBedPrice * $night);
+            // Validasi untuk accommodationType manual
+            if ($accommodationType === 'manual') {
+                if (!isset($inputData['hotelPrice']) || $inputData['hotelPrice'] === '' || $inputData['hotelPrice'] === null) {
+                    $errors['hotelPrice'] = 'Harga Hotel wajib diisi untuk pilihan Manual Hotel.';
+                }
+                if (!isset($inputData['night']) || $inputData['night'] === '' || $inputData['night'] === null) {
+                    $errors['night'] = 'Jumlah Malam wajib diisi untuk pilihan Manual Hotel.';
+                }
+                if (!isset($inputData['capacityHotel']) || $inputData['capacityHotel'] === '' || $inputData['capacityHotel'] === null) {
+                    $errors['capacityHotel'] = 'Kapasitas Kamar wajib diisi untuk pilihan Manual Hotel.';
+                }
+                if (!isset($inputData['extraBedPrice']) || $inputData['extraBedPrice'] === '' || $inputData['extraBedPrice'] === null) {
+                    $errors['extraBedPrice'] = 'Harga Extra Bed wajib diisi untuk pilihan Manual Hotel.';
                 }
             }
-        }
-
-        $totalMealCost = $mealCost * $totalMeal * $participants;
-
-        $totalCost = $transportCost + $totalCostWNI + $parkingCost + $totalFacilityCost + $otherFee + $reservedFee + $totalHotelCost + $totalMealCost;
-
-        $downPayment = $totalCost * 0.30;
-        $remainingCosts = $totalCost - $downPayment;
-        $costPerPerson = $totalCost / $participants;
-        $childCost = $costPerPerson * 0.40;
-        $additionalCostWna = ($totalCostWNA - $totalCostWNI) / $participants;
-
-        // Ambil nama destinasi dan fasilitas
-        $destinationNames = $selectedDestinations->pluck('name')->toArray();
-        $facilityNames = $selectedFacilities->pluck('name')->toArray();
-
-        return [
-            'transportCost' => $transportCost,
-            'parkingCost' => $parkingCost,
-            'ticketCost' => $totalCostWNI,
-            'hotelCost' => $totalHotelCost,
-            'extraBedCost' => $extraBedPrice,
-            'otherFee' => $otherFee,
-            'reservedFee' => $reservedFee,
-            'totalMealCost' => $totalMealCost,
-            'facilityCost' => $totalFacilityCost,
-            'totalCost' => $totalCost,
-            'DurationPackage' => $DurationPackage,
-            'night' => $night,
-            'downPayment' => $downPayment,
-            'remainingCosts' => $remainingCosts,
-            'costPerPerson' => $costPerPerson,
-            'childCost' => $childCost,
-            'participants' => $participants,
-            'additionalCostWna' => $additionalCostWna,
-            'destinationNames' => $destinationNames,
-            'facilityNames' => $facilityNames,
-        ];
-    }
-
-    private function calculateDestinationCosts($destinations, $participants, $vehicle)
-    {
-        $totalCostWNI = 0;
-        $totalCostWNA = 0;
-        $parkingCost = 0;
-
-        foreach ($destinations as $destination) {
-            if ($destination->price_type === 'per_person') {
-                $totalCostWNI += $destination->price_wni * $participants;
-                $totalCostWNA += $destination->price_wna * $participants;
-            } elseif ($destination->price_type === 'flat') {
-                $groupCount = ceil($participants / $destination->max_participants);
-                $totalCostWNI += $groupCount * $destination->price_wni;
-                $totalCostWNA += $groupCount * $destination->price_wna;
+            // Validasi untuk accommodationType advanced
+            elseif ($accommodationType === 'advanced') {
+                if (!isset($inputData['selectedHotels']) || !is_array($inputData['selectedHotels']) || empty($inputData['selectedHotels'])) {
+                    $errors['selectedHotels'] = 'Pilih setidaknya satu Hotel untuk pilihan Select Hotel.';
+                }
+                // --- PERUBAHAN DI SINI UNTUK NAMA INPUT BARU ---
+                if (!isset($inputData['nightAdvanced']) || $inputData['nightAdvanced'] === '' || $inputData['nightAdvanced'] === null) {
+                    $errors['nightAdvanced'] = 'Jumlah Malam wajib diisi untuk pilihan Select Hotel.';
+                }
+                if (!isset($inputData['advancedExtraBedPrice']) || $inputData['advancedExtraBedPrice'] === '' || $inputData['advancedExtraBedPrice'] === null) {
+                    $errors['advancedExtraBedPrice'] = 'Harga Extra Bed wajib diisi untuk pilihan Select Hotel.';
+                }
+            } else { // accommodationType === 'none' (tidak ada hotel dipilih)
+                // Pastikan nilai default untuk perhitungan
+                $inputData['hotelPrice'] = 0;
+                $inputData['extraBedPrice'] = 0;
+                $inputData['night'] = 0; 
+                $inputData['capacityHotel'] = 1;
+                $inputData['selectedHotels'] = [];
             }
 
-            $parkingCosts = [
-                'City Car' => $destination->parking_city_car,
-                'Mini Bus' => $destination->parking_mini_bus,
-                'Bus' => $destination->parking_bus,
+            // Jika ada error dari validasi manual, lemparkan ValidationException
+            if (!empty($errors)) {
+                $validator = Validator::make([], []);
+                foreach ($errors as $field => $message) {
+                    $validator->errors()->add($field, $message);
+                }
+                throw new ValidationException($validator);
+            }
+
+            // Bersihkan nilai numerik dari inputData
+            try {
+                $cleanedData = [
+                    'otherFee' => $this->cleanNumericValue($inputData['otherFee']),
+                    'reservedFee' => $this->cleanNumericValue($inputData['reservedFee']),
+                    'mealCost' => $this->cleanNumericValue($inputData['mealCost']),
+                    'totalMeal' => (int)($inputData['totalMeal'] ?? 0),
+
+                    // --- PERUBAHAN DI SINI UNTUK PENGAMBILAN NILAI YANG BENAR ---
+                    // Default 0 jika manual tidak aktif
+                    'hotelPrice' => $this->cleanNumericValue($inputData['hotelPrice'] ?? 0),
+
+                    // Ambil dari salah satu
+                    'extraBedPrice' => $this->cleanNumericValue($inputData['extraBedPrice'] ?? $inputData['advancedExtraBedPrice'] ?? 0),
+
+                    // Ambil dari salah satu 
+                    'night' => (int)($inputData['night'] ?? $inputData['nightAdvanced'] ?? 0),
+                    'capacityHotel' => (int)($inputData['capacityHotel'] ?? 1),
+                ];
+
+                Log::debug('Nilai setelah dibersihkan:', $cleanedData);
+            } catch (\Exception $e) {
+                Log::error('Gagal membersihkan nilai numerik: ' . $e->getMessage());
+                throw new \Exception('Format nilai tidak valid: ' . $e->getMessage());
+            }
+
+            // Siapkan data untuk service
+            $calculationData = [
+                'destinationIds' => $inputData['destinations'],
+                'facilityIds' => $inputData['facilities'],
+                'vehicleId' => (int)$inputData['vehicleName'],
+                'DurationPackage' => (int)$inputData['DurationPackage'],
+                'participants' => (int)$inputData['totalUser'],
+                'night' => $cleanedData['night'],
+                'mealCost' => $cleanedData['mealCost'],
+                'totalMeal' => $cleanedData['totalMeal'],
+                'otherFee' => $cleanedData['otherFee'],
+                'reservedFee' => $cleanedData['reservedFee'],
+                'accommodationType' => $accommodationType,
+                'hotelPrice' => $cleanedData['hotelPrice'],
+                'selectedHotels' => $inputData['selectedHotels'] ?? [],
+                'extraBedPrice' => $cleanedData['extraBedPrice'],
+                'capacityHotel' => $cleanedData['capacityHotel'],
             ];
 
-            $parkingCost += $parkingCosts[$vehicle->type] ?? 0;
-        }
+            Log::info('Data untuk kalkulasi:', $calculationData);
 
-        return [$totalCostWNI, $totalCostWNA, $parkingCost];
+            // Hitung harga menggunakan service
+            try {
+                $prices = $this->calculatorService->calculate($calculationData);
+                Log::info('Hasil kalkulasi:', $prices);
+            } catch (\Exception $e) {
+                Log::error('Gagal melakukan kalkulasi: ' . $e->getMessage());
+                throw new \Exception('Terjadi kesalahan dalam perhitungan: ' . $e->getMessage());
+            }
+
+            // Simpan data ke tabel customs
+            try {
+                $customData = Custom::first();
+                if ($customData) {
+                    $customData->update(['custompackage' => json_encode($prices)]);
+                    Log::info('Data custom diperbarui', ['id' => $customData->id]);
+                } else {
+                    $customData = Custom::create(['custompackage' => json_encode($prices)]);
+                    Log::info('Data custom dibuat baru', ['id' => $customData->id]);
+                }
+            } catch (\Exception $e) {
+                Log::error('Gagal menyimpan data custom: ' . $e->getMessage());
+                throw new \Exception('Gagal menyimpan hasil perhitungan');
+            }
+
+            return redirect()->route('calculate.custom.package')->with([
+                'message' => 'Calculations Successfully!',
+                'alert-type' => 'success'
+            ]);
+
+        } catch (ValidationException $e) { // Tangkap ValidationException
+            $errors = $e->validator->errors()->all();
+            Log::error('Validasi gagal: ' . implode(', ', $errors));
+            return redirect()->back()
+                ->withErrors($e->validator)
+                ->with([
+                    'message' => 'Validasi gagal: ' . implode(', ', $errors),
+                    'alert-type' => 'error'
+                ])
+                ->withInput();
+        } catch (\Exception $e) {
+            Log::error('Error dalam StoreData: ' . $e->getMessage());
+            return redirect()->back()
+                ->with([
+                    'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                    'alert-type' => 'error'
+                ])
+                ->withInput();
+        }
     }
 
-
-    private function calculateFacilityCosts($facilityIds, $participants, $DurationPackage)
+    private function cleanNumericValue($value): float
     {
-        $totalFacilityCost = 0;
-        $ShuttleCost = 0;
-        $flatCost = 0;
-        $facPerdayCost = 0;
-        $facPerpersonCost = 0;
-        $facInfoCost = 0;
-        $facEventCost = 0;
-        $facDocCost = 0;
-        $guideCost = 0;
-
-        // Cek fasilitas 'flat' di seluruh $facilityIds
-        $hasFlat = false;
-        foreach ($facilityIds as $facility) {
-            if ($facility->type === 'flat') {
-                $hasFlat = true;
-                break; // Keluar dari loop begitu 'flat' ditemukan
-            }
+        if (is_null($value) || $value === '') {
+            return 0.0;
         }
 
-        // Hitung biaya berdasarkan fasilitas
-        foreach ($facilityIds as $facility) {
-            $groupCount = ceil($participants / ($facility->max_user ?? $participants));
+        $value = (string) $value;
+        $cleaned = preg_replace('/[^0-9]/', '', $value); // Hapus semua karakter non-digit
 
-            switch ($facility->type) {
-                case 'flat':
-                    // Biaya flat hanya dihitung sekali, tidak dikalikan durasi
-                    $flatCost += $groupCount * $facility->price;
-                    break;
-
-                case 'shuttle':
-                    // Hanya hitung jika peserta memenuhi syarat 18-55
-                    if ($participants >= 18 && $participants <= 55) {
-                        // Jika ada fasilitas 'flat', hitung biaya shuttle berdasarkan durasi
-                        if ($hasFlat) {
-                            if ($DurationPackage === '2') {
-                                $ShuttleCost += $groupCount * $facility->price; // x1
-                            } elseif ($DurationPackage === '3') {
-                                $ShuttleCost += $groupCount * $facility->price * 2; // x2
-                            } elseif ($DurationPackage === '4') {
-                                $ShuttleCost += $groupCount * $facility->price * 3; // x3
-                            } elseif ($DurationPackage === '5') {
-                                $ShuttleCost += $groupCount * $facility->price * 4; // x4
-                            }
-                        } else {
-                            // Jika tidak ada 'flat', hitung shuttle dengan logika default
-                            $ShuttleCost += $groupCount * $facility->price * $DurationPackage;
-                        }
-                    }
-                    break;
-
-                case 'per_day':
-                    $facPerdayCost += $facility->price * $DurationPackage;
-                    break;
-
-                case 'doc':
-                    $facDocCost += $facility->price * $DurationPackage;
-                    break;
-
-                case 'tl':
-                    $guideCost += $groupCount * $facility->price * $DurationPackage;
-                    break;
-
-                case 'per_person':
-                    $facPerpersonCost += $facility->price * $participants * $DurationPackage;
-                    break;
-
-                case 'event':
-                    $facEventCost += $facility->price * $DurationPackage;
-                    break;
-
-                case 'info':
-                    $facInfoCost += $facility->price * $DurationPackage;
-                    break;
-            }
-
-            $totalFacilityCost = $flatCost + $ShuttleCost + $facPerdayCost + $facDocCost + $guideCost + $facPerpersonCost + $facEventCost + $facInfoCost;
+        if (empty($cleaned)) {
+            return 0.0;
         }
 
-        return $totalFacilityCost;
+        return (float)$cleaned;
     }
 
+
+    // Metode lain tetap sama seperti sebelumnya...
     public function CustomSave(Request $request)
     {
         Log::info('Starting to save custom package!');
@@ -324,21 +290,21 @@ class CustomPackageController extends Controller
         ]);
 
         // Ambil data dari model Custom dengan ID 1
-        $existingCustomData = Custom::find(1);
+        $existingCustomData = Custom::first(); // Gunakan first() karena kita menyimpan hasil perhitungan terakhir di baris pertama
 
         if (!$existingCustomData) {
             return redirect()->route('calculate.custom.package')->with([
-                'message' => 'Data Custom dengan ID 1 tidak ditemukan!',
+                'message' => 'Data Custom tidak ditemukan! Harap lakukan perhitungan terlebih dahulu.',
                 'alert-type' => 'error',
             ]);
         }
 
-        // Decode JSON data dari model Custom dengan ID 1
+        // Decode JSON data dari model Custom
         $decodedData = json_decode($existingCustomData->custompackage, true);
 
         if (!$decodedData) {
             return redirect()->route('calculate.custom.package')->with([
-                'message' => 'Gagal membaca data JSON pada Custom ID 1!',
+                'message' => 'Gagal membaca data JSON pada Custom!',
                 'alert-type' => 'error',
             ]);
         }
@@ -349,6 +315,7 @@ class CustomPackageController extends Controller
             'parkingCost' => $decodedData['parkingCost'] ?? 0,
             'ticketCost' => $decodedData['ticketCost'] ?? 0,
             'hotelCost' => $decodedData['hotelCost'] ?? 0,
+            'extraBedCost' => $decodedData['extraBedCost'] ?? 0, // Pastikan ini juga disimpan
             'otherFee' => $decodedData['otherFee'] ?? "0",
             'reservedFee' => $decodedData['reservedFee'] ?? "0",
             'totalMealCost' => $decodedData['totalMealCost'] ?? 0,
@@ -364,6 +331,7 @@ class CustomPackageController extends Controller
             'additionalCostWna' => $decodedData['additionalCostWna'] ?? 0,
             'destinationNames' => $decodedData['destinationNames'] ?? [],
             'facilityNames' => $decodedData['facilityNames'] ?? [],
+            'hotelNames' => $decodedData['hotelNames'] ?? [], // Simpan nama hotel juga
             'agen_id' => $validatedData['saveCustAgen'],
             'regency_id' => $validatedData['regency'],
             'status' => $validatedData['saveStatus'],
@@ -371,7 +339,7 @@ class CustomPackageController extends Controller
             'package_type' => $validatedData['saveCustType'],
         ];
 
-        // Simpan data baru dengan ID baru
+        // Simpan data baru dengan ID baru (ini akan membuat entri baru di tabel Custom)
         Custom::create([
             'custompackage' => json_encode($newData),
         ]);
@@ -391,7 +359,7 @@ class CustomPackageController extends Controller
         // Ambil data agen
         $allagens = User::where('role', 'agen')->get();
 
-        // Ambil semua data Custom kecuali ID 1
+        // Ambil semua data Custom kecuali ID 1 (yang digunakan untuk perhitungan sementara)
         $allCustPackages = Custom::where('id', '!=', 1)->get();
 
         // Siapkan data Custom dengan username agen dan ID
